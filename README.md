@@ -7,7 +7,11 @@ CC-206 Final Project
         <img src="assets/images/Header.png" alt="the team" style="width:100%; max-width:900px; height:auto; display:block; margin:auto; border-radius:10px;">
         <br>
         <h1>Description</h1>
+        <p>The Patient-Flow System is a web-based platform designed to simplify and automate the daily operations of a medical clinic. It handles appointments, patient records, and real-time queuing monitoring. 
+        </p>
         <h2>Purpose</h2>
+        <p>The purpose of Patient-Flow is to make queuing easy and manageable for doctors. This also helps avoid the loss of patient charts and medical records and lessens the time of rummaging through papers and folders. 
+        </p>
         <br>
         <h1>Tech-Stack</h1>
         <ul>
@@ -45,7 +49,6 @@ CC-206 Final Project
             <h3 class="sub">Current Queuing</h3>
             <p class="note"><strong>Queue Board (Right Side):</strong></p>
             <ul>
-                <li>Sorted A–Z</li>
                 <li>Patient Name</li>
                 <li>Company Affiliation (if applicable)</li>
                 <li>Appointment Type <em>(Booked / Walk-in)</em></li>
@@ -134,7 +137,6 @@ CC-206 Final Project
         <h3 class="sub">Settings</h3>
         <ul>
             <li>Account Info</li>
-            <li>Add a Person <em>(e.g., Secretary)</em>
             <ul>
                 <li>Name</li>
                 <li>Role</li>
