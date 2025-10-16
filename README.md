@@ -117,7 +117,6 @@ CC-206 Final Project
         <h3 class="sub">Current Queuing</h3>
         <p class="note"><strong>Queue Board (Right Side):</strong></p>
         <ul>
-            <li>Sorted A–Z</li>
             <li>Patient Name</li>
             <li>Company Affiliation (if applicable)</li>
             <li>Appointment Type <em>(Booked / Walk-in)</em></li>
@@ -137,14 +136,7 @@ CC-206 Final Project
         <h3 class="sub">Settings</h3>
         <ul>
             <li>Account Info</li>
-            <ul>
-                <li>Name</li>
-                <li>Role</li>
-                <li>Restrictions</li>
-            </ul>
             </li>
-            <li>Edit Information</li>
-            <li>Change Password</li>
         </ul>
     </section>
     <br>
