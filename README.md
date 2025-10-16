@@ -4,20 +4,21 @@ CC-206 Final Project
 
 <html>
     <body>
-        <h1>header ah</h1>
+        <img src="assets/images/Header.png" alt="the team">
         <br>
         <h1>Description</h1>
         <h2>Purpose</h2>
         <br>
         <h1>Tech-Stack</h1>
-        <p>PHP</p>
-        <p>CSS</p>
-        <p>HTML</p>
-        <p>MySQL</p>
+        <ul>
+            <li>Front-end: CSS, HTML, Javascript</li>
+            <li>Back-end: PHP</li>
+            <li>Database: MySQL, Firebase</li>
+        </ul>
         <br>
         <h1>Features</h1>
         <section class="card">
-            <h2>👨‍⚕️ Doctor View</h2>
+            <h2>Doctor View</h2>
             <h3 class="sub">Admin Dashboard</h3>
             <p class="note">Overview includes:</p>
             <ul>
@@ -76,7 +77,7 @@ CC-206 Final Project
             </ul>
         </section>
         <section class="card">
-        <h2>👩‍💼 Secretary View</h2>
+        <h2>Secretary View</h2>
         <h3 class="sub">Admin Dashboard</h3>
         <p class="note">Overview includes:</p>
         <ul>
@@ -144,5 +145,7 @@ CC-206 Final Project
             <li>Change Password</li>
         </ul>
     </section>
+    <br>
+    <img src="assets/images/Footer.png" alt="the team">
     </body>
 </html>
