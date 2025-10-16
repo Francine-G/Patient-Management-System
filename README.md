@@ -146,6 +146,6 @@ CC-206 Final Project
         </ul>
     </section>
     <br>
-    <img src="assets/images/Footer.png" alt="the team">
+    <img src="assets/images/Footer.png" alt="the team" style="width:100%; max-width:900px; height:auto; display:block; margin:auto; border-radius:10px;">
     </body>
 </html>
