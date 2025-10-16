@@ -4,7 +4,7 @@ CC-206 Final Project
 
 <html>
     <body>
-        <img src="assets/images/Header.png" alt="the team">
+        <img src="assets/images/Header.png" alt="the team" style="width:100%; max-width:900px; height:auto; display:block; margin:auto; border-radius:10px;">
         <br>
         <h1>Description</h1>
         <h2>Purpose</h2>
