@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient-Flow</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/LandingPage-style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/landingPage-style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="/website/css/uicons-outline-rounded.css"rel="stylesheet">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
@@ -200,12 +200,47 @@
                     </div>
                 </section>
 
+                <section class="collab-section scroll-animate">
+                    <div class="collab-header">
+                        <h3>In Collaboration With</h3>
+                    </div>
+                    <div class="collab-images">
+                        <img src="assets/images/Collab/Collab1.png" alt="West Visayas State University">
+                        <img src="assets/images/Collab/Collab2.png" alt="College of Information and Communication Technology">
+                        <img src="assets/images/Collab/Collab3.png" alt="FIN.exe">
+                    </div>
+                </section>
+
+
                 <!-- Footer -->
                 <footer class="site-footer" id="contact">
                     <div class="footer-container">
-                        <p class="footer-brand">Patient-Flow</p>
+                        <!-- Brand -->
+                        <div class="footer-brand box">
+                        <img src="assets/images/Collab/Collab3.png" alt="FIN.exe logo">
+                        <p class="brand-name">Patient-Flow</p>
                         <p class="footer-text">Modern Patient Management & Intelligent Queuing System</p>
-                        <p class="footer-copy">© 2025 Patient-Flow | FIN.exe All rights reserved.</p>
+                        </div>
+
+                        <!-- Links -->
+                        <div class="footer-links box">
+                        <a href="index.php">Home</a>
+                        <a href="#about">About</a>
+                        <a href="#features">Features</a>
+                        <a href="#team">Team</a>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="footer-socmed box">
+                        <a href="mailto:finexe.inc@gmail.com" target="_blank"><i class="bx bxl-gmail"></i></a>
+                        <a href="https://www.facebook.com/fin.exe.inc" target="_blank"><i class="bx bxl-facebook"></i></a>
+                        <a href="https://www.instagram.com/fin.exe.inc/" target="_blank"><i class="bx bxl-instagram"></i></a>
+                        <a href="https://www.linkedin.com/company/fin-exe-inc/" target="_blank"><i class="bx bxl-linkedin"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-copy">
+                        <p>© 2025 Patient-Flow | FIN.exe All rights reserved.</p>
                     </div>
                 </footer>
             </section>

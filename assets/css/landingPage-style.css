@@ -348,6 +348,39 @@ body {
 
 }
 
+/*Collaboration Section*/
+.collab-section {
+    padding: 100px 80px;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    text-align: center;
+}
+
+.collab-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #797a7a;
+}
+
+.collab-images {
+    display: flex;
+    gap: 150px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.collab-images img {
+    width: 150px;
+    max-width: 150px;
+    opacity: 0.8;
+    border-radius: 100%;
+}
+
+
 /*Developer Section*/
 .teams-section {
     padding: 100px 80px;
@@ -453,28 +486,91 @@ body {
     color: white;
     padding: 50px 80px;
     text-align: center;
+    font-family: 'Poppins', sans-serif;
 }
 
 .footer-container {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
 }
 
+.box {
+    flex: 1;
+}
+
+/* --- BRAND SECTION --- */
 .footer-brand {
-    font-size: 24px;
-    font-weight: 700;
+    text-align: left;
+}
+
+.footer-brand img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.brand-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 5px 0;
+    color: #fff;
 }
 
 .footer-text {
-    font-size: 16px;
+    font-size: 14px;
     color: rgba(255, 255, 255, 0.8);
 }
 
+/* --- NAV LINKS --- */
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    border-right: 2px solid white;
+    padding-right: 30px;
+    gap: 10px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.3s ease;
+    text-align: right;
+}
+
+.footer-links a:hover {
+    color: #e8ffbb;
+}
+
+/* --- SOCIAL MEDIA --- */
+.footer-socmed {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.footer-socmed a {
+    color: white;
+    font-size: 24px;
+    transition: color 0.3s ease;
+}
+
+.footer-socmed a:hover {
+    color: #e8ffbb;
+}
+
+/* --- COPYRIGHT --- */
 .footer-copy {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.6);
-    margin-top: 15px;
+    margin-top: 40px;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     padding-top: 15px;
 }
