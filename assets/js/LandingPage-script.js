@@ -93,4 +93,30 @@ document.addEventListener("DOMContentLoaded", () => {
             featuresSection.scrollIntoView({ behavior: 'smooth' });
         });
     }
+
+    // === TEAM MODAL FUNCTIONALITY ===
+    const modal = document.getElementById('teamModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalName = document.getElementById('modalName');
+    const modalRole = document.getElementById('modalRole');
+    const modalExtra = document.getElementById('modalExtra');
+    const modalQuote = document.getElementById('modalQuote');
+    const closeModal = document.getElementById('closeModal');
+
+    document.querySelectorAll('.team-card').forEach(card => {
+        card.addEventListener('click', () => {
+            modal.classList.add('show');
+            modalImg.src = card.dataset.img;
+            modalName.textContent = card.dataset.name;
+            modalRole.textContent = card.dataset.role;
+            modalExtra.textContent = card.dataset.extra;
+            modalQuote.textContent = card.dataset.quote;
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    closeModal.addEventListener('click', () => {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    });
 });

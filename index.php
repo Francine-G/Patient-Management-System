@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient-Flow</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/landingPage-style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/landingpage-style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="/website/css/uicons-outline-rounded.css"rel="stylesheet">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
     <div class="page-wrap">
@@ -55,6 +56,7 @@
                         <img src="assets/images/System-Prev.png" alt="System Preview">
                     </div>
                     <div class="about-system">
+                        <img src="assets/images/Stethoscope.png" alt="Stethoscope Icon" class="about-icon">
                         <div class="content-box">
                             <h2>About Patient-Flow</h2>
                             <p>Patient-Flow is a cutting-edge patient management and queuing system designed to
@@ -78,6 +80,7 @@
                     
                     <div class="feature-container">
                         <div class="features-track">
+                            <!-- Loop 1 -->
                             <div class="feature-card">
                                 <img src="assets/images/key features/feature1.jpg" alt="Feature Image">
                                 <div class="feature-card-overlay">
@@ -121,6 +124,7 @@
                                 </div>
                             </div>
 
+                            <!-- Loop 2 -->
                             <div class="feature-card">
                                 <img src="assets/images/key features/feature1.jpg" alt="Feature Image">
                                 <div class="feature-card-overlay">
@@ -176,33 +180,71 @@
                         </p>
                     </div>
                     <div class="team-grid">
-                        <div class="team-card">
-                            <div class="team-card-overlay">
-                                <h3>Ianna Yzabel Beray</h3>
-                                <p>UI/UX Designer, Front-end Developer</p>
+                        <img src="assets/images/bg.png" alt="Wave Background" class="team-bg-de">
+                        <div class="card-holder">
+                            <div class="team-card" 
+                                data-name="Ianna Yzabel Beray"
+                                data-role="UI/UX Designer, Front-end Developer"
+                                data-extra="WVSU CICT - BSIS Student"
+                                data-quote="“Design is intelligence made visible.”"
+                                data-img="assets/images/modal1.png">
+                                <div class="team-card-overlay">
+                                    <h3>Ianna Yzabel Beray</h3>
+                                    <p>UI/UX Designer, Front-end Developer</p>
+                                </div>
+                                <img src="assets/images/developer1.png" alt="Developer1">
                             </div>
-                            <img src="assets/images/developer1.png" alt="Developer1">
+                             <div class="team-card"
+                                data-name="Francine Gabrielle Luces"
+                                data-role="Project Leader, Full-stack Developer"
+                                data-extra="WVSU CICT - BSIS Student"
+                                data-quote="“Coffee is life.”"
+                                data-img="assets/images/modal2.png">
+                                <div class="team-card-overlay">
+                                    <h3>Francine Gabrielle Luces</h3>
+                                    <p>Project Leader, Full-stack Developer</p>
+                                </div>
+                                <img src="assets/images/developer2.png" alt="Developer2">
                             </div>
-                        <div class="team-card">
-                            <div class="team-card-overlay">
-                                <h3>Francine Gabrielle Luces</h3>
-                                <p>Project Leader, Full-stack Developer</p>
+                            <div class="team-card"
+                                data-name="Nash Gonzales"
+                                data-role="Back-end Developer, Database Developer"
+                                data-extra="WVSU CICT - BSIS Student"
+                                data-quote="“Code. Eat. Sleep. Repeat.”"
+                                data-img="assets/images/modal3.png">
+                                <div class="team-card-overlay">
+                                    <h3>Nash Gonzales</h3>
+                                    <p>Back-end Developer, Database Developer</p>
+                                </div>
+                                <img src="assets/images/developer3.png" alt="Developer3">
                             </div>
-                            <img src="assets/images/developer2.png" alt="Developer2">
                         </div>
-                        <div class="team-card">
-                            <div class="team-card-overlay"> 
-                                <h3>Nash Gonzales</h3>
-                                <p>Back-end Developer, Database Developer</p>
+                    </div>
+
+                     <!-- Modal -->
+                    <div class="team-modal" id="teamModal">
+                        <div class="modal-content">
+                            <img id="modalImage" src="" alt="Developer">
+                            <div class="modal-info">
+                                <h3 id="modalName"></h3>
+                                <p id="modalRole"></p>
+                                <p id="modalExtra"></p>
+                                <p id="modalQuote" class="quote"></p>
+                                <h4>Contact Me</h4>
+                                <div class="social-icons">
+                                    <a href="#" class="fb"><i class="fa-brands fa-facebook-f"></i></a>
+                                    <a href="#" class="ig"><i class="fa-brands fa-instagram"></i></a>
+                                    <a href="#" class="gm"><i class="fa-solid fa-envelope"></i></a>
+                                </div>
+                                <button id="closeModal">Back</button>
                             </div>
-                            <img src="assets/images/developer3.png" alt="Developer3">
                         </div>
                     </div>
                 </section>
 
                 <section class="collab-section scroll-animate">
                     <div class="collab-header">
-                        <h3>In Collaboration With</h3>
+                        <h3>In Collaboration with</h3>
                     </div>
                     <div class="collab-images">
                         <img src="assets/images/Collab/Collab1.png" alt="West Visayas State University">
@@ -247,6 +289,6 @@
         </div>
     </div>
 
-    <script src="assets/js/LandingPage-script.js"></script>
+    <script src="assets/js/Landingpage-script.js"></script>
 </body>
 </html>
