@@ -4,17 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Log In</title>
-    <link rel="stylesheet" type="text/css" href="Css/Login.Css">
+    <link rel="stylesheet" type="text/css" href="assets/css/Login.css">
 </head>
 <body>
     <div class="outerbox">
         <header class="logo" role="banner" aria-label="Company logo">
-            <p><img src="Images/Logo.png" alt="Company logo"> FIN.exe</p>
+            <p><img src="Images/Logo.png" alt="logo"> FIN.exe</p>
         </header>
 
         <main class="innerbox">
             <section class="login-container" aria-labelledby="login-heading">
-                <h2 id="login-heading" class="login-context">Log In</h2>
+                <h2 id="login-heading" class="login-context">Welcome Back!</h2>
+                <p class="login-text">Please enter your account details</p>
+                <br>
                 <form action="/login" method="post">
                     <label for="username">User Account</label>
                     <input type="text" id="username" name="username" required>
@@ -29,8 +31,7 @@
                 </form>
             </section>
 
-            <aside class="image-box" aria-hidden="true">
-                <p>big image here</p>
+            <aside class="image-box">
             </aside>
         </main>
 
