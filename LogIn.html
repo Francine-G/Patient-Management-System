@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Log In</title>
     <link rel="stylesheet" type="text/css" href="assets/css/Login.css">
+    <script type="module" src="assets/js/script.js" defer></script>
 </head>
 <body>
     <div class="outerbox">
@@ -17,16 +18,16 @@
                 <h2 id="login-heading" class="login-context">Welcome Back!</h2>
                 <p class="login-text">Please enter your account details</p>
                 <br>
-                <form action="/login" method="post">
+                <form>
                     <label for="username">User Account</label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" id="email" name="email">
 
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password">
 
                     <p class="forgot"><a href="#">Forgot password?</a></p>
 
-                    <button type="submit">Log In</button>
+                    <button type="submit" id="submit">Log In</button>
                     <p class="signup">Don't have an account? <a href="#">Sign up</a></p>
                 </form>
             </section>
