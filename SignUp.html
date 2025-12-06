@@ -1,55 +1,136 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Log In</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/SignUp.Css">
-</head>
-<body>
-    <div class="outerbox">
-        <header class="logo" role="banner" aria-label="Company logo">
-            <p><img src="Images/Logo.png" alt="Company logo"> FIN.exe</p>
-        </header>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Patient Flow Signup</title>
+        <link rel="stylesheet" href="assets/css/Signup-style.css">
+    </head>
 
-        <main class="innerbox">
-            <section class="signup-container" aria-labelledby="signup-heading">
-                <h2 id="signup-heading" class="signup-context">Create an Account</h2>
-                <p class="signup-text">Please enter your information to create an account</p>
-                <br>
-                <form action="/signup" method="post">
-                    <label for="username">User Account</label>
-                    <input type="text" id="username" name="username" required>
-
-                    <div class="name-row">
-                        <div class="field">
-                            <label for="firstName">First Name</label>
-                            <input type="text" id="firstName" name="firstName" required>
-                        </div>
-                        <div class="field">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" id="lastName" name="lastName" required>
-                        </div>
+    <body>
+        <div class="container">
+            
+            <main>
+                <div class="signup-box">
+                    <div class="heading">
+                        <h2>Create an Account</h2>
+                        <p>Please enter your information to create an account</p>
                     </div>
-                    
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" required>
 
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <form action="/signup" method="post">
+                        <label for="username">User Account</label>
+                        <input type="text" id="username" name="username" required>
 
-                    <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <div class="name-row">
+                            <div class="field">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="field">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
 
-                    <button type="submit">Sign Up</button>
-                    <p class="signup">Already have an account? <a href="LogIn.html">Log in</a></p>
-                </form>
-            </section>
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
 
-            <aside class="image-box">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+                        <button type="submit">Sign Up</button>
+                        <p class="signup">Already have an account? <a href="/Login.html">Log in</a></p>
+                    </form>
+
+                </div>
+            </main>
+            <aside>
+                
+                <div class="slide-container">
+                    <div class="slide active">
+                        <img src="assets/images/slideshow/slide1.png" alt="Photo 1">
+                    </div>
+                    <div class="slide">
+                        <img src="assets/images/slideshow/slide2.png" alt="Photo 2">
+                    </div>
+                    <div class="slide">
+                        <img src="assets/images/slideshow/slide3.png" alt="Photo 3">
+                    </div>
+                    <div class="slide">
+                        <img src="assets/images/slideshow/slide4.png" alt="Photo 4">
+                    </div>
+                    <div class="slide">
+                        <img src="assets/images/slideshow/slide5.png" alt="Photo 5">
+                    </div>
+
+                    <div class="dots-container">
+                        <span class="dot active" onclick="goToSlide(0)"></span>
+                        <span class="dot" onclick="goToSlide(1)"></span>
+                        <span class="dot" onclick="goToSlide(2)"></span>
+                        <span class="dot" onclick="goToSlide(3)"></span>
+                        <span class="dot" onclick="goToSlide(4)"></span>
+                        <span class="dot" onclick="goToSlide(5)"></span>
+                    </div>
+                </div>
             </aside>
-        </main>
+            
+        </div>
 
-    </div>
-</body>
+        <script>
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            let autoPlayInterval;
+
+            function showSlide(n) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                if (n >= slides.length) currentSlide = 0;
+                if (n < 0) currentSlide = slides.length - 1;
+                
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }
+
+            function changeSlide(n) {
+                currentSlide += n;
+                showSlide(currentSlide);
+                resetAutoPlay();
+            }
+
+            function goToSlide(n) {
+                currentSlide = n;
+                showSlide(currentSlide);
+                resetAutoPlay();
+            }
+
+            function autoPlay() {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+
+            function resetAutoPlay() {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = setInterval(autoPlay, 4000);
+            }
+
+            // Start autoplay
+            autoPlayInterval = setInterval(autoPlay, 4000);
+
+            // Pause on hover
+            const container = document.querySelector('.slide-container');
+            container.addEventListener('mouseenter', () => {
+                clearInterval(autoPlayInterval);
+            });
+
+            container.addEventListener('mouseleave', () => {
+                autoPlayInterval = setInterval(autoPlay, 4000);
+            });
+        </script>
+    </body>
 </html>
