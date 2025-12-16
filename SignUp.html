@@ -6,6 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Patient Flow Signup</title>
         <link rel="stylesheet" href="assets/css/Signup-style.css">
+
+        <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     </head>
 
     <body>
@@ -18,7 +20,7 @@
                         <p>Please enter your information to create an account</p>
                     </div>
 
-                    <form action="/signup" method="post">
+                    <form>
                         <label for="username">User Account</label>
                         <input type="text" id="username" name="username" required>
 
@@ -132,5 +134,8 @@
                 autoPlayInterval = setInterval(autoPlay, 4000);
             });
         </script>
+
+       <script type="module" src="assets/js/auth-signup.js"></script>
+
     </body>
 </html>

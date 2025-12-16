@@ -6,6 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Patient Flow Login</title>
         <link rel="stylesheet" href="assets/css/Login-style.css">
+        <script type="module" src="assets/js/auth-login.js"></script>
+
     </head>
 
     <body>
@@ -25,7 +27,7 @@
                         <p>Please enter your account details</p>
                     </div>
 
-                    <form action="/login" method="post">
+                    <form>
                         <label for="username">User Account</label>
                         <input type="text" id="username" name="username" required>
 
@@ -124,5 +126,7 @@
                 autoPlayInterval = setInterval(autoPlay, 4000);
             });
         </script>
+
+        <script type="module" src="assets/js/auth-login.js"></script>
     </body>
 </html>
