@@ -1,6 +1,6 @@
-// auth-login.js
+// auth-login.js (REVISED - Simplified)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -24,18 +24,25 @@ window.addEventListener('DOMContentLoaded', () => {
     // User is already logged in, redirect to dashboard
     window.location.href = 'Dashboard.html';
   }
+
+  // Auto-fill username if remembered
+  const rememberedUser = localStorage.getItem('rememberedUser');
+  if (rememberedUser) {
+    document.getElementById('username').value = rememberedUser;
+    document.getElementById('password').focus();
+  }
 });
 
 // Handle form submission
-document.getElementById('login-form').addEventListener('submit', async (e) => {
+document.querySelector('form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const usernameOrEmail = document.getElementById('username').value.trim();
+  const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value;
-  const rememberMe = document.getElementById('remember').checked;
 
-  if (!usernameOrEmail || !password) {
-    alert('Please enter your username/email and password');
+  // Basic validation
+  if (!username || !password) {
+    alert('Please enter your username and password');
     return;
   }
 
@@ -46,44 +53,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     submitButton.disabled = true;
     submitButton.textContent = 'Logging in...';
 
-    // Check if input is email or username
-    const isEmail = usernameOrEmail.includes('@');
-    let username = usernameOrEmail;
-
-    // If email is provided, we need to find the username first
-    if (isEmail) {
-      const usersRef = ref(database, 'users');
-      const snapshot = await get(usersRef);
-      
-      if (snapshot.exists()) {
-        const users = snapshot.val();
-        let foundUsername = null;
-
-        // Search for user with matching email
-        for (const [key, userData] of Object.entries(users)) {
-          if (userData.email === usernameOrEmail) {
-            foundUsername = key;
-            break;
-          }
-        }
-
-        if (!foundUsername) {
-          alert('Invalid email or password');
-          submitButton.disabled = false;
-          submitButton.textContent = originalButtonText;
-          return;
-        }
-
-        username = foundUsername;
-      } else {
-        alert('Invalid email or password');
-        submitButton.disabled = false;
-        submitButton.textContent = originalButtonText;
-        return;
-      }
-    }
-
-    // Get user data
+    // Check if user exists in verified users
     const userRef = ref(database, `users/${username}`);
     const userSnapshot = await get(userRef);
 
@@ -97,13 +67,16 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         // Store pending info and redirect to verification
         sessionStorage.setItem('pendingUsername', username);
         sessionStorage.setItem('pendingEmail', pendingSnapshot.val().email);
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
         setTimeout(() => {
           window.location.href = 'Email_Verification.html';
-        }, 2000);
+        }, 1500);
         return;
       }
 
-      alert('Invalid username/email or password');
+      // User doesn't exist at all
+      alert('Invalid username or password');
       submitButton.disabled = false;
       submitButton.textContent = originalButtonText;
       return;
@@ -111,26 +84,28 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
     const userData = userSnapshot.val();
 
-    // Verify password (In production, use proper password hashing!)
+    // Verify password (Note: In production, use proper password hashing like bcrypt!)
     if (userData.password !== password) {
-      alert('Invalid username/email or password');
+      alert('Invalid username or password');
       submitButton.disabled = false;
       submitButton.textContent = originalButtonText;
       return;
     }
 
-    // Check if user is verified
-    if (!userData.verified) {
+    // Check if user is verified (extra safety check)
+    if (userData.verified === false) {
       alert('Please verify your email first. Check your inbox for the verification code.');
       sessionStorage.setItem('pendingUsername', username);
       sessionStorage.setItem('pendingEmail', userData.email);
+      submitButton.disabled = false;
+      submitButton.textContent = originalButtonText;
       setTimeout(() => {
         window.location.href = 'Email_Verification.html';
-      }, 2000);
+      }, 1500);
       return;
     }
 
-    // Login successful
+    // Login successful - store user session
     sessionStorage.setItem('currentUser', username);
     
     // Store user data for the session
@@ -142,29 +117,24 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
       role: userData.role || 'admin'
     }));
 
-    // If remember me is checked, store in localStorage
-    if (rememberMe) {
-      localStorage.setItem('rememberedUser', username);
-    } else {
-      localStorage.removeItem('rememberedUser');
-    }
+    // Remember user for next time (optional feature)
+    localStorage.setItem('rememberedUser', username);
 
     // Update last login time
-    const lastLoginRef = ref(database, `users/${username}/lastLogin`);
-    await get(lastLoginRef).then(() => {
-      // Only update if user has internet connection
-      if (navigator.onLine) {
-        const loginUpdate = {};
-        loginUpdate[`users/${username}/lastLogin`] = new Date().toISOString();
-        // Note: In Firebase, you'd use update() instead of get() here
-      }
-    });
+    try {
+      const updates = {};
+      updates[`users/${username}/lastLogin`] = new Date().toISOString();
+      await update(ref(database), updates);
+    } catch (updateError) {
+      // Non-critical error, just log it
+      console.log('Could not update last login time:', updateError);
+    }
 
     // Redirect to dashboard
     submitButton.textContent = 'Success! Redirecting...';
     setTimeout(() => {
       window.location.href = 'Dashboard.html';
-    }, 1000);
+    }, 800);
 
   } catch (error) {
     console.error('Login error:', error);
@@ -172,23 +142,18 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     
     // Reset button
     const submitButton = e.target.querySelector('button[type="submit"]');
-    submitButton.disabled = false;
-    submitButton.textContent = 'Log In';
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Log In';
+    }
   }
 });
 
-// Forgot password handler (placeholder)
-document.querySelector('.forgot-password').addEventListener('click', (e) => {
-  e.preventDefault();
-  alert('Password reset functionality will be implemented soon. Please contact support for assistance.');
-});
-
-// Auto-fill username if remembered
-window.addEventListener('DOMContentLoaded', () => {
-  const rememberedUser = localStorage.getItem('rememberedUser');
-  if (rememberedUser) {
-    document.getElementById('username').value = rememberedUser;
-    document.getElementById('remember').checked = true;
-    document.getElementById('password').focus();
-  }
-});
+// Forgot password handler
+const forgotPasswordLink = document.querySelector('.forgot a');
+if (forgotPasswordLink) {
+  forgotPasswordLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('Password reset functionality will be implemented soon. Please contact support for assistance.');
+  });
+}
