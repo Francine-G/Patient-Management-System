@@ -204,3 +204,540 @@ body {
 .navigation-menu .active {
     animation: activateLink 0.4s ease-in-out;
 }
+
+ .main-content {
+            flex: 1;
+            margin-left: 320px;
+            padding: 30px;
+            overflow-y: auto;
+            background: #e8e8e8;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+/* Toggle button inline with header */
+.header {
+    position: relative;
+}
+
+.header .sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin-right: 12px;
+    border-radius: 8px;
+    background: #005A64; /* match sidebar */
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    font-size: 18px;
+}
+
+.header .sidebar-toggle:focus { outline: 2px solid rgba(255,255,255,0.12); }
+
+/* Collapsible sidebar behavior */
+.sidebar { transition: transform .28s cubic-bezier(.2,.9,.3,1), width .28s ease, opacity .2s ease; }
+
+body.sidebar-collapsed .sidebar { transform: translateX(-110%); opacity:0; pointer-events:none; }
+
+body.sidebar-collapsed .main-content { margin-left: 20px; }
+
+/* Header right area: date + notif */
+.header .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header .notif-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #fff;
+    color: #005A64;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    font-size: 18px;
+}
+
+.header .notif-btn:hover {
+    transform: translateY(-2px);
+}
+
+.header .notif-btn .notif-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    background: #ff5252;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.9);
+    display: inline-block;
+}
+
+.header .notif-icon { line-height: 1; }
+
+        .header-text h1 {
+            font-size: 32px;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .date-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .date-text {
+            text-align: right;
+        }
+
+        .date-text .label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .date-text .date {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .date-badge .icon {
+            font-size: 24px;
+        }
+
+        .search-section {
+            background: #3d8c8c;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #aaa;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #666;
+        }
+
+        .add-record-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.25);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .add-record-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .patient-card {
+            background: #d9d9d9;
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .patient-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #3d8c8c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .patient-info {
+            flex: 1;
+        }
+
+        .patient-info h3 {
+            font-size: 18px;
+            color: #000;
+            margin-bottom: 15px;
+        }
+
+        .patient-detail {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .patient-detail strong {
+            color: #000;
+        }
+
+        .edit-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #333;
+            padding: 5px;
+        }
+
+        .edit-btn:hover {
+            color: #000;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1100px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-left {
+            padding: 40px;
+            width: 40%;
+            background: white;
+            overflow-y: auto;
+        }
+
+        .modal-right {
+            width: 60%;
+            background: #c8c8c8;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #000;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .info-section h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        .info-item {
+            margin-bottom: 12px;
+            color: #333;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .info-item strong {
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .file-item {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+
+        .file-icon {
+            font-size: 32px;
+            color: #666;
+        }
+
+        .file-name {
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* Add Patient Form Modal */
+        .add-patient-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-patient-modal.active {
+            display: flex;
+        }
+
+        .add-patient-form {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 35px;
+            position: relative;
+        }
+
+        .form-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .form-close:hover {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #000;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .form-group label .required {
+            color: #ff6b6b;
+        }
+
+        .form-input {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: #4da6a6;
+        }
+
+        .form-textarea {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s;
+        }
+
+        .form-textarea:focus {
+            border-color: #4da6a6;
+        }
+
+        .browse-btn {
+            padding: 12px 20px;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            width: fit-content;
+            transition: all 0.3s;
+        }
+
+        .browse-btn:hover {
+            background: #e0e0e0;
+            border-color: #ccc;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .add-btn {
+            padding: 12px 40px;
+            background: #4da6a6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log In</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/Verification2.Css">
+</head> 
+<body>
+    <div class="outerbox">
+        <header class="logo" role="banner" aria-label="Company logo">
+            <p><img src="Images/Logo.png" alt="Company logo"> FIN.exe</p>
+        </header>
+
+        <main class="innerbox">
+            <aside class="image-box">
+            </aside>
+
+             <section class="verification-container" aria-labelledby="verification-heading">
+                <h2 id="verification-heading" class="verification-context">Verification</h2>
+                <p class="verification-text">We have emailed a 6-digit code to <b>Jograt.Balesteros@gmail.com</b></p>
+                <p class="verification-text">Enter the code below to confirm</b></p>
+
+                <!-- 6-digit verification code entry -->
+                <div class="verification-code-container" aria-hidden="false">
+                    <form id="code-form" action="/verify" method="post" autocomplete="off">
+                        <div class="code-inputs-box" role="group" aria-label="6 digit verification code">
+                            <input inputmode="numeric" pattern="[0-9]*" type="text" maxlength="1" class="code-input" name="d1" aria-label="digit 1">
+                            <input inputmode="numeric" pattern="[0-9]*" type="text" maxlength="1" class="code-input" name="d2" aria-label="digit 2">
+                            <input inputmode="numeric" pattern="[0-9]*" type="text" maxlength="1" class="code-input" name="d3" aria-label="digit 3">
+                            <input inputmode="numeric" pattern="[0-9]*" type="text" maxlength="1" class="code-input" name="d4" aria-label="digit 4">
+                            <input inputmode="numeric" pattern="[0-9]*" type="text" maxlength="1" class="code-input" name="d5" aria-label="digit 5">
+                            <input inputmode="numeric" pattern="[0-9]*" type="text" maxlength="1" class="code-input" name="d6" aria-label="digit 6">
+                        </div>
+                        <input type="hidden" name="code" id="code-hidden">
+
+                        <div class="code-actions">
+                            <p> Didn't receive a code?<a href="#" class="resend-link">Resend Code</a> </p>
+                            <button type="submit" class="verify">Verify</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
+        </main>
+
+    </div>
+</body>
+</html>
