@@ -93,7 +93,7 @@
             
             <h2 class="form-title">Add New Patient Record</h2>
             
-            <form id="patientForm">
+            <form id="patientForm" onsubmit="handleAddPatient(event)">
                 <div class="form-grid">
                     <div class="form-group full-width">
                         <label>Patient ID (Auto-Generated):</label>
@@ -161,7 +161,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="add-btn" onclick="handleAddPatient()">ADD</button>
+                    <button type="submit" class="add-btn">ADD</button>
                 </div>
             </form>
         </div>
