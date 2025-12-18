@@ -1,24 +1,117 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCxok6-e-GB8fdmSD8_Wpa-0_jYwK77eHk",
+  authDomain: "patientflow-26dc1.firebaseapp.com",
+  databaseURL: "https://patientflow-26dc1-default-rtdb.firebaseio.com",
+  projectId: "patientflow-26dc1",
+  storageBucket: "patientflow-26dc1.firebasestorage.app",
+  messagingSenderId: "124429931982",
+  appId: "1:124429931982:web:ef44ca54332b9fcca5079f"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
 // Schedule data storage
 let scheduleData = {};
 let currentWeekStart = null;
 let selectedDate = null;
+let currentUserData = null;
 
 // Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    const currentUser = sessionStorage.getItem('currentUser');
+    
+    if (!currentUser) {
+        window.location.href = 'LogIn.html';
+        return;
+    }
+
+    await loadUserData(currentUser);
+    initializeHeader();
     initializeDate();
-    loadScheduleData();
+    await loadScheduleData();
     renderCalendar();
     setupEventListeners();
 });
+
+// Initialize header with current date
+function initializeHeader() {
+    updateHeaderDate();
+    
+    // Add notification button click handler
+    const notifBtn = document.querySelector('.notif-btn');
+    if (notifBtn) {
+        notifBtn.addEventListener('click', () => {
+            window.location.href = 'Notif-Page.html';
+        });
+
+        // Keyboard support
+        notifBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.location.href = 'Notif-Page.html';
+            }
+        });
+    }
+}
+
+// Update header date display
+function updateHeaderDate() {
+    const dateElement = document.getElementById('current-date');
+    if (!dateElement) return;
+
+    const currentDate = new Date();
+    const options = { 
+        weekday: 'long',
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    };
+    
+    const formattedDate = currentDate.toLocaleDateString('en-US', options);
+    dateElement.textContent = formattedDate;
+}
+
+// Load user data
+async function loadUserData(username) {
+    try {
+        const userDataString = sessionStorage.getItem('userData');
+        
+        if (userDataString) {
+            currentUserData = JSON.parse(userDataString);
+            
+            // Update sidebar display
+            const displayName = document.getElementById('user-display-name');
+            const roleElement = document.getElementById('user-role');
+            const welcomeMessage = document.getElementById('welcome-message');
+            
+            if (displayName) {
+                displayName.textContent = `${currentUserData.firstName} ${currentUserData.lastName}`;
+            }
+            
+            if (roleElement) {
+                const role = currentUserData.role || 'User';
+                roleElement.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+            }
+
+            if (welcomeMessage) {
+                welcomeMessage.textContent = `Welcome, ${currentUserData.firstName} ${currentUserData.lastName}!`;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading user data:', error);
+    }
+}
 
 // Initialize current date
 function initializeDate() {
     const today = new Date();
     currentWeekStart = getStartOfWeek(today);
-    
-    // Display today's date in header
-    const todayDateElement = document.getElementById('todayDate');
-    todayDateElement.textContent = formatDate(today, 'MM-DD-YYYY');
 }
 
 // Get start of week (Sunday)
@@ -68,6 +161,8 @@ function isSameDay(date1, date2) {
 function renderCalendar() {
     const calendarGrid = document.getElementById('calendarGrid');
     const currentMonth = document.getElementById('currentMonth');
+    
+    if (!calendarGrid || !currentMonth) return;
     
     calendarGrid.innerHTML = '';
     
@@ -124,6 +219,14 @@ function createDayElement(date) {
         badge.className = `day-badge ${schedule.is_available ? 'badge-available' : 'badge-unavailable'}`;
         badge.textContent = schedule.is_available ? 'Available' : 'Unavailable';
         dayDiv.appendChild(badge);
+        
+        // Show time if available
+        if (schedule.is_available && schedule.start_time && schedule.end_time) {
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'day-time';
+            timeDiv.textContent = `${schedule.start_time} - ${schedule.end_time}`;
+            dayDiv.appendChild(timeDiv);
+        }
     }
     
     // Click handler
@@ -138,13 +241,21 @@ function selectDate(date) {
     const dateStr = formatDate(date, 'YYYY-MM-DD');
     const schedule = scheduleData[dateStr];
     
+    // Remove previous selection
+    document.querySelectorAll('.calendar-day').forEach(day => {
+        day.classList.remove('selected');
+    });
+    
+    // Add selection to clicked date
+    event.currentTarget.classList.add('selected');
+    
     // Show form
     document.getElementById('detailsContent').style.display = 'none';
     document.getElementById('detailsForm').style.display = 'block';
     
     // Update form title
     const formTitle = document.querySelector('.form-title');
-    formTitle.textContent = `Edits of schedule - ${formatDate(date, 'MM-DD-YYYY')}`;
+    formTitle.textContent = `Edit Schedule - ${formatDate(date, 'MM-DD-YYYY')}`;
     
     // Populate form
     if (schedule) {
@@ -177,35 +288,103 @@ function toggleTimeFields() {
 }
 
 // Save schedule
-function saveSchedule() {
-    if (!selectedDate) return;
+async function saveSchedule() {
+    if (!selectedDate || !currentUserData) return;
     
     const dateStr = formatDate(selectedDate, 'YYYY-MM-DD');
     const availability = document.getElementById('availability').value;
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
+    const notes = document.getElementById('notes').value;
+
+    // Validate times if available
+    if (availability === 'available') {
+        if (!startTime || !endTime) {
+            alert('Please enter both start and end times.');
+            return;
+        }
+        if (startTime >= endTime) {
+            alert('End time must be after start time.');
+            return;
+        }
+    }
     
-    scheduleData[dateStr] = {
+    const scheduleEntry = {
         is_available: availability === 'available',
-        start_time: document.getElementById('startTime').value,
-        end_time: document.getElementById('endTime').value,
-        notes: document.getElementById('notes').value
+        start_time: startTime,
+        end_time: endTime,
+        notes: notes,
+        updated_by: currentUserData.username,
+        updated_at: new Date().toISOString()
     };
+
+    scheduleData[dateStr] = scheduleEntry;
     
-    // Save to localStorage
-    saveScheduleData();
+    try {
+        // Save to Firebase
+        const username = currentUserData.username;
+        await set(ref(database, `schedules/${username}/${dateStr}`), scheduleEntry);
+        
+        // Save to localStorage as backup
+        saveScheduleDataLocal();
+        
+        // Create audit log
+        await createAuditLog(
+            availability === 'available' ? 'Updated Schedule' : 'Marked Unavailable',
+            'Schedule',
+            `Set ${dateStr} as ${availability} ${availability === 'available' ? `(${startTime} - ${endTime})` : ''}`
+        );
+        
+        // Re-render calendar
+        renderCalendar();
+        
+        // Show success message
+        alert('Schedule saved successfully!');
+        
+        // Reset view
+        cancelEdit();
+    } catch (error) {
+        console.error('Error saving schedule:', error);
+        alert('Failed to save schedule. Please try again.');
+    }
+}
+
+// Create audit log entry
+async function createAuditLog(action, entityType, details) {
+    if (!currentUserData) return;
     
-    // Re-render calendar
-    renderCalendar();
-    
-    // Show success message
-    alert('Schedule saved successfully!');
-    
-    // Reset view
-    cancelEdit();
+    try {
+        const logId = `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        const auditLog = {
+            timestamp: new Date().toISOString(),
+            user_name: `${currentUserData.firstName} ${currentUserData.lastName}`.trim(),
+            username: currentUserData.username,
+            user_role: currentUserData.role || 'user',
+            action: action,
+            entity_type: entityType,
+            entity_id: currentUserData.username,
+            details: details,
+            ip_address: 'N/A',
+            user_agent: navigator.userAgent || 'Unknown'
+        };
+
+        await set(ref(database, `audit_logs/${logId}`), auditLog);
+        console.log('✅ Audit log created:', auditLog);
+    } catch (error) {
+        console.error('❌ Error creating audit log:', error);
+    }
 }
 
 // Cancel edit
 function cancelEdit() {
     selectedDate = null;
+    
+    // Remove selection from calendar
+    document.querySelectorAll('.calendar-day').forEach(day => {
+        day.classList.remove('selected');
+    });
+    
     document.getElementById('detailsForm').style.display = 'none';
     document.getElementById('detailsContent').style.display = 'block';
 }
@@ -228,69 +407,69 @@ function goToToday() {
     renderCalendar();
 }
 
-// Load schedule data from localStorage
-function loadScheduleData() {
+// Load schedule data from Firebase
+async function loadScheduleData() {
+    if (!currentUserData) return;
+    
+    try {
+        const username = currentUserData.username;
+        const scheduleRef = ref(database, `schedules/${username}`);
+        const snapshot = await get(scheduleRef);
+        
+        if (snapshot.exists()) {
+            scheduleData = snapshot.val();
+            console.log('✅ Schedule data loaded from Firebase');
+        } else {
+            // Try loading from localStorage as fallback
+            loadScheduleDataLocal();
+        }
+    } catch (error) {
+        console.error('Error loading schedule from Firebase:', error);
+        // Fallback to localStorage
+        loadScheduleDataLocal();
+    }
+}
+
+// Load schedule data from localStorage (fallback)
+function loadScheduleDataLocal() {
     const stored = localStorage.getItem('doctorSchedule');
     if (stored) {
         try {
             scheduleData = JSON.parse(stored);
+            console.log('✅ Schedule data loaded from localStorage');
         } catch (e) {
-            console.error('Error loading schedule data:', e);
+            console.error('Error loading schedule data from localStorage:', e);
             scheduleData = {};
         }
     }
 }
 
-// Save schedule data to localStorage
-function saveScheduleData() {
+// Save schedule data to localStorage (backup)
+function saveScheduleDataLocal() {
     localStorage.setItem('doctorSchedule', JSON.stringify(scheduleData));
 }
 
 // Setup event listeners
 function setupEventListeners() {
     // Calendar navigation
-    document.getElementById('prevWeek').addEventListener('click', previousWeek);
-    document.getElementById('nextWeek').addEventListener('click', nextWeek);
-    document.getElementById('todayBtn').addEventListener('click', goToToday);
+    const prevWeekBtn = document.getElementById('prevWeek');
+    const nextWeekBtn = document.getElementById('nextWeek');
+    const todayBtn = document.getElementById('todayBtn');
+    
+    if (prevWeekBtn) prevWeekBtn.addEventListener('click', previousWeek);
+    if (nextWeekBtn) nextWeekBtn.addEventListener('click', nextWeek);
+    if (todayBtn) todayBtn.addEventListener('click', goToToday);
     
     // Form actions
-    document.getElementById('saveBtn').addEventListener('click', saveSchedule);
-    document.getElementById('cancelBtn').addEventListener('click', cancelEdit);
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    
+    if (saveBtn) saveBtn.addEventListener('click', saveSchedule);
+    if (cancelBtn) cancelBtn.addEventListener('click', cancelEdit);
     
     // Availability change
-    document.getElementById('availability').addEventListener('change', toggleTimeFields);
-}
-
-// Sample data for demonstration (optional)
-function loadSampleData() {
-    const today = new Date();
-    
-    // Add some sample schedules
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() + i);
-        const dateStr = formatDate(date, 'YYYY-MM-DD');
-        
-        if (i === 2 || i === 5) {
-            // Make some days unavailable
-            scheduleData[dateStr] = {
-                is_available: false,
-                start_time: '09:00',
-                end_time: '17:00',
-                notes: 'Day off'
-            };
-        } else {
-            scheduleData[dateStr] = {
-                is_available: true,
-                start_time: '09:00',
-                end_time: '17:00',
-                notes: ''
-            };
-        }
+    const availabilitySelect = document.getElementById('availability');
+    if (availabilitySelect) {
+        availabilitySelect.addEventListener('change', toggleTimeFields);
     }
-    
-    saveScheduleData();
 }
-
-// Uncomment the line below to load sample data on first run
-// if (Object.keys(scheduleData).length === 0) loadSampleData();

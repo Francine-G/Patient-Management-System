@@ -58,17 +58,21 @@
             <!-- Main Content -->
             <main class="main-content">
                 <!-- Header -->
-                <header class="page-header">
+               <div class="header">
                     <div class="header-left">
-                        <h1>Doctor Schedule</h1>
-                        <p class="header-subtitle">Manage your weekly availability and clinic hours</p>
+                        <h1>Schedule</h1>
+                        <p id="welcome-message">Manage your weekly availability and clinic hours</p>
                     </div>
                     <div class="header-right">
-                        <span class="today-label">Today's Date</span>
-                        <span class="today-date" id="todayDate">mm-dd-yyyy</span>
-                        <div class="today-indicator"></div>
+                        <div class="date-badge">
+                            <strong id="current-date">Loading...</strong>
+                        </div>
+                        <button class="notif-btn" aria-label="Notifications">
+                            <span class="notif-icon">🔔</span>
+                            <span class="notif-dot" aria-hidden="true"></span>
+                        </button>
                     </div>
-                </header>
+                </div>
 
                 <!-- Content Grid -->
                 <div class="content-grid">
@@ -147,7 +151,8 @@
             </main>
         </div>
 
-        <script src="assets/js/schedule.js"></script>
+        <script type="module" src="assets/js/schedule.js"></script>
+
         <script src="assets/js/navigation.js"></script>
     </body>
 </html>

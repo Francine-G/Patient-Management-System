@@ -1,4 +1,80 @@
-// Consolidated navigation and header helpers
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, get, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCxok6-e-GB8fdmSD8_Wpa-0_jYwK77eHk",
+  authDomain: "patientflow-26dc1.firebaseapp.com",
+  databaseURL: "https://patientflow-26dc1-default-rtdb.firebaseio.com",
+  projectId: "patientflow-26dc1",
+  storageBucket: "patientflow-26dc1.firebasestorage.app",
+  messagingSenderId: "124429931982",
+  appId: "1:124429931982:web:ef44ca54332b9fcca5079f"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+// Global state
+let allLogs = [];
+let filteredLogs = [];
+let currentPage = 1;
+const itemsPerPage = 20;
+
+// Check authentication and load user data
+document.addEventListener('DOMContentLoaded', async function() {
+    const currentUser = sessionStorage.getItem('currentUser');
+    
+    if (!currentUser) {
+        window.location.href = 'LogIn.html';
+        return;
+    }
+
+    await loadUserData(currentUser);
+    await loadAuditLogs();
+    initializeFilters();
+    initializePagination();
+});
+
+
+// Load user data
+async function loadUserData(username) {
+    try {
+        const userDataString = sessionStorage.getItem('userData');
+        
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            
+            // Update sidebar display
+            const displayName = document.getElementById('user-display-name');
+            const roleElement = document.getElementById('user-role');
+            
+            if (displayName) {
+                displayName.textContent = `${userData.firstName} ${userData.lastName}`;
+            }
+            
+            if (roleElement) {
+                const role = userData.role || 'Admin';
+                roleElement.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+            }
+        }
+    } catch (error) {
+        console.error('Error loading user data:', error);
+    }
+
+    // Logout handler
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            sessionStorage.clear();
+            alert('You have been logged out successfully.');
+            window.location.href = 'LogIn.html';
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const body = document.body;
     const currentPage = window.location.pathname.split('/').pop();

@@ -1,4 +1,3 @@
-// settings.js - Settings page functionality with Firebase integration
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, get, set, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
@@ -31,10 +30,41 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     await loadUserData(currentUser);
+    initializeHeader();
     initializeTabs();
     initializeModals();
     initializeForms();
 });
+
+// Initialize header with current date
+function initializeHeader() {
+    updateHeaderDate();
+    
+    // Add notification button click handler
+    const notifBtn = document.querySelector('.notif-btn');
+    if (notifBtn) {
+        notifBtn.addEventListener('click', () => {
+            window.location.href = 'Notif-Page.html';
+        });
+    }
+}
+
+// Update header date display
+function updateHeaderDate() {
+    const dateElement = document.getElementById('current-date');
+    if (!dateElement) return;
+
+    const currentDate = new Date();
+    const options = { 
+        weekday: 'long',
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    };
+    
+    const formattedDate = currentDate.toLocaleDateString('en-US', options);
+    dateElement.textContent = formattedDate;
+}
 
 // Load user data from Firebase
 async function loadUserData(username) {
@@ -63,7 +93,7 @@ async function loadUserData(username) {
             // Update UI with user data
             updateUserDisplay();
             
-            // FIXED: Control Personnel tab visibility based on role
+            // Control Personnel tab visibility based on role
             const personnelTab = document.getElementById('personnel-tab');
             console.log('🔍 Personnel tab element found:', !!personnelTab);
             
@@ -144,6 +174,7 @@ function updateUserDisplay() {
     // Security tab
     const accountCreated = document.getElementById('account-created');
     const lastLogin = document.getElementById('last-login');
+    const passwordLastChanged = document.getElementById('password-last-changed');
 
     if (accountCreated && currentUserData.createdAt) {
         const createdDate = new Date(currentUserData.createdAt);
@@ -167,6 +198,17 @@ function updateUserDisplay() {
         });
     } else if (lastLogin) {
         lastLogin.textContent = 'Not available';
+    }
+
+    if (passwordLastChanged && currentUserData.passwordLastChanged) {
+        const pwdDate = new Date(currentUserData.passwordLastChanged);
+        passwordLastChanged.textContent = `Last changed: ${pwdDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        })}`;
+    } else if (passwordLastChanged) {
+        passwordLastChanged.textContent = 'Last changed: Never';
     }
 }
 
@@ -197,34 +239,68 @@ function initializeTabs() {
 
 // Initialize modals
 function initializeModals() {
+    // Add Personnel Modal
     const addPersonnelBtn = document.getElementById('add-personnel-btn');
-    const modal = document.getElementById('add-personnel-modal');
+    const addPersonnelModal = document.getElementById('add-personnel-modal');
     const closeModal = document.getElementById('close-modal');
     const cancelModal = document.getElementById('cancel-modal');
 
     if (addPersonnelBtn) {
         addPersonnelBtn.addEventListener('click', () => {
-            modal.classList.add('active');
+            addPersonnelModal.classList.add('active');
         });
     }
 
     if (closeModal) {
         closeModal.addEventListener('click', () => {
-            modal.classList.remove('active');
+            addPersonnelModal.classList.remove('active');
         });
     }
 
     if (cancelModal) {
         cancelModal.addEventListener('click', () => {
-            modal.classList.remove('active');
+            addPersonnelModal.classList.remove('active');
         });
     }
 
     // Close modal when clicking outside
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
+    if (addPersonnelModal) {
+        addPersonnelModal.addEventListener('click', (e) => {
+            if (e.target === addPersonnelModal) {
+                addPersonnelModal.classList.remove('active');
+            }
+        });
+    }
+
+    // Change Password Modal
+    const changePasswordBtn = document.getElementById('change-password-btn');
+    const changePasswordModal = document.getElementById('change-password-modal');
+    const closePasswordModal = document.getElementById('close-password-modal');
+    const cancelPasswordModal = document.getElementById('cancel-password-modal');
+
+    if (changePasswordBtn) {
+        changePasswordBtn.addEventListener('click', () => {
+            changePasswordModal.classList.add('active');
+        });
+    }
+
+    if (closePasswordModal) {
+        closePasswordModal.addEventListener('click', () => {
+            changePasswordModal.classList.remove('active');
+        });
+    }
+
+    if (cancelPasswordModal) {
+        cancelPasswordModal.addEventListener('click', () => {
+            changePasswordModal.classList.remove('active');
+        });
+    }
+
+    // Close modal when clicking outside
+    if (changePasswordModal) {
+        changePasswordModal.addEventListener('click', (e) => {
+            if (e.target === changePasswordModal) {
+                changePasswordModal.classList.remove('active');
             }
         });
     }
@@ -244,12 +320,13 @@ function initializeForms() {
         addPersonnelForm.addEventListener('submit', handleAddPersonnel);
     }
 
-    // Security buttons
-    const changePasswordBtn = document.getElementById('change-password-btn');
-    if (changePasswordBtn) {
-        changePasswordBtn.addEventListener('click', handleChangePassword);
+    // Change password form
+    const changePasswordForm = document.getElementById('change-password-form');
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', handleChangePassword);
     }
 
+    // Logout all button
     const logoutAllBtn = document.getElementById('logout-all-btn');
     if (logoutAllBtn) {
         logoutAllBtn.addEventListener('click', handleLogoutAll);
@@ -428,8 +505,74 @@ window.deletePersonnel = async function(personnelId) {
 };
 
 // Handle change password
-function handleChangePassword() {
-    alert('Password change functionality will be implemented soon. Please contact system administrator for assistance.');
+async function handleChangePassword(e) {
+    e.preventDefault();
+
+    const currentPassword = document.getElementById('current-password').value;
+    const newPassword = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    // Validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        alert('Please fill in all fields.');
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        alert('New password must be at least 6 characters long.');
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        alert('New password and confirmation do not match.');
+        return;
+    }
+
+    if (currentPassword === newPassword) {
+        alert('New password must be different from current password.');
+        return;
+    }
+
+    try {
+        const username = currentUserData.username;
+        
+        // Verify current password
+        const userRef = ref(database, `users/${username}`);
+        const snapshot = await get(userRef);
+        
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            
+            if (userData.password !== currentPassword) {
+                alert('Current password is incorrect.');
+                return;
+            }
+
+            // Update password
+            const updates = {
+                password: newPassword,
+                passwordLastChanged: new Date().toISOString()
+            };
+
+            await update(ref(database, `users/${username}`), updates);
+
+            // Update current user data
+            currentUserData.password = newPassword;
+            currentUserData.passwordLastChanged = updates.passwordLastChanged;
+
+            // Update UI
+            updateUserDisplay();
+
+            // Close modal and reset form
+            document.getElementById('change-password-modal').classList.remove('active');
+            document.getElementById('change-password-form').reset();
+
+            alert('Password changed successfully!');
+        }
+    } catch (error) {
+        console.error('Error changing password:', error);
+        alert('Failed to change password. Please try again.');
+    }
 }
 
 // Handle logout from all devices
