@@ -83,8 +83,9 @@ window.openPatientModal = function(patient) {
 };
 
 // --- 4. Updated Function to Add New Patient with Sequential IDs ---
+// --- Updated Function to Add Patient AND Audit Log ---
+// --- Updated Function to Add Patient AND Audit Log using Session Data ---
 window.handleAddPatient = async (event) => {
-    // 1. Stop the form from reloading the page
     if (event) event.preventDefault();
 
     const nameInput = document.getElementById('newPatientName');
@@ -94,29 +95,39 @@ window.handleAddPatient = async (event) => {
     }
 
     try {
+        // 1. Determine Sequential IDs for both Patient and Audit
         const patientsRef = ref(database, 'patients');
-        const snapshot = await get(patientsRef);
-        let nextIndex = 1;
+        const auditsRef = ref(database, 'audits');
+        
+        const [patientSnap, auditSnap] = await Promise.all([
+            get(patientsRef),
+            get(auditsRef)
+        ]);
 
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            const keys = Object.keys(data);
-            
-            // Filter for IDs following the p_ format and find the highest number
-            const indices = keys
-                .filter(key => key.startsWith('p_'))
-                .map(key => parseInt(key.split('_')[1]))
-                .filter(num => !isNaN(num));
-
-            if (indices.length > 0) {
-                nextIndex = Math.max(...indices) + 1;
-            } else {
-                nextIndex = keys.length + 1;
-            }
+        // Sequential Patient ID Logic (p_1, p_2...)
+        let nextPatientIdx = 1;
+        if (patientSnap.exists()) {
+            const pKeys = Object.keys(patientSnap.val());
+            const pIndices = pKeys.filter(k => k.startsWith('p_')).map(k => parseInt(k.split('_')[1]));
+            nextPatientIdx = pIndices.length > 0 ? Math.max(...pIndices) + 1 : pKeys.length + 1;
         }
+        const newPatientId = `p_${nextPatientIdx}`;
 
-        const newId = `p_${nextIndex}`;
+        // Sequential Audit ID Logic (a_1, a_2...)
+        let nextAuditIdx = 1;
+        if (auditSnap.exists()) {
+            const aKeys = Object.keys(auditSnap.val());
+            const aIndices = aKeys.filter(k => k.startsWith('a_')).map(k => parseInt(k.split('_')[1]));
+            nextAuditIdx = aIndices.length > 0 ? Math.max(...aIndices) + 1 : aKeys.length + 1;
+        }
+        const newAuditId = `a_${nextAuditIdx}`;
 
+        // 2. Retrieve User and Role from Session Storage
+        // Fallback to 'Unknown' if session data isn't set yet
+        const activeUser = sessionStorage.getItem('username') || 'dr_francine'; 
+        const activeRole = sessionStorage.getItem('role') || 'Doctor';
+
+        // 3. Prepare Data Objects
         const newPatient = {
             name: nameInput.value,
             birthDate: document.getElementById('newDOB').value,
@@ -133,25 +144,32 @@ window.handleAddPatient = async (event) => {
             lastCheck: "Initial Registration"
         };
 
-        // Use the sequential ID as the database path instead of push()
-        await set(ref(database, `patients/${newId}`), newPatient);
+        const newAudit = {
+            action: "Add Patient",
+            details: `Added patient: ${newPatientId} (${newPatient.name})`,
+            entity: newPatientId,
+            role: activeRole,
+            timestamp: new Date().toLocaleString(),
+            user: activeUser
+        };
 
-        alert(`Patient record added successfully as ${newId}!`);
+        // 4. Atomic Write to Firebase
+        await Promise.all([
+            set(ref(database, `patients/${newPatientId}`), newPatient),
+            set(ref(database, `audits/${newAuditId}`), newAudit)
+        ]);
+
+        alert(`Record saved! Patient: ${newPatientId}, Audit: ${newAuditId}`);
         
-        // Reset and close
+        // Reset UI
         const form = document.getElementById('patientForm');
         if (form) form.reset();
-
-        if (window.closeAddPatientModal) {
-            window.closeAddPatientModal();
-        }
-
-        // Refresh the list immediately
+        if (window.closeAddPatientModal) window.closeAddPatientModal();
         loadPatients(); 
-        
+
     } catch (error) {
-        console.error("Firebase Save Error:", error);
-        alert('Failed to save to database. Check console (F12).');
+        console.error("Critical Save Error:", error);
+        alert('Failed to save. Check database connection.');
     }
 };
 // Initialize the loading process
