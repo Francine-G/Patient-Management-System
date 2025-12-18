@@ -228,7 +228,7 @@ function initializeQueueLogic() {
                     name: pName,
                     age: pAge,
                     note: pNotes,
-                    type: "walk-in",
+                    type: "appt",
                     timestamp: new Date().toISOString()
                 };
 
