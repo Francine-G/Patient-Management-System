@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="assets/css/Dashboard-style.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/Audit-style.css">
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
@@ -11,7 +11,9 @@
         <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-solid.css" rel="stylesheet">
 
         <title>Audit-Logs</title>
-        
+
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
     </head>
 
     <body>
@@ -33,11 +35,11 @@
                         <div class="user-info">
                             <div class="row">
                                 <img src="assets/images/user-profile.png" alt="User Profile">
-                            <div class="column">
-                                <h3>User Name</h3>  
-                                <p>Doctor</p> 
-                            </div>  
-                        </div>
+                                <div class="column">
+                                    <h3 id="user-display-name">User Name</h3>  
+                                    <p id="user-role">Admin</p> 
+                                </div>  
+                            </div>
                         </div>
                     </div>
                     <br>
@@ -54,8 +56,168 @@
                     </nav>
                 </div>
             </aside>
+
+            <main class="main-content">
+                <div class="audit-container">
+                    <!-- Header -->
+                    <div class="audit-header">
+                        <h1>Audit Logs</h1>
+                        <p>Track all system activities and user actions</p>
+                    </div>
+
+                    <!-- Filters Card -->
+                    <div class="card filters-card">
+                        <div class="filters-container">
+                            <div class="search-box">
+                                <i class="fi fi-rr-search"></i>
+                                <input 
+                                    type="text" 
+                                    id="search-input" 
+                                    placeholder="Search by user, action, or entity..."
+                                    autocomplete="off"
+                                >
+                            </div>
+                            <div class="filter-select">
+                                <i class="fi fi-rr-filter"></i>
+                                <select id="entity-filter">
+                                    <option value="all">All Entities</option>
+                                    <option value="Patient">Patients</option>
+                                    <option value="Appointment">Appointments</option>
+                                    <option value="Queue">Queue</option>
+                                    <option value="Schedule">Schedule</option>
+                                    <option value="Personnel">Personnel</option>
+                                    <option value="Settings">Settings</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon total">
+                                <i class="fi fi-rr-document"></i>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-label">Total Actions</p>
+                                <p class="stat-value" id="total-actions">0</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon created">
+                                <i class="fi fi-rr-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-label">Created</p>
+                                <p class="stat-value" id="created-count">0</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon updated">
+                                <i class="fi fi-rr-edit"></i>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-label">Updated</p>
+                                <p class="stat-value" id="updated-count">0</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon deleted">
+                                <i class="fi fi-rr-trash"></i>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-label">Deleted</p>
+                                <p class="stat-value" id="deleted-count">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logs Table -->
+                    <div class="card table-card">
+                        <div class="table-container">
+                            <table id="audit-table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="th-content">
+                                                <i class="fi fi-rr-calendar"></i>
+                                                Timestamp
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="th-content">
+                                                <i class="fi fi-rr-user"></i>
+                                                User
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="th-content">
+                                                <i class="fi fi-rr-shield-check"></i>
+                                                Role
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="th-content">
+                                                <i class="fi fi-rr-bolt"></i>
+                                                Action
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="th-content">
+                                                <i class="fi fi-rr-apps"></i>
+                                                Entity Type
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="th-content">
+                                                <i class="fi fi-rr-info"></i>
+                                                Details
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-table-body">
+                                    <!-- Rows will be dynamically added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div class="empty-state" id="empty-state">
+                            <i class="fi fi-rr-search-alt"></i>
+                            <p>No audit logs found</p>
+                            <span>Try adjusting your search or filter criteria</span>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div class="loading-state" id="loading-state">
+                            <div class="loader"></div>
+                            <p>Loading audit logs...</p>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination">
+                        <button class="pagination-btn" id="prev-btn" disabled>
+                            <i class="fi fi-rr-angle-left"></i>
+                            Previous
+                        </button>
+                        <div class="pagination-info">
+                            <span>Page <strong id="current-page">1</strong> of <strong id="total-pages">1</strong></span>
+                        </div>
+                        <button class="pagination-btn" id="next-btn">
+                            Next
+                            <i class="fi fi-rr-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
         </div>
         
+        <script type="module" src="assets/js/audit-log.js"></script>
         <script src="assets/js/navigation.js"></script>
     </body>
 </html>
