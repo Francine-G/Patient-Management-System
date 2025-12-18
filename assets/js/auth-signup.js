@@ -224,7 +224,7 @@ document.querySelector('form').addEventListener('submit', async (e) => {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      password: password, // In production, hash this password!
+      password: password, 
       verificationCode: verificationCode,
       createdAt: new Date().toISOString(),
       verified: false
@@ -258,8 +258,7 @@ document.querySelector('form').addEventListener('submit', async (e) => {
       console.error('Email sending failed');
       showMessage('Failed to send verification email. Please try again or contact support.', 'error');
       
-      // Don't clean up pending user data - they can try to resend from verification page
-      // Just redirect them to verification page anyway
+    
       showMessage('You can try resending the code from the verification page...', 'info');
       
       sessionStorage.setItem('pendingUsername', username);

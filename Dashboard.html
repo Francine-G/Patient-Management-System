@@ -11,6 +11,9 @@
         <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-solid.css" rel="stylesheet">
 
         <title>Dashboard</title>
+
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
         
     </head>
 
@@ -33,11 +36,11 @@
                         <div class="user-info">
                             <div class="row">
                                 <img src="assets/images/user-profile.png" alt="User Profile">
-                            <div class="column">
-                                <h3>User Name</h3>  
-                                <p>Doctor</p> 
-                            </div>  
-                        </div>
+                                <div class="column">
+                                    <h3 id="user-display-name">User Name</h3>  
+                                    <p id="user-role">Admin</p> 
+                                </div>  
+                            </div>
                         </div>
                     </div>
                     <br>
@@ -58,191 +61,156 @@
         </div>
 
         <div class="main-content">
-        <div class="header">
-            <div class="header-left">
-                <h1>Dashboard</h1>
-                <p>Welcome, Jane Doe!</p>
-            </div>
-            <div class="header-right">
-                <div class="date-badge">
-                    <strong>Today's Date<br>Nov 24, 2025</strong>
-                    <span>🌙</span>
+            <div class="header">
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <p id="welcome-message">Welcome back!</p>
                 </div>
-                <button class="notif-btn" aria-label="Notifications">
-                    <span class="notif-icon">🔔</span>
-                    <span class="notif-dot" aria-hidden="true"></span>
-                </button>
-            </div>
-        </div>
-
-        <div class="dashboard-grid">
-            <div class="card stat-card">
-                <div>
-                    <h3>Total Patients</h3>
-                    <div class="stat-value">3</div>
-                    <div class="stat-change">+12% vs last week</div>
+                <div class="header-right">
+                    <div class="date-badge">
+                        <strong id="current-date">Loading...</strong>
+                    </div>
+                    <button class="notif-btn" aria-label="Notifications">
+                        <span class="notif-icon">🔔</span>
+                        <span class="notif-dot" aria-hidden="true"></span>
+                    </button>
                 </div>
-                <div class="stat-icon">👥</div>
             </div>
 
-            <div class="card stat-card">
-                <div>
-                    <h3>Current Queue</h3>
-                    <div class="stat-value">0</div>
+            <div class="dashboard-grid">
+                <div class="card stat-card">
+                    <div>
+                        <h3>Total Patients</h3>
+                        <div class="stat-value">3</div>
+                        <div class="stat-change">+12% vs last week</div>
+                    </div>
+                    <div class="stat-icon">👥</div>
                 </div>
-                <div class="stat-icon">🕐</div>
-            </div>
-        </div>
 
-        <div class="bottom-grid">
-            <div class="card">
-                <h3>Queue Overview</h3>
-                <div class="queue-list">
-                    <div class="queue-item">
-                        <div class="queue-info">
-                            <h4>Rosa Garcia</h4>
-                            <p class="date">📅 Last visit: August 17, 2025</p>
-                            <p>Regular Checkup</p>
+                <div class="card stat-card">
+                    <div>
+                        <h3>Current Queue</h3>
+                        <div class="stat-value">0</div>
+                    </div>
+                    <div class="stat-icon">🕐</div>
+                </div>
+            </div>
+
+            <div class="bottom-grid">
+                <div class="card">
+                    <h3>Queue Overview</h3>
+                    <div class="queue-list">
+                        <div class="queue-item">
+                            <div class="queue-info">
+                                <h4>Rosa Garcia</h4>
+                                <p class="date">📅 Last visit: August 17, 2025</p>
+                                <p>Regular Checkup</p>
+                            </div>
+                            <div class="queue-badge">QU-001</div>
                         </div>
-                        <div class="queue-badge">QU-001</div>
-                    </div>
-                    <div class="queue-item">
-                        <div class="queue-info">
-                            <h4>Edward Reynolds</h4>
-                            <p class="date">📅 Last visit: June 3, 2025</p>
-                            <p>Follow-up Appointment</p>
+                        <div class="queue-item">
+                            <div class="queue-info">
+                                <h4>Edward Reynolds</h4>
+                                <p class="date">📅 Last visit: June 3, 2025</p>
+                                <p>Follow-up Appointment</p>
+                            </div>
+                            <div class="queue-badge">QU-002</div>
                         </div>
-                        <div class="queue-badge">QU-002</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Calendar</h3>
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <button id="prev-month" aria-label="Previous month">‹</button>
+                            <span class="calendar-month" id="calendar-month">MONTH YEAR</span>
+                            <button id="next-month" aria-label="Next month">›</button>
+                        </div>
+                        <div class="calendar-days">
+                            <div class="calendar-day-name">Sun</div>
+                            <div class="calendar-day-name">Mon</div>
+                            <div class="calendar-day-name">Tue</div>
+                            <div class="calendar-day-name">Wed</div>
+                            <div class="calendar-day-name">Thu</div>
+                            <div class="calendar-day-name">Fri</div>
+                            <div class="calendar-day-name">Sat</div>
+                        </div>
+                        <div class="calendar-dates" id="calendar-dates">
+                            <!-- Calendar dates will be dynamically generated here -->
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h3>Calendar</h3>
-                <div class="calendar">
-                    <div class="calendar-header">
-                        <button>‹</button>
-                        <span class="calendar-month">📅 OCT 2025</span>
-                        <button>›</button>
+            <div class="card" style="margin-top: 20px;">
+                <h3>Patient Count</h3>
+                <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Walk-in vs Appointment</p>
+                <div class="chart-container">
+                    <div class="chart-day">
+                        <div class="chart-bars">
+                            <div class="chart-bar walkin" style="height: 55px;"></div>
+                            <div class="chart-bar appointment" style="height: 40px;"></div>
+                        </div>
+                        <div class="chart-day-label">Mon</div>
                     </div>
-                    <div class="calendar-days">
-                        <div class="calendar-day-name">Sun</div>
-                        <div class="calendar-day-name">Mon</div>
-                        <div class="calendar-day-name">Tue</div>
-                        <div class="calendar-day-name">Wed</div>
-                        <div class="calendar-day-name">Thu</div>
-                        <div class="calendar-day-name">Fri</div>
-                        <div class="calendar-day-name">Sat</div>
-                        
-                        <div class="calendar-date other-month">29</div>
-                        <div class="calendar-date other-month">30</div>
-                        <div class="calendar-date">1</div>
-                        <div class="calendar-date">2</div>
-                        <div class="calendar-date">3</div>
-                        <div class="calendar-date">4</div>
-                        <div class="calendar-date">5</div>
-                        
-                        <div class="calendar-date red">6</div>
-                        <div class="calendar-date">7</div>
-                        <div class="calendar-date today">8</div>
-                        <div class="calendar-date">9</div>
-                        <div class="calendar-date">10</div>
-                        <div class="calendar-date">11</div>
-                        <div class="calendar-date">12</div>
-                        
-                        <div class="calendar-date red">13</div>
-                        <div class="calendar-date">14</div>
-                        <div class="calendar-date">15</div>
-                        <div class="calendar-date">16</div>
-                        <div class="calendar-date">17</div>
-                        <div class="calendar-date">18</div>
-                        <div class="calendar-date">19</div>
-                        
-                        <div class="calendar-date red">20</div>
-                        <div class="calendar-date">21</div>
-                        <div class="calendar-date">22</div>
-                        <div class="calendar-date">23</div>
-                        <div class="calendar-date">24</div>
-                        <div class="calendar-date">25</div>
-                        <div class="calendar-date">26</div>
-                        
-                        <div class="calendar-date red">27</div>
-                        <div class="calendar-date">28</div>
-                        <div class="calendar-date">29</div>
-                        <div class="calendar-date">30</div>
-                        <div class="calendar-date">31</div>
-                        <div class="calendar-date other-month">1</div>
-                        <div class="calendar-date other-month">2</div>
+                    <div class="chart-day">
+                        <div class="chart-bars">
+                            <div class="chart-bar walkin" style="height: 75px;"></div>
+                            <div class="chart-bar appointment" style="height: 42px;"></div>
+                        </div>
+                        <div class="chart-day-label">Tue</div>
+                    </div>
+                    <div class="chart-day">
+                        <div class="chart-bars">
+                            <div class="chart-bar walkin" style="height: 42px;"></div>
+                            <div class="chart-bar appointment" style="height: 40px;"></div>
+                        </div>
+                        <div class="chart-day-label">Wed</div>
+                    </div>
+                    <div class="chart-day">
+                        <div class="chart-bars">
+                            <div class="chart-bar walkin" style="height: 45px;"></div>
+                            <div class="chart-bar appointment" style="height: 43px;"></div>
+                        </div>
+                        <div class="chart-day-label">Thu</div>
+                    </div>
+                    <div class="chart-day">
+                        <div class="chart-bars">
+                            <div class="chart-bar walkin" style="height: 100px;"></div>
+                            <div class="chart-bar appointment" style="height: 75px;"></div>
+                        </div>
+                        <div class="chart-day-label">Fri</div>
+                    </div>
+                    <div class="chart-day">
+                        <div class="chart-bars">
+                            <div class="chart-bar walkin" style="height: 50px;"></div>
+                            <div class="chart-bar appointment" style="height: 28px;"></div>
+                        </div>
+                        <div class="chart-day-label">Sat</div>
+                    </div>
+                    <div class="chart-day">
+                        <div class="chart-bars">
+                            <div class="chart-bar walkin" style="height: 25px;"></div>
+                            <div class="chart-bar appointment" style="height: 18px;"></div>
+                        </div>
+                        <div class="chart-day-label">Sun</div>
+                    </div>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4dd0d0;"></div>
+                        <span>Walk-in</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #6b8aff;"></div>
+                        <span>Appointment</span>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="card" style="margin-top: 20px;">
-            <h3>Patient Count</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Walk-in vs Appointment</p>
-            <div class="chart-container">
-                <div class="chart-day">
-                    <div class="chart-bars">
-                        <div class="chart-bar walkin" style="height: 55px;"></div>
-                        <div class="chart-bar appointment" style="height: 40px;"></div>
-                    </div>
-                    <div class="chart-day-label">Mon</div>
-                </div>
-                <div class="chart-day">
-                    <div class="chart-bars">
-                        <div class="chart-bar walkin" style="height: 75px;"></div>
-                        <div class="chart-bar appointment" style="height: 42px;"></div>
-                    </div>
-                    <div class="chart-day-label">Tue</div>
-                </div>
-                <div class="chart-day">
-                    <div class="chart-bars">
-                        <div class="chart-bar walkin" style="height: 42px;"></div>
-                        <div class="chart-bar appointment" style="height: 40px;"></div>
-                    </div>
-                    <div class="chart-day-label">Wed</div>
-                </div>
-                <div class="chart-day">
-                    <div class="chart-bars">
-                        <div class="chart-bar walkin" style="height: 45px;"></div>
-                        <div class="chart-bar appointment" style="height: 43px;"></div>
-                    </div>
-                    <div class="chart-day-label">Thu</div>
-                </div>
-                <div class="chart-day">
-                    <div class="chart-bars">
-                        <div class="chart-bar walkin" style="height: 100px;"></div>
-                        <div class="chart-bar appointment" style="height: 75px;"></div>
-                    </div>
-                    <div class="chart-day-label">Fri</div>
-                </div>
-                <div class="chart-day">
-                    <div class="chart-bars">
-                        <div class="chart-bar walkin" style="height: 50px;"></div>
-                        <div class="chart-bar appointment" style="height: 28px;"></div>
-                    </div>
-                    <div class="chart-day-label">Sat</div>
-                </div>
-                <div class="chart-day">
-                    <div class="chart-bars">
-                        <div class="chart-bar walkin" style="height: 25px;"></div>
-                        <div class="chart-bar appointment" style="height: 18px;"></div>
-                    </div>
-                    <div class="chart-day-label">Sun</div>
-                </div>
-            </div>
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #4dd0d0;"></div>
-                    <span>Walk-in</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #6b8aff;"></div>
-                    <span>Appointment</span>
-                </div>
-            </div>
         
+        <script type="module" src="assets/js/dashboard.js"></script>
         <script src="assets/js/navigation.js"></script>
     </body>
 </html>
