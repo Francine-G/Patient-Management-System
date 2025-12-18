@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -6,16 +7,17 @@
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
-        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-regular.css" rel="stylesheet">
-        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-bold.css" rel="stylesheet">
-        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-solid.css" rel="stylesheet">
+        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-regular.css">
+        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-bold.css">
+        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-solid.css">
 
-        <title>Patient</title>
-        
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+
+        <title>Queue Management</title>
     </head>
 
     <body>
-        
         <div class="container">
             <aside>
                 <div class="sidebar">
@@ -33,11 +35,11 @@
                         <div class="user-info">
                             <div class="row">
                                 <img src="assets/images/user-profile.png" alt="User Profile">
-                            <div class="column">
-                                <h3>User Name</h3>  
-                                <p>Doctor</p> 
-                            </div>  
-                        </div>
+                                <div class="column">
+                                    <h3 id="user-display-name">User Name</h3>  
+                                    <p id="user-role">Admin</p> 
+                                </div>  
+                            </div>
                         </div>
                     </div>
                     <br>
@@ -46,639 +48,284 @@
                             <li><a href="Dashboard.html" class="nav-link"><i class="fi fi-ss-objects-column"></i>Dashboard</a></li>
                             <li><a href="Patient-Records.html" class="nav-link"><i class="fi fi-ss-document"></i>Patient Records</a></li>
                             <li><a href="Queue.html" class="nav-link active"><i class="fi fi-ss-completed"></i>Queue</a></li>
-                            <li><a href="Schedule.html" class="nav-link "><i class="fi fi-ss-calendar-clock"></i>Schedule</a></li>
-                            <li><a href="Audit-Log.html" class="nav-link "><i class="fi fi-ss-audit-alt"></i>Audit Log</a></li>
-                            <li><a href="Settings.html" class="nav-link "><i class="fi fi-ss-settings-sliders"></i>Settings</a></li>
-                            <li><a href="History.html" class="nav-link "><i class="fi fi-ss-history"></i>History</a></li>
-                            <li><a href="LogIn.html" class="nav-link "><i class="fi fi-ss-sign-out-alt"></i>Log Out</a></li>
+                            <li><a href="Schedule.html" class="nav-link"><i class="fi fi-ss-calendar-clock"></i>Schedule</a></li>
+                            <li><a href="Audit-Log.html" class="nav-link"><i class="fi fi-ss-audit-alt"></i>Audit Log</a></li>
+                            <li><a href="Settings.html" class="nav-link"><i class="fi fi-ss-settings-sliders"></i>Settings</a></li>
+                            <li><a href="History.html" class="nav-link"><i class="fi fi-ss-history"></i>History</a></li>
+                            <li><a href="LogIn.html" class="nav-link"><i class="fi fi-ss-sign-out-alt"></i>Log Out</a></li>
                         </ul>
                     </nav>
                 </div>
-            </aside>    
-        </div>
-        <div class="main-content">
-        <div class="header">
-            <div class="header-left">
-                <h1>Queue</h1>
-                <p>Monitor and manage patient queue in real-time</p>
-            </div>
-             <div class="header-right">
-                <div class="date-badge">
-                    <strong>Today's Date<br>Nov 24, 2025</strong>
-                    <span>🌙</span>
-                </div>
-                <button class="notif-btn" aria-label="Notifications">
-                    <span class="notif-icon">🔔</span>
-                    <span class="notif-dot" aria-hidden="true"></span>
-                </button>
-            </div>
-        </div>
+            </aside>
 
-        <div class="queue-container">
-            <!-- Queue Details (Left) -->
-            <div class="queue-details">
-                <div class="queue-header">
-                    <div class="queue-number"></div>
-                    <span class="status-badge"></span>
-                </div>
-
-                <div class="patient-info-row">
-                    <span><strong>Name:</strong> </span>
-                    <span><strong>Sex:</strong> </span>
-                    <span><strong>DOB:</strong> </span>
-                </div>
-
-                <div class="patient-info-row">
-                    <span><strong>Notes:</strong> </span>
-                </div>
-
-                <h3 class="section-title">Allergies</h3>
-                <div class="section-content">
-                    When I was a young boy
-                    My father took me into the city
-                    To see a marching band
-                    He said, "Son, when you grow up
-                    Would you be the savior of the broken
-                    The beaten and the damned?"
-                    He said, "Will you defeat them?
-                    Your demons, and all the non-believers
-                    The plans that they have made?"
-                    "Because one day, I'll leave you a phantom
-                    To lead you in the summer
-                    To join the black parade"
-                </div>
-
-                <h3 class="section-title">Medical History</h3>
-                <div class="section-content">
-                    o or die, you'll never make me
-                    Because the world will never take my heart
-                    Go and try, you'll never break me
-                    We want it all, we wanna play this part
-                    Won't explain or say I'm sorry
-                    I'm unashamed, I'm gonna show my scars
-                    Give a cheer for all the broken
-                    Listen here, because it's who we are
-                </div>
-
-                <h3 class="section-title">Files</h3>
-                <div class="files-list">
-                    <div class="file-item">
-                        <span class="file-icon">📄</span>
-                        <span class="file-name">UniqueFileName_DateOfConsultation.pdf</span>
+            <main class="main-content">
+                <!-- Header -->
+                <div class="header">
+                    <div class="header-left">
+                        <h1>Queue Management</h1>
+                        <p id="welcome-message">Monitor and manage patient queue in real-time</p>
                     </div>
-                    <div class="file-item">
-                        <span class="file-icon">📄</span>
-                        <span class="file-name">UniqueFileName_DateOfConsultation.pdf</span>
+                    <div class="header-right">
+                        <div class="date-badge">
+                            <strong id="current-date">Loading...</strong>
+                        </div>
+                        <button class="notif-btn" aria-label="Notifications">
+                            <span class="notif-icon">🔔</span>
+                            <span class="notif-dot" aria-hidden="true"></span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="button-group">
-                    <button class="consult-btn">Consult</button>
-                    <button class="done-btn">Done</button>
-                </div>
-            </div>
-            <!-- Consultation Modal -->
-    <div class="consultation-modal" id="consultationModal" onclick="closeConsultationModal(event)">
-        <div class="consultation-form" onclick="event.stopPropagation();">
-            <h2 class="consultation-title">New Consultation</h2>
-            
-            <div class="consultation-summary">
-                <div><strong>Date:</strong> Input</div>
-                <div><strong>Weight:</strong></div>
-                <div><strong>Diagnosis:</strong></div>
-                <div><strong>Notes:</strong></div>
-                <div><strong>Medication:</strong></div>
-            </div>
+                <!-- Queue Container -->
+                <div class="queue-container">
+                    <!-- Queue Details Panel (Left) -->
+                    <div class="queue-details">
+                        <div class="empty-queue-state">
+                            <i class="fi fi-rr-users"></i>
+                            <p>Select a patient from the queue or drag & drop here</p>
+                        </div>
+                        
+                        <div class="queue-details-content" style="display: none;">
+                            <div class="queue-header">
+                                <div class="queue-number"></div>
+                                <span class="status-badge"></span>
+                            </div>
 
-            <form id="consultationForm" onsubmit="handleConsultation(event)">
-                <div class="consult-form-group">
-                    <label>Date</label>
-                    <input type="date" class="consult-input" required>
-                </div>
+                            <div class="patient-info-section">
+                                <h3>Patient Information</h3>
+                                <div class="patient-info-row">
+                                    <span class="info-label">Name:</span>
+                                    <span class="info-value" id="patient-name">-</span>
+                                </div>
+                                <div class="patient-info-row">
+                                    <span class="info-label">Age:</span>
+                                    <span class="info-value" id="patient-age">-</span>
+                                </div>
+                                <div class="patient-info-row">
+                                    <span class="info-label">Type:</span>
+                                    <span class="info-value" id="patient-type">-</span>
+                                </div>
+                                <div class="patient-info-row">
+                                    <span class="info-label">Notes:</span>
+                                    <span class="info-value" id="patient-notes">-</span>
+                                </div>
+                            </div>
 
-                <div class="consult-form-group">
-                    <label>Weight</label>
-                    <input type="text" class="consult-input" placeholder="Enter weight (e.g., 70 kg)">
-                </div>
+                            <div class="patient-history-section">
+                                <h3>Medical History</h3>
+                                <div class="history-content" id="medical-history">
+                                    <p>No medical history available</p>
+                                </div>
+                            </div>
 
-                <div class="consult-form-group">
-                    <label>Diagnosis</label>
-                    <textarea class="consult-textarea" placeholder="Enter diagnosis details..."></textarea>
-                </div>
-
-                <div class="consult-form-group">
-                    <label>Notes</label>
-                    <textarea class="consult-textarea" placeholder="Enter additional notes..."></textarea>
-                </div>
-
-                <div class="consult-form-group">
-                    <label>Medication</label>
-                    <textarea class="consult-textarea" placeholder="Enter prescribed medications..."></textarea>
-                </div>
-
-                <div class="consult-actions">
-                    <button type="submit" class="submit-consult-btn">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-            <!-- Queue List (Right) -->
-             
-            <div class="queue-list">
-                 <div class="queue-filter">
-                    <button class="filter-btn" onclick="toggleFilterMenu()">
-                        <i class="fi fi-ss-settings"></i> Filter
-                    </button>
-                    <div class="filter-menu" id="filterMenu">
-                        <label class="filter-option">
-                            <input type="checkbox" value="walk-in" onchange="filterQueueList()"> Walk-in
-                        </label>
-                        <label class="filter-option">
-                            <input type="checkbox" value="appt" onchange="filterQueueList()"> Appointment
-                        </label>
+                            <div class="button-group">
+                                <button class="consult-btn">
+                                    <i class="fi fi-rr-stethoscope"></i>
+                                    Start Consultation
+                                </button>
+                                <button class="done-btn">
+                                    <i class="fi fi-rr-check"></i>
+                                    Mark as Done
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                <div class="queue-tabs">
-                    <button class="queue-tab active">Queue</button>
-                </div>
-                </div>
 
-                <div class="queue-cards-container">
+                    <!-- Queue List Panel (Right) -->
+                    <div class="queue-list">
+                        <div class="queue-filter">
+                            <button class="filter-btn" onclick="toggleFilterMenu()">
+                                <i class="fi fi-rr-settings-sliders"></i> Filter
+                            </button>
+                            <div class="filter-menu" id="filterMenu">
+                                <label class="filter-option">
+                                    <input type="checkbox" value="walk-in" onchange="filterQueueList()"> Walk-in
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" value="appt" onchange="filterQueueList()"> Appointment
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="queue-cards-container">
+                            <!-- Queue cards will be dynamically loaded here -->
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="history-btn" id="add-queue-btn">
+                                <i class="fi fi-rr-plus"></i> Add Queue
+                            </button>
+                            <button class="history-btn" onclick="openHistoryModal()">
+                                <i class="fi fi-rr-time-past"></i> History
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="action-buttons">
-                    <button class="history-btn" id="add-queue-btn">
-                        <i class="fi fi-ss-add"></i> Add Queue
-                    </button>
-                    <button class="history-btn" onclick="openHistoryModal()">
-                        <i class="fi fi-ss-history"></i> History
-                    </button>
+            </main>
+        </div>
+
+        <!-- Add Queue Modal -->
+        <div class="add-queue-modal" id="addQueueModal">
+            <div class="add-queue-modal-content">
+                <div class="add-queue-modal-header">
+                    <h2>Add to Queue</h2>
+                    <button class="close-btn" onclick="closeAddQueueModal()">&times;</button>
                 </div>
-              </div>
+                <div class="add-queue-modal-body">
+                    <form id="addQueueForm">
+                        <div class="form-group">
+                            <label for="patientName">Patient Name</label>
+                            <input type="text" id="patientName" name="patientName" placeholder="Enter patient's name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patientAge">Age</label>
+                            <input type="text" id="patientAge" name="patientAge" placeholder="Enter patient's age" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patientNotes">Notes</label>
+                            <textarea id="patientNotes" name="patientNotes" placeholder="Enter any additional notes..."></textarea>
+                        </div>
+                        <div class="chart-options">
+                            <button type="button" class="chart-btn" id="get-patient-records-btn">Get from Patient Records</button>
+                            <button type="button" class="chart-btn clear-btn" id="clear-fields-btn">Clear</button>
+                        </div>
+                        <button type="submit" class="search-patient-btn">Add to Queue</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Add Queue Modal -->
-    <div class="add-queue-modal" id="addQueueModal">
-        <div class="history-modal-content">
-            <div class="history-modal-header">
-                <h2>Add to Queue</h2>
-                <button class="close-btn" onclick="closeAddQueueModal()">&times;</button>
+        <!-- Get Patient Records Modal -->
+        <div class="add-queue-modal" id="getPatientRecordsModal">
+            <div class="add-queue-modal-content">
+                <div class="add-queue-modal-header">
+                    <h2>Get from Patient Records</h2>
+                    <button class="close-btn" onclick="closeGetPatientRecordsModal()">&times;</button>
+                </div>
+                <div class="add-queue-modal-body">
+                    <div class="patient-records-list" id="patientRecordsList">
+                        <p style="text-align:center; padding:20px; color:#666;">Loading patient records...</p>
+                    </div>
+                </div>
             </div>
-            <div class="history-modal-body">
-                <form id="addQueueForm">
-                    <div class="form-group">
-                        <label for="patientName">Patient Name</label>
-                        <input type="text" id="patientName" name="patientName" placeholder="Enter patient's name" required>
-                        <label for="patientAge">Age</label>
-                        <input type="text" id="patientAge" name="patientAge" placeholder="Enter patient's age" required>
-                        <label for="patientNotes">Notes</label>
-                        <textarea id="patientNotes" name="patientNotes" placeholder="Enter any additional notes..."></textarea>
+        </div>
+
+        <!-- Consultation Modal -->
+        <div class="consultation-modal" id="consultationModal" onclick="closeConsultationModal(event)">
+            <div class="consultation-form" onclick="event.stopPropagation();">
+                <h2 class="consultation-title">New Consultation</h2>
+                
+                <div class="consultation-summary" id="consultationSummary">
+                    <div><strong>Patient:</strong> <span id="consult-patient-name">-</span></div>
+                    <div><strong>Queue Number:</strong> <span id="consult-queue-number">-</span></div>
+                </div>
+
+                <form id="consultationForm" onsubmit="handleConsultation(event)">
+                    <div class="consult-form-group">
+                        <label>Date</label>
+                        <input type="date" id="consultDate" class="consult-input" required>
                     </div>
-                    <div class="chart-options">
-                        <button type="button" class="chart-btn" id="get-patient-records-btn">Get from Patient Records</button>
-                        <button type="button" class="chart-btn clear-btn" id="clear-fields-btn">Clear</button>
+
+                    <div class="consult-form-group">
+                        <label>Weight</label>
+                        <input type="text" id="consultWeight" class="consult-input" placeholder="Enter weight (e.g., 70 kg)">
                     </div>
-                    <button type="submit" class="search-patient-btn">Add to Queue</button>
+
+                    <div class="consult-form-group">
+                        <label>Diagnosis</label>
+                        <textarea id="consultDiagnosis" class="consult-textarea" placeholder="Enter diagnosis details..."></textarea>
+                    </div>
+
+                    <div class="consult-form-group">
+                        <label>Notes</label>
+                        <textarea id="consultNotes" class="consult-textarea" placeholder="Enter additional notes..."></textarea>
+                    </div>
+
+                    <div class="consult-form-group">
+                        <label>Medication</label>
+                        <textarea id="consultMedication" class="consult-textarea" placeholder="Enter prescribed medications..."></textarea>
+                    </div>
+
+                    <div class="consult-actions">
+                        <button type="button" class="cancel-consult-btn" onclick="closeConsultationModal()">Cancel</button>
+                        <button type="submit" class="submit-consult-btn">Submit</button>
+                    </div>
                 </form>
             </div>
         </div>
-    </div>
 
-    <!-- Create New Chart Modal -->
-    <div class="add-queue-modal" id="createChartModal">
-        <div class="history-modal-content">
-            <div class="history-modal-header">
-                <h2>Create New Patient Chart</h2>
-                <button class="close-btn" onclick="closeCreateChartModal()">&times;</button>
-            </div>
-            <div class="history-modal-body">
-                <form id="createChartForm">
-                <div class="form-grid">
-                    <div class="form-group full-width">
-                        <label>Patient ID (Auto-Generated):</label>
-                        <input type="text" class="form-input" value="AUTO-GENERATED" disabled>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Full Name <span class="required">*</span></label>
-                        <input type="text" id="newPatientName" class="form-input" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Date of Birth</label>
-                        <input type="date" id="newDOB" class="form-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Sex</label>
-                        <input type="text" id="newSex" class="form-input" placeholder="e.g., Male, Female">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Blood Type</label>
-                        <input type="text" id="newBlood" class="form-input" placeholder="e.g., O+, A-, B+">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mobile Number</label>
-                        <input type="tel" id="newNum" class="form-input" placeholder="+63 XXX XXX XXXX">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="newemail" class="form-input" placeholder="email@example.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Company (N/A if none)</label>
-                        <input type="text" id="newComp" class="form-input" placeholder="Company name or N/A">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Emergency Contact</label>
-                        <input type="text" id="newEmergency" class="form-input" placeholder="Name and number">
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Allergies</label>
-                        <textarea class="form-textarea" id="newAllergy" placeholder="List any known allergies..."></textarea>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Medical History</label>
-                        <textarea class="form-textarea" id="newMedHistory" placeholder="Enter medical history details..."></textarea>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Upload File</label>
-                        <button type="button" class="browse-btn" onclick="document.getElementById('fileInput').click()">
-                            <span>📎</span>
-                            <span>Browse</span>
-                        </button>
-                        <input type="file" id="fileInput" style="display: none;" accept=".pdf,.doc,.docx,image/*">
-                    </div>
+        <!-- History Modal -->
+        <div class="history-modal" id="historyModal" onclick="closeHistoryModal(event)">
+            <div class="history-modal-content" onclick="event.stopPropagation();">
+                <div class="history-modal-header">
+                    <h2>Patient View History - Today</h2>
+                    <button class="close-btn" onclick="closeHistoryModal()">&times;</button>
                 </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="search-patient-btn">Create Chart</button>
-                </div>
-            </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Get Patient Records Modal -->
-    <div class="add-queue-modal" id="getPatientRecordsModal">
-        <div class="history-modal-content">
-            <div class="history-modal-header">
-                <h2>Get from Patient Records</h2>
-                <button class="close-btn" onclick="closeGetPatientRecordsModal()">&times;</button>
-            </div>
-            <div class="history-modal-body">
-                <div class="patient-records-list">
-                    <div class="patient-record-item" data-name="John Doe" data-age="30">John Doe</div>
-                    <div class="patient-record-item" data-name="Jane Smith" data-age="25">Jane Smith</div>
-                    <div class="patient-record-item" data-name="Peter Jones" data-age="45">Peter Jones</div>
+                <div class="history-modal-body" id="historyModalBody">
+                    <div class="history-item">
+                        <span class="history-time">09:30 AM</span>
+                        <span class="history-patient">No history yet</span>
+                        <span class="history-status">-</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- History Modal -->
-    <div class="history-modal" id="historyModal" onclick="closeHistoryModal(event)">
-        <div class="history-modal-content" onclick="event.stopPropagation();">
-            <div class="history-modal-header">
-                <h2>Patient View History - Today</h2>
-                <button class="close-btn" onclick="closeHistoryModal()">&times;</button>
-            </div>
-            <div class="history-modal-body">
-                <div class="history-item">
-                    <span class="history-time">09:30 AM</span>
-                    <span class="history-patient">Jane Doe (Q-001)</span>
-                    <span class="history-status">Viewed - Walk-in</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="assets/js/queue.js"></script>
-    <script type="module" src="assets/js/navigation.js"></script>
-    <script>
-    function openHistoryModal() {
-        document.getElementById('historyModal').classList.add('active');
-    }
-
-    function closeHistoryModal(event) {
-        if (event && event.target !== document.getElementById('historyModal') && event.target.closest('.history-modal-content')) {
-            return;
-        }
-        document.getElementById('historyModal').classList.remove('active');
-    }
-
-    function openCreateChartModal() {
-        document.getElementById('createChartModal').classList.add('active');
-    }
-
-    function closeCreateChartModal() {
-        document.getElementById('createChartModal').classList.remove('active');
-    }
-
-    function openGetPatientRecordsModal() {
-        document.getElementById('getPatientRecordsModal').classList.add('active');
-    }
-
-    function closeGetPatientRecordsModal() {
-        document.getElementById('getPatientRecordsModal').classList.remove('active');
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        let currentlyEditingCard = null;
-
-        // Extract card data helper
-        function extractCardData(card) {
-            if (!card) return null;
-            const numberEl = card.querySelector('.queue-card-number');
-            const badgeEl = card.querySelector('.queue-card-badge');
-            const infoDivs = Array.from(card.querySelectorAll('.queue-card-info div'));
-            const name = infoDivs[0] ? infoDivs[0].textContent.replace('Name:', '').trim() : '';
-            const age = infoDivs[1] ? infoDivs[1].textContent.replace('Age:', '').trim() : '';
-            const notes = infoDivs[2] ? infoDivs[2].textContent.replace('Notes:', '').trim() : '';
-            return {
-                queueNumber: numberEl ? numberEl.textContent.trim() : '',
-                badgeText: badgeEl ? badgeEl.textContent.trim() : '',
-                name: name,
-                age: age,
-                notes: notes
-            };
-        }
-
-        // Populate details panel (used on drop only)
-        function populateDetails(payload) {
-            const details = document.querySelector('.queue-details');
-            if (!details || !payload) return;
-            const qNum = details.querySelector('.queue-number');
-            const badge = details.querySelector('.status-badge');
-            if (qNum) qNum.textContent = payload.queueNumber || '';
-            if (badge) badge.textContent = payload.badgeText || '';
-
-            const infoRows = details.querySelectorAll('.patient-info-row');
-            if (infoRows && infoRows.length > 0) {
-                const spans = infoRows[0].querySelectorAll('span');
-                if (spans[0]) spans[0].innerHTML = '<strong>Name:</strong> ' + (payload.name || '');
-                if (spans[1]) spans[1].innerHTML = '<strong>Sex:</strong> ' + (payload.age || '');
-            }
-            if (infoRows && infoRows.length > 1) {
-                const notesSpan = infoRows[1].querySelector('span');
-                if (notesSpan) notesSpan.innerHTML = '<strong>Notes:</strong> ' + (payload.notes || '');
-            }
-        }
-
-        function addHistoryEntry(name, qnum, status) {
-            const historyModalBody = document.querySelector('.history-modal .history-modal-body');
-            if (!historyModalBody) return;
-            const now = new Date();
-            const hh = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-            const item = document.createElement('div');
-            item.className = 'history-item';
-            item.innerHTML = '<span class="history-time">' + hh + '</span>' +
-                             '<span class="history-patient">' + (name || '') + ' (' + (qnum || '') + ')</span>' +
-                             '<span class="history-status">' + (status || 'Viewed') + '</span>';
-            historyModalBody.insertBefore(item, historyModalBody.firstChild);
-        }
-
-        // Clear allergies, medical history, and files inside the details panel
-        function clearExtraSections() {
-            const detailsPanel = document.querySelector('.queue-details');
-            if (!detailsPanel) return;
-            const sectionContents = detailsPanel.querySelectorAll('.section-content');
-            sectionContents.forEach(el => { el.textContent = ''; });
-            const filesList = detailsPanel.querySelector('.files-list');
-            if (filesList) filesList.innerHTML = '';
-        }
-
-        // Make existing queue cards draggable and clickable
-        function bindQueueCards() {
-            const container = document.querySelector('.queue-cards-container');
-            if (!container) return;
-            const cards = container.querySelectorAll('.queue-card');
-            cards.forEach(card => {
-                card.setAttribute('draggable', 'true');
-
-                // Click to open edit modal
-                card.addEventListener('click', function() {
-                    openAddQueueModal(card);
-                });
-
-                // avoid duplicate handlers
-                card.removeEventListener('dragstart', card._dragstartHandler);
-                const dragstartHandler = function (e) {
-                    // Prevent drag from firing when clicking
-                    e.stopPropagation();
-                    card.classList.add('dragging');
-                    const data = extractCardData(card) || {};
-                    try { e.dataTransfer.setData('application/json', JSON.stringify(data)); }
-                    catch (err) { e.dataTransfer.setData('text/plain', JSON.stringify(data)); }
-                    e.dataTransfer.effectAllowed = 'move';
-                };
-                card.addEventListener('dragstart', dragstartHandler);
-                card._dragstartHandler = dragstartHandler;
-
-                card.removeEventListener('dragend', card._dragendHandler);
-                const dragendHandler = function () { card.classList.remove('dragging'); };
-                card.addEventListener('dragend', dragendHandler);
-                card._dragendHandler = dragendHandler;
-            });
-        }
+        <script type="module" src="assets/js/queue.js"></script>
+        <script src="assets/js/navigation.js"></script>
         
-        window.openAddQueueModal = function(card = null) {
-            const modal = document.getElementById('addQueueModal');
-            const form = document.getElementById('addQueueForm');
-            const modalTitle = modal.querySelector('.history-modal-header h2');
-
-            if (card) {
-                currentlyEditingCard = card;
-                const data = extractCardData(card);
-                document.getElementById('patientName').value = data.name;
-                document.getElementById('patientAge').value = data.age;
-                document.getElementById('patientNotes').value = data.notes;
-                modalTitle.textContent = 'Edit Queue Entry';
-            } else {
-                currentlyEditingCard = null;
-                form.reset();
-                modalTitle.textContent = 'Add to Queue';
+        <script>
+            // Modal Functions
+            function openHistoryModal() {
+                document.getElementById('historyModal').classList.add('active');
             }
-            modal.classList.add('active');
-        }
 
-        window.closeAddQueueModal = function() {
-            currentlyEditingCard = null;
-            document.getElementById('addQueueModal').classList.remove('active');
-        }
-
-        bindQueueCards();
-        // Ensure details start blank (all fields, including allergies/history/files)
-        clearExtraSections();
-
-        // Drop handlers for details panel
-        const details = document.querySelector('.queue-details');
-        if (details) {
-            details.addEventListener('dragover', function (e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; details.classList.add('drag-over'); });
-            details.addEventListener('dragleave', function () { details.classList.remove('drag-over'); });
-            details.addEventListener('drop', function (e) {
-                e.preventDefault(); details.classList.remove('drag-over');
-                let payload = null;
-                try { payload = JSON.parse(e.dataTransfer.getData('application/json')); }
-                catch (err) {
-                    try { payload = JSON.parse(e.dataTransfer.getData('text/plain')); } catch (e2) { payload = null; }
+            function closeHistoryModal(event) {
+                if (event && event.target !== document.getElementById('historyModal') && event.target.closest('.history-modal-content')) {
+                    return;
                 }
-                if (!payload) return;
-                populateDetails(payload);
-                addHistoryEntry(payload.name, payload.queueNumber, 'Viewed');
-            });
-        }
-
-        // Done button: remove the matching card and clear details
-        const doneBtn = document.querySelector('.done-btn');
-        if (doneBtn) {
-            doneBtn.addEventListener('click', function () {
-                const detailsPanel = document.querySelector('.queue-details');
-                if (!detailsPanel) return;
-                const qNumEl = detailsPanel.querySelector('.queue-number');
-                const qnum = qNumEl ? qNumEl.textContent.trim() : '';
-                if (!qnum) return; // nothing selected
-
-                const container = document.querySelector('.queue-cards-container');
-                if (container) {
-                    const cards = Array.from(container.querySelectorAll('.queue-card'));
-                    const target = cards.find(c => {
-                        const numEl = c.querySelector('.queue-card-number');
-                        return numEl && numEl.textContent.trim() === qnum;
-                    });
-                    if (target) {
-                        const data = extractCardData(target) || {};
-                        addHistoryEntry(data.name || '', data.queueNumber || qnum, 'Done');
-                        target.remove();
-                    }
-                }
-
-                // Clear details panel content
-                if (qNumEl) qNumEl.textContent = '';
-                const badge = detailsPanel.querySelector('.status-badge'); if (badge) badge.textContent = '';
-                const infoRows = detailsPanel.querySelectorAll('.patient-info-row');
-                if (infoRows && infoRows.length > 0) {
-                    const spans = infoRows[0].querySelectorAll('span'); if (spans[0]) spans[0].innerHTML = '<strong>Name:</strong> ';
-                    if (spans[1]) spans[1].innerHTML = '<strong>Sex:</strong> ';
-                    if (spans[2]) spans[2].innerHTML = '<strong>DOB:</strong> ';
-                }
-                if (infoRows && infoRows.length > 1) {
-                    const notesSpan = infoRows[1].querySelector('span'); if (notesSpan) notesSpan.innerHTML = '<strong>Notes:</strong> ';
-                }
-                // Clear allergies, medical history, files
-                clearExtraSections();
-            });
-        }
-        
-        // Add Queue Button
-        document.getElementById('add-queue-btn').addEventListener('click', () => openAddQueueModal());
-
-        document.getElementById('addQueueForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const patientName = document.getElementById('patientName').value.trim();
-            const patientAge = document.getElementById('patientAge').value.trim();
-            const patientNotes = document.getElementById('patientNotes').value.trim();
-
-            if (patientName) {
-                if (currentlyEditingCard) {
-                    // Update existing card
-                    const nameDiv = currentlyEditingCard.querySelector('.queue-card-info div:first-child');
-                    const ageDiv = currentlyEditingCard.querySelector('.queue-card-info div:nth-child(2)');
-                    const notesDiv = currentlyEditingCard.querySelector('.queue-card-info div:nth-child(3)');
-
-                    if (nameDiv) nameDiv.innerHTML = `<strong>Name:</strong> ${patientName}`;
-                    if (ageDiv) ageDiv.innerHTML = `<strong>Age:</strong> ${patientAge}`;
-                    if (notesDiv) notesDiv.innerHTML = `<strong>Notes:</strong> ${patientNotes}`;
-
-                } else {
-                    // Create a new card
-                    const queueContainer = document.querySelector('.queue-cards-container');
-                    const existingNumbers = Array.from(queueContainer.querySelectorAll('.queue-card-number'))
-                        .map(el => parseInt(el.textContent.replace('Q-', ''), 10))
-                        .filter(num => !isNaN(num));
-                    const newNumber = existingNumbers.length > 0 ? Math.max(...existingNumbers) + 1 : 1;
-                    const newQueueNumber = `Q-${String(newNumber).padStart(3, '0')}`;
-
-                    const newCard = document.createElement('div');
-                    newCard.className = 'queue-card';
-                    newCard.innerHTML = `
-                        <div class="queue-card-header">
-                            <span class="queue-card-number">${newQueueNumber}</span>
-                            <span class="queue-card-badge">Walk-in</span>
-                        </div>
-                        <div class="queue-card-info">
-                            <div><strong>Name:</strong> ${patientName}</div>
-                            <div><strong>Age:</strong> ${patientAge}</div>
-                            <div><strong>Notes:</strong> ${patientNotes}</div>
-                        </div>
-                    `;
-                    
-                    queueContainer.appendChild(newCard);
-                }
-
-                // Close the modal and reset the form
-                closeAddQueueModal();
+                document.getElementById('historyModal').classList.remove('active');
             }
-        });
 
-        // Rebind when cards change
-        const container = document.querySelector('.queue-cards-container');
-        if (container && window.MutationObserver) {
-            const mo = new MutationObserver(function () { bindQueueCards(); });
-            mo.observe(container, { childList: true, subtree: false });
-        }
-        
-        document.getElementById('clear-fields-btn').addEventListener('click', function(event) {
-            event.preventDefault();
-            document.getElementById('patientName').value = '';
-            document.getElementById('patientAge').value = '';
-            document.getElementById('patientNotes').value = '';
-        });
+            function closeAddQueueModal() {
+                document.getElementById('addQueueModal').classList.remove('active');
+                document.getElementById('addQueueForm').reset();
+            }
 
-        document.getElementById('create-chart-btn').addEventListener('click', function() {
-            openCreateChartModal();
-        });
+            function closeGetPatientRecordsModal() {
+                document.getElementById('getPatientRecordsModal').classList.remove('active');
+            }
 
-        document.getElementById('createChartForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            // Get data from create chart form
-            const chartPatientName = document.getElementById('chartPatientName').value.trim();
-            const chartPatientAge = document.getElementById('chartPatientAge').value.trim();
+            function closeConsultationModal(event) {
+                if (event && event.target !== document.getElementById('consultationModal')) {
+                    return;
+                }
+                document.getElementById('consultationModal').classList.remove('active');
+                document.getElementById('consultationForm').reset();
+            }
 
-            // Populate the add queue form
-            document.getElementById('patientName').value = chartPatientName;
-            document.getElementById('patientAge').value = chartPatientAge;
+            function toggleFilterMenu() {
+                const menu = document.getElementById('filterMenu');
+                menu.classList.toggle('active');
+            }
 
-            // Close the create chart modal
-            closeCreateChartModal();
-        });
+            function filterQueueList() {
+                // Filter functionality will be handled by queue.js
+                const checkboxes = document.querySelectorAll('#filterMenu input[type="checkbox"]');
+                const filters = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+                
+                // Dispatch custom event for queue.js to handle
+                window.dispatchEvent(new CustomEvent('queueFilterChanged', { detail: filters }));
+            }
 
-        document.getElementById('get-patient-records-btn').addEventListener('click', function() {
-            openGetPatientRecordsModal();
-        });
-
-        document.querySelectorAll('.patient-record-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const patientName = this.getAttribute('data-name');
-                const patientAge = this.getAttribute('data-age');
-
-                document.getElementById('patientName').value = patientName;
-                document.getElementById('patientAge').value = patientAge;
-
-                closeGetPatientRecordsModal();
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('add-queue-modal')) {
+                    e.target.classList.remove('active');
+                }
             });
-        });
-    });
-    </script>
+        </script>
     </body>
 </html>

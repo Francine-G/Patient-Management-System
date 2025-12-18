@@ -156,7 +156,6 @@ body {
     gap: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateX(8px);
-    /* Smooth transitions */
     transition: all 0.3s ease-in-out;
 }
 
@@ -164,7 +163,6 @@ body {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
     transform: translateX(10px);
 }
-
 
 .navigation-menu ul li a {
     text-decoration: none;
@@ -188,7 +186,6 @@ body {
     transform: scale(1.1);
 }
 
-
 @keyframes activateLink {
     0% {
         transform: translateX(0) scale(1);
@@ -204,8 +201,6 @@ body {
 .navigation-menu .active {
     animation: activateLink 0.4s ease-in-out;
 }
-
-
 
 /* Main Content */
 
@@ -304,8 +299,6 @@ body {
     color: #64748b;
 }
 
-
-
 .today-label {
     font-size: 14px;
     color: #64748b;
@@ -391,13 +384,15 @@ body {
     grid-template-columns: repeat(7, 1fr);
     gap: 12px;
     margin-bottom: 24px;
+    max-width: 100%;
 }
 
 .calendar-day {
     aspect-ratio: 1;
+    max-width: 120px;
     border: 2px solid #e2e8f0;
     border-radius: 12px;
-    padding: 16px 8px;
+    padding: 12px 8px;
     cursor: pointer;
     transition: all 0.2s;
     background: white;
@@ -405,12 +400,20 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .calendar-day:hover {
     border-color: #4DB8B8;
     box-shadow: 0 4px 12px rgba(77, 184, 184, 0.15);
     transform: translateY(-2px);
+}
+
+.calendar-day.selected {
+    border-color: #4DB8B8;
+    background: #e0f2fe;
+    box-shadow: 0 0 0 3px rgba(77, 184, 184, 0.2);
 }
 
 .calendar-day.today {
@@ -432,7 +435,7 @@ body {
     font-size: 11px;
     color: #64748b;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-weight: 600;
 }
 
@@ -440,7 +443,7 @@ body {
     font-size: 24px;
     font-weight: 700;
     color: #1e293b;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .calendar-day.unavailable .day-number {
@@ -452,12 +455,13 @@ body {
 }
 
 .day-badge {
-    font-size: 10px;
-    padding: 4px 10px;
+    font-size: 9px;
+    padding: 3px 8px;
     border-radius: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .badge-available {
@@ -470,6 +474,13 @@ body {
     background: #fee2e2;
     color: #b91c1c;
     border: 1px solid #fca5a5;
+}
+
+.day-time {
+    font-size: 9px;
+    color: #64748b;
+    margin-top: 4px;
+    text-align: center;
 }
 
 .current-month {
@@ -617,10 +628,16 @@ textarea.form-control {
     }
     
     .calendar-day {
-        padding: 12px 4px;
+        padding: 10px 4px;
+        max-width: 100px;
     }
     
     .day-number {
         font-size: 20px;
+    }
+    
+    .day-badge {
+        font-size: 8px;
+        padding: 2px 6px;
     }
 }
