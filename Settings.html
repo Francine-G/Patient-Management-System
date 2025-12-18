@@ -14,6 +14,7 @@
         <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 
         <title>Settings</title>
+
         
     </head>
 
@@ -36,11 +37,11 @@
                         <div class="user-info">
                             <div class="row">
                                 <img src="assets/images/user-profile.png" alt="User Profile">
-                            <div class="column">
-                                <h3>User Name</h3>  
-                                <p>Doctor</p> 
-                            </div>  
-                        </div>
+                                <div class="column">
+                                    <h3 id="user-display-name">User Name</h3>  
+                                    <p id="user-role">Admin</p> 
+                                </div>  
+                            </div>
                         </div>
                     </div>
                     <br>
@@ -72,7 +73,7 @@
                             <i class="fi fi-rr-user"></i>
                             <span>Account</span>
                         </button>
-                        <button class="tab-trigger" data-tab="personnel" id="personnel-tab" style="display: none;">
+                        <button class="tab-trigger" data-tab="personnel" id="personnel-tab">
                             <i class="fi fi-rr-users"></i>
                             <span>Personnel</span>
                         </button>

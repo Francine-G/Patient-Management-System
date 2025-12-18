@@ -1,3 +1,4 @@
+// settings.js - Settings page functionality with Firebase integration
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, get, set, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
@@ -38,6 +39,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Load user data from Firebase
 async function loadUserData(username) {
     try {
+        console.log('🔄 Loading user data for:', username);
+        
         const userRef = ref(database, `users/${username}`);
         const snapshot = await get(userRef);
         
@@ -45,17 +48,48 @@ async function loadUserData(username) {
             currentUserData = snapshot.val();
             currentUserData.username = username;
             
+            console.log('✅ User data loaded:', currentUserData);
+            console.log('✅ User role:', currentUserData.role);
+            
+            // Update session storage with fresh data
+            sessionStorage.setItem('userData', JSON.stringify({
+                username: currentUserData.username,
+                firstName: currentUserData.firstName,
+                lastName: currentUserData.lastName,
+                email: currentUserData.email,
+                role: currentUserData.role || 'user'
+            }));
+            
             // Update UI with user data
             updateUserDisplay();
             
-            // Show personnel tab if admin
-            if (currentUserData.role === 'admin') {
-                document.getElementById('personnel-tab').style.display = 'flex';
-                await loadPersonnel();
+            // FIXED: Control Personnel tab visibility based on role
+            const personnelTab = document.getElementById('personnel-tab');
+            console.log('🔍 Personnel tab element found:', !!personnelTab);
+            
+            if (personnelTab) {
+                const userRole = (currentUserData.role || '').toLowerCase();
+                console.log('🔍 User role (normalized):', userRole);
+                
+                // Show Personnel tab only for Admin or Doctor
+                if (userRole === 'admin' || userRole === 'doctor') {
+                    console.log('✅ Showing Personnel tab for role:', userRole);
+                    personnelTab.style.display = 'flex';
+                    
+                    // Load personnel data
+                    await loadPersonnel();
+                } else {
+                    console.log('ℹ️ Hiding Personnel tab for role:', userRole);
+                    personnelTab.style.display = 'none';
+                }
+            } else {
+                console.error('❌ Personnel tab element NOT found in DOM!');
             }
+        } else {
+            console.error('❌ User data not found in Firebase');
         }
     } catch (error) {
-        console.error('Error loading user data:', error);
+        console.error('❌ Error loading user data:', error);
         alert('Failed to load user data. Please try again.');
     }
 }
@@ -124,7 +158,7 @@ function updateUserDisplay() {
 
     if (lastLogin && currentUserData.lastLogin) {
         const loginDate = new Date(currentUserData.lastLogin);
-        lastLogin.textContent = loginDate.toLocaleString('en-US', {
+        lastLogin.textContent = loginDate.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -132,27 +166,28 @@ function updateUserDisplay() {
             minute: '2-digit'
         });
     } else if (lastLogin) {
-        lastLogin.textContent = 'This session';
+        lastLogin.textContent = 'Not available';
     }
 }
 
-// Initialize tabs functionality
+// Initialize tabs
 function initializeTabs() {
     const tabTriggers = document.querySelectorAll('.tab-trigger');
     const tabContents = document.querySelectorAll('.tab-content');
 
     tabTriggers.forEach(trigger => {
-        trigger.addEventListener('click', function() {
-            const targetTab = this.getAttribute('data-tab');
+        trigger.addEventListener('click', () => {
+            const targetTab = trigger.getAttribute('data-tab');
 
             // Remove active class from all triggers and contents
             tabTriggers.forEach(t => t.classList.remove('active'));
             tabContents.forEach(c => c.classList.remove('active'));
 
-            // Add active class to clicked trigger and corresponding content
-            this.classList.add('active');
-            const targetContent = document.getElementById(`${targetTab}-tab`) || 
-                                 document.getElementById(`${targetTab}-tab-content`);
+            // Add active class to clicked trigger
+            trigger.classList.add('active');
+
+            // Show corresponding content
+            const targetContent = document.getElementById(`${targetTab}-tab${targetTab === 'personnel' ? '-content' : ''}`);
             if (targetContent) {
                 targetContent.classList.add('active');
             }
@@ -160,12 +195,12 @@ function initializeTabs() {
     });
 }
 
-// Initialize modal functionality
+// Initialize modals
 function initializeModals() {
     const addPersonnelBtn = document.getElementById('add-personnel-btn');
     const modal = document.getElementById('add-personnel-modal');
-    const closeModalBtn = document.getElementById('close-modal');
-    const cancelModalBtn = document.getElementById('cancel-modal');
+    const closeModal = document.getElementById('close-modal');
+    const cancelModal = document.getElementById('cancel-modal');
 
     if (addPersonnelBtn) {
         addPersonnelBtn.addEventListener('click', () => {
@@ -173,29 +208,31 @@ function initializeModals() {
         });
     }
 
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', () => {
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
             modal.classList.remove('active');
         });
     }
 
-    if (cancelModalBtn) {
-        cancelModalBtn.addEventListener('click', () => {
+    if (cancelModal) {
+        cancelModal.addEventListener('click', () => {
             modal.classList.remove('active');
         });
     }
 
     // Close modal when clicking outside
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.remove('active');
-        }
-    });
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    }
 }
 
 // Initialize forms
 function initializeForms() {
-    // Profile update form
+    // Profile form
     const profileForm = document.getElementById('profile-form');
     if (profileForm) {
         profileForm.addEventListener('submit', handleProfileUpdate);

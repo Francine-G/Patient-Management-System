@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     initializePagination();
 });
 
+
 // Load user data
 async function loadUserData(username) {
     try {

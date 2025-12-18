@@ -156,3 +156,4 @@ if (forgotPasswordLink) {
     alert('Password reset functionality will be implemented soon. Please contact support for assistance.');
   });
 }
+
