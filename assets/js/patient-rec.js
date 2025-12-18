@@ -14,7 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// --- 1. Function to Load All Patients from Firebase ---
+// --- 1. Load Patients ---
 const loadPatients = async () => {
     const patientsRef = ref(database, 'patients');
     const patientGrid = document.querySelector('.patient-grid');
@@ -38,7 +38,7 @@ const loadPatients = async () => {
     }
 };
 
-// --- 2. Function to Generate the HTML Card ---
+// --- 2. Create Card HTML ---
 const createPatientCard = (patient) => {
     const patientGrid = document.querySelector('.patient-grid');
     const firstLetter = patient.name ? patient.name.charAt(0) : '?';
@@ -60,11 +60,14 @@ const createPatientCard = (patient) => {
     patientGrid.appendChild(card);
 };
 
-// --- 3. Updated Modal Function ---
+// --- 3. Open Modal ---
 window.openPatientModal = function(patient) {
     const modal = document.getElementById('patientModal');
+    if (!modal) return;
+    
+    // Clear inline styles to ensure CSS class works
+    modal.style.display = ''; 
     modal.classList.add('active');
-    // Removed modal.style.display = 'flex' to prevent conflicts with CSS close logic
 
     document.getElementById('patientName').innerHTML = `<strong>Name:</strong> ${patient.name}`;
     document.getElementById('patientID').innerHTML = `<strong>Patient ID:</strong> ${patient.id}`;
@@ -74,17 +77,13 @@ window.openPatientModal = function(patient) {
 
     document.getElementById('patientEmail').innerText = patient.email || 'N/A';
     document.getElementById('patientMobile').innerText = patient.mobileNum || 'N/A';
-
     document.getElementById('emergencyPers').innerText = patient.emergencyPers || 'N/A';
     document.getElementById('emergencyCon').innerText = patient.emergencyCon || 'N/A';
-
     document.getElementById('lastVisitDate').innerText = patient.lastVisit || 'N/A';
     document.getElementById('lastCheckType').innerText = patient.lastCheck || 'N/A';
 };
 
-// --- 4. Updated Function to Add New Patient with Sequential IDs ---
-// --- Updated Function to Add Patient AND Audit Log ---
-// --- Updated Function to Add Patient AND Audit Log using Session Data ---
+// --- 4. Add Patient + Audit Log Function ---
 window.handleAddPatient = async (event) => {
     if (event) event.preventDefault();
 
@@ -95,39 +94,39 @@ window.handleAddPatient = async (event) => {
     }
 
     try {
-        // 1. Determine Sequential IDs for both Patient and Audit
+        // 1. Get References
         const patientsRef = ref(database, 'patients');
         const auditsRef = ref(database, 'audits');
         
+        // 2. Fetch counts for sequential IDs
         const [patientSnap, auditSnap] = await Promise.all([
             get(patientsRef),
             get(auditsRef)
         ]);
 
-        // Sequential Patient ID Logic (p_1, p_2...)
+        // Calculate Patient ID (p_1, p_2...)
         let nextPatientIdx = 1;
         if (patientSnap.exists()) {
-            const pKeys = Object.keys(patientSnap.val());
-            const pIndices = pKeys.filter(k => k.startsWith('p_')).map(k => parseInt(k.split('_')[1]));
-            nextPatientIdx = pIndices.length > 0 ? Math.max(...pIndices) + 1 : pKeys.length + 1;
+            const keys = Object.keys(patientSnap.val());
+            const indices = keys.filter(k => k.startsWith('p_')).map(k => parseInt(k.split('_')[1]));
+            nextPatientIdx = indices.length > 0 ? Math.max(...indices) + 1 : keys.length + 1;
         }
         const newPatientId = `p_${nextPatientIdx}`;
 
-        // Sequential Audit ID Logic (a_1, a_2...)
+        // Calculate Audit ID (a_1, a_2...)
         let nextAuditIdx = 1;
         if (auditSnap.exists()) {
-            const aKeys = Object.keys(auditSnap.val());
-            const aIndices = aKeys.filter(k => k.startsWith('a_')).map(k => parseInt(k.split('_')[1]));
-            nextAuditIdx = aIndices.length > 0 ? Math.max(...aIndices) + 1 : aKeys.length + 1;
+            const keys = Object.keys(auditSnap.val());
+            const indices = keys.filter(k => k.startsWith('a_')).map(k => parseInt(k.split('_')[1]));
+            nextAuditIdx = indices.length > 0 ? Math.max(...indices) + 1 : keys.length + 1;
         }
         const newAuditId = `a_${nextAuditIdx}`;
 
-        // 2. Retrieve User and Role from Session Storage
-        // Fallback to 'Unknown' if session data isn't set yet
+        // 3. Get Session Data (or defaults)
         const activeUser = sessionStorage.getItem('username') || 'dr_francine'; 
         const activeRole = sessionStorage.getItem('role') || 'Doctor';
 
-        // 3. Prepare Data Objects
+        // 4. Create Patient Object
         const newPatient = {
             name: nameInput.value,
             birthDate: document.getElementById('newDOB').value,
@@ -136,7 +135,7 @@ window.handleAddPatient = async (event) => {
             mobileNum: document.getElementById('newNum').value,
             email: document.getElementById('newemail').value,
             company: document.getElementById('newComp').value.trim(),
-            emergencyPers: document.getElementById('newEmgergency').value,
+            emergencyPers: document.getElementById('newEmergency').value, 
             emergencyCon: "", 
             allergies: document.getElementById('newAllergy').value,
             medHistory: document.getElementById('newMedHistory').value,
@@ -144,6 +143,7 @@ window.handleAddPatient = async (event) => {
             lastCheck: "Initial Registration"
         };
 
+        // 5. Create Audit Object (Restored Logic)
         const newAudit = {
             action: "Add Patient",
             details: `Added patient: ${newPatientId} (${newPatient.name})`,
@@ -153,24 +153,28 @@ window.handleAddPatient = async (event) => {
             user: activeUser
         };
 
-        // 4. Atomic Write to Firebase
+        // 6. Save BOTH to Firebase
         await Promise.all([
             set(ref(database, `patients/${newPatientId}`), newPatient),
             set(ref(database, `audits/${newAuditId}`), newAudit)
         ]);
 
-        alert(`Record saved! Patient: ${newPatientId}, Audit: ${newAuditId}`);
+        alert(`Success! Patient ${newPatientId} added and logged.`);
         
-        // Reset UI
+        // 7. Cleanup
         const form = document.getElementById('patientForm');
         if (form) form.reset();
-        if (window.closeAddPatientModal) window.closeAddPatientModal();
+        
+        if (window.closeAddPatientModal) {
+            window.closeAddPatientModal(); 
+        }
+        
         loadPatients(); 
 
     } catch (error) {
         console.error("Critical Save Error:", error);
-        alert('Failed to save. Check database connection.');
+        alert('Failed to save. Open Console (F12) to see specific error.');
     }
 };
-// Initialize the loading process
+
 loadPatients();

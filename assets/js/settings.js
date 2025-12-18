@@ -1,5 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get, set, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { 
+    initializeApp 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+    getDatabase, ref, get, set, remove, update, query, orderByKey, limitToLast 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -19,6 +23,43 @@ const database = getDatabase(app);
 // Global state
 let currentUserData = null;
 let personnelList = [];
+
+
+// Helper to create an audit log entry
+async function createAuditLog(action, details, entityId) {
+    try {
+        const auditsRef = ref(database, 'audits');
+        const snapshot = await get(auditsRef);
+        let nextIndex = 1;
+
+        if (snapshot.exists()) {
+            const keys = Object.keys(snapshot.val());
+            const indices = keys
+                .filter(key => key.startsWith('a_'))
+                .map(key => parseInt(key.split('_')[1]))
+                .filter(num => !isNaN(num));
+
+            if (indices.length > 0) {
+                nextIndex = Math.max(...indices) + 1;
+            }
+        }
+
+        const auditId = `a_${nextIndex}`;
+        const auditData = {
+            action: action,
+            details: details,
+            entity: entityId || 'System',
+            role: currentUserData.role || 'Admin',
+            timestamp: new Date().toLocaleString(),
+            user: currentUserData.username
+        };
+
+        await set(ref(database, `audits/${auditId}`), auditData);
+        console.log(`✅ Audit log created: ${auditId}`);
+    } catch (error) {
+        console.error('❌ Failed to create audit log:', error);
+    }
+}
 
 // Check authentication and load user data
 document.addEventListener('DOMContentLoaded', async function() {
@@ -505,6 +546,7 @@ window.deletePersonnel = async function(personnelId) {
 };
 
 // Handle change password
+// Handle change password
 async function handleChangePassword(e) {
     e.preventDefault();
 
@@ -512,22 +554,19 @@ async function handleChangePassword(e) {
     const newPassword = document.getElementById('new-password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
 
-    // Validation
+    // Validation (Existing logic)
     if (!currentPassword || !newPassword || !confirmPassword) {
         alert('Please fill in all fields.');
         return;
     }
-
     if (newPassword.length < 6) {
         alert('New password must be at least 6 characters long.');
         return;
     }
-
     if (newPassword !== confirmPassword) {
         alert('New password and confirmation do not match.');
         return;
     }
-
     if (currentPassword === newPassword) {
         alert('New password must be different from current password.');
         return;
@@ -535,8 +574,6 @@ async function handleChangePassword(e) {
 
     try {
         const username = currentUserData.username;
-        
-        // Verify current password
         const userRef = ref(database, `users/${username}`);
         const snapshot = await get(userRef);
         
@@ -556,14 +593,19 @@ async function handleChangePassword(e) {
 
             await update(ref(database, `users/${username}`), updates);
 
-            // Update current user data
+            // --- AUDIT LOG START ---
+            await createAuditLog(
+                "Change Password", 
+                `User ${username} successfully changed their account password.`, 
+                username
+            );
+            // --- AUDIT LOG END ---
+
             currentUserData.password = newPassword;
             currentUserData.passwordLastChanged = updates.passwordLastChanged;
 
-            // Update UI
             updateUserDisplay();
 
-            // Close modal and reset form
             document.getElementById('change-password-modal').classList.remove('active');
             document.getElementById('change-password-form').reset();
 

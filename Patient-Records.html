@@ -88,8 +88,8 @@
 
         <!-- Add New Patient Modal -->
     <div class="add-patient-modal" id="addPatientModal" onclick="closeAddPatientModal(event)">
-        <div class="add-patient-form" onclick="event.stopPropagation();">
-            <button class="form-close" onclick="closeAddPatientModal()">✕</button>
+    <div class="add-patient-form" onclick="event.stopPropagation();">
+        <button type="button" class="form-close" onclick="closeAddPatientModal(event)">✕</button>
             
             <h2 class="form-title">Add New Patient Record</h2>
             
@@ -137,7 +137,7 @@
 
                     <div class="form-group">
                         <label>Emergency Contact</label>
-                        <input type="text" id="newEmgergency" class="form-input" placeholder="Name and number">
+                        <input type="text" id="newEmergency" class="form-input" placeholder="Name and number">
                     </div>
 
                     <div class="form-group full-width">
@@ -172,9 +172,9 @@
         </div>
 
     <!-- Patient Details Modal -->
-    <div class="modal-overlay" id="patientModal" onclick="closeModalOnOutsideClick(event)">
-        <div class="modal" onclick="event.stopPropagation();">
-            <button class="modal-close" onclick="closePatientModal()">✕</button>
+    <div class="modal-overlay" id="patientModal" onclick="closePatientModal(event)">
+    <div class="modal" onclick="event.stopPropagation();">
+        <button type="button" class="modal-close" onclick="closePatientModal(event)">✕</button>
             
             <div class="modal-left">
                 <h2 class="modal-title">Patient Details</h2>
@@ -229,6 +229,6 @@
 
     </div>
 
-        <script src="assets/js/navigation.js"></script>
+        <script type="module" src="assets/js/navigation.js"></script>
     </body>
 </html>
