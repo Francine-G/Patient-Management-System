@@ -50,7 +50,7 @@ async function createAuditLog(action, details, entityId) {
     }
 }
 
-// --- 1. GLOBAL MODAL FUNCTIONS (Window Scope) ---
+// --- 1. GLOBAL MODAL FUNCTIONS ---
 
 window.closePatientModal = function (event) { 
     const pm = document.getElementById('patientModal'); 
@@ -96,8 +96,6 @@ window.closeConsultationModal = function (event) {
 
 window.handleConsultation = async function (event) {
     event.preventDefault();
-    // Optional: Add audit log for consultation here if needed
-    // await createAuditLog("Consultation", "Performed consultation", "N/A");
     alert('Consultation details saved successfully!');
     window.closeConsultationModal();
 };
@@ -121,6 +119,7 @@ window.openAddQueueModal = function(card = null) {
     const modalTitle = modal.querySelector('.history-modal-header h2');
 
     if (card) {
+        // Edit Mode
         form.dataset.editingId = card.querySelector('.queue-card-number').textContent;
         const name = card.querySelector('.queue-card-info div:nth-child(1)').textContent.replace('Name:', '').trim();
         const age = card.querySelector('.queue-card-info div:nth-child(2)').textContent.replace('Age:', '').trim();
@@ -131,7 +130,9 @@ window.openAddQueueModal = function(card = null) {
         document.getElementById('patientNotes').value = notes;
         modalTitle.textContent = 'Edit Queue Entry';
     } else {
+        // Add Mode
         delete form.dataset.editingId;
+        delete form.dataset.linkedPatientId; // Clear any previous link
         form.reset();
         modalTitle.textContent = 'Add to Queue';
     }
@@ -143,11 +144,74 @@ window.closeAddQueueModal = function() {
     if (modal) modal.classList.remove('active');
 };
 
+// --- FIX: Logic to open "Get from Patient Records" Modal and Fetch Data ---
+window.openGetPatientRecordsModal = async function() {
+    const modal = document.getElementById('getPatientRecordsModal');
+    const listContainer = modal.querySelector('.patient-records-list');
+    
+    // Clear list and show loading
+    listContainer.innerHTML = '<p style="padding:10px; color:#666;">Loading patients...</p>';
+    modal.classList.add('active');
+
+    try {
+        const patientsRef = ref(database, 'patients');
+        const snapshot = await get(patientsRef);
+
+        if (snapshot.exists()) {
+            listContainer.innerHTML = ''; // Clear loading message
+            const data = snapshot.val();
+            
+            // Generate list items from database
+            Object.keys(data).forEach(key => {
+                const patient = data[key];
+                const birthYear = patient.birthDate ? new Date(patient.birthDate).getFullYear() : null;
+                const currentYear = new Date().getFullYear();
+                const age = birthYear ? currentYear - birthYear : 'N/A';
+
+                const item = document.createElement('div');
+                item.className = 'patient-record-item';
+                item.setAttribute('data-id', key); // Store ID (p_1, p_2)
+                item.setAttribute('data-name', patient.name);
+                item.setAttribute('data-age', age);
+                
+                // Display Name and ID
+                item.innerHTML = `<strong>${patient.name}</strong> <span style="font-size:0.8em; color:#666;">(${key})</span>`;
+                
+                // Click handler to select this patient
+                item.onclick = function() {
+                    const form = document.getElementById('addQueueForm');
+                    
+                    document.getElementById('patientName').value = patient.name;
+                    document.getElementById('patientAge').value = age;
+                    
+                    // Store the linked ID on the form
+                    form.dataset.linkedPatientId = key; 
+                    
+                    window.closeGetPatientRecordsModal();
+                };
+
+                listContainer.appendChild(item);
+            });
+        } else {
+            listContainer.innerHTML = '<p style="padding:10px;">No patients found.</p>';
+        }
+    } catch (error) {
+        console.error("Error fetching patients:", error);
+        listContainer.innerHTML = '<p style="padding:10px; color:red;">Error loading data.</p>';
+    }
+};
+
+window.closeGetPatientRecordsModal = function() {
+    const modal = document.getElementById('getPatientRecordsModal');
+    if (modal) modal.classList.remove('active');
+};
+
 window.closeModalOnOutsideClick = function (event) { 
     if (event.target.id === 'patientModal') window.closePatientModal(event);
     if (event.target.id === 'addPatientModal') window.closeAddPatientModal(event);
     if (event.target.id === 'consultationModal') window.closeConsultationModal(event);
     if (event.target.id === 'historyModal') window.closeHistoryModal(event);
+    if (event.target.id === 'getPatientRecordsModal') window.closeGetPatientRecordsModal();
 };
 
 // --- 2. DOM CONTENT LOADED ---
@@ -196,7 +260,13 @@ function initializeQueueLogic() {
         consultBtn.addEventListener('click', () => window.openConsultationModal());
     }
 
-    // --- ADD QUEUE FORM SUBMIT (with Audit) ---
+    // Connect the "Get from Patient Records" button
+    const getRecordsBtn = document.getElementById('get-patient-records-btn');
+    if (getRecordsBtn) {
+        getRecordsBtn.addEventListener('click', () => window.openGetPatientRecordsModal());
+    }
+
+    // --- ADD QUEUE FORM SUBMIT (with Linking) ---
     const addQueueForm = document.getElementById('addQueueForm');
     if (addQueueForm) {
         addQueueForm.addEventListener('submit', async function(event) {
@@ -205,6 +275,9 @@ function initializeQueueLogic() {
             const pName = document.getElementById('patientName').value.trim();
             const pAge = document.getElementById('patientAge').value.trim();
             const pNotes = document.getElementById('patientNotes').value.trim();
+            
+            // Retrieve the linked ID if it was set
+            const linkedId = this.dataset.linkedPatientId || ""; 
 
             if (!pName) return;
 
@@ -228,19 +301,20 @@ function initializeQueueLogic() {
                     name: pName,
                     age: pAge,
                     note: pNotes,
-                    type: "appt",
-                    timestamp: new Date().toISOString()
+                    type: "walk-in",
+                    timestamp: new Date().toISOString(),
+                    patientId: linkedId // Save the link (e.g., "p_1") or empty string
                 };
 
                 // 1. Save to Queue
                 await set(ref(database, `queue/${newId}`), newQueueItem);
 
-                // 2. Create Audit Log
-                await createAuditLog(
-                    "Add to Queue", 
-                    `Added ${pName} to the queue.`, 
-                    newId
-                );
+                // 2. Audit
+                const details = linkedId 
+                    ? `Added linked patient (${linkedId}) ${pName} to queue.` 
+                    : `Added walk-in ${pName} to queue.`;
+                
+                await createAuditLog("Add to Queue", details, newId);
 
                 alert(`Successfully added ${pName} to the queue!`);
                 window.closeAddQueueModal();
@@ -252,7 +326,7 @@ function initializeQueueLogic() {
         });
     }
 
-    // --- DONE BUTTON LOGIC (with Audit) ---
+    // --- DONE BUTTON LOGIC ---
     const doneBtn = document.querySelector('.done-btn');
     if (doneBtn) {
         doneBtn.addEventListener('click', async function() {
@@ -260,7 +334,6 @@ function initializeQueueLogic() {
             const qNumEl = detailsPanel.querySelector('.queue-number');
             const qDisplayId = qNumEl ? qNumEl.textContent.trim() : '';
             
-            // Capture name for Audit log BEFORE clearing UI
             const nameEl = detailsPanel.querySelector('.patient-info-row span:first-child');
             const patientName = nameEl ? nameEl.textContent.replace('Name:', '').trim() : 'Unknown';
             
@@ -271,17 +344,9 @@ function initializeQueueLogic() {
 
             if (confirm(`Mark ${patientName} (${qDisplayId}) as done?`)) {
                 try {
-                    // 1. Remove from Queue
                     await set(ref(database, `queue/${dbId}`), null);
+                    await createAuditLog("Queue Done", `Marked ${patientName} (${qDisplayId}) as completed.`, dbId);
                     
-                    // 2. Create Audit Log
-                    await createAuditLog(
-                        "Queue Done", 
-                        `Marked ${patientName} (${qDisplayId}) as completed.`, 
-                        dbId
-                    );
-                    
-                    // 3. Clear UI
                     qNumEl.textContent = '';
                     detailsPanel.querySelector('.status-badge').textContent = '';
                     const spans = detailsPanel.querySelectorAll('.patient-info-row span');

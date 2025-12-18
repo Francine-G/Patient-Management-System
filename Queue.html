@@ -237,7 +237,6 @@
                     </div>
                     <div class="chart-options">
                         <button type="button" class="chart-btn" id="get-patient-records-btn">Get from Patient Records</button>
-                        <button type="button" class="chart-btn" id="create-chart-btn">Create New Chart</button>
                         <button type="button" class="chart-btn clear-btn" id="clear-fields-btn">Clear</button>
                     </div>
                     <button type="submit" class="search-patient-btn">Add to Queue</button>
@@ -255,18 +254,76 @@
             </div>
             <div class="history-modal-body">
                 <form id="createChartForm">
-                    <div class="form-group">
-                        <label for="chartPatientName">Patient Name</label>
-                        <input type="text" id="chartPatientName" name="chartPatientName" placeholder="Enter patient's name" required>
-                        <label for="chartPatientAge">Age</label>
-                        <input type="text" id="chartPatientAge" name="chartPatientAge" placeholder="Enter patient's age" required>
-                        <label for="chartPatientWeight">Weight</label>
-                        <input type="text" id="chartPatientWeight" name="chartPatientWeight" placeholder="Enter patient's weight (e.g. 50kg)">
-                        <label for="chartMedicalHistory">Medical History</label>
-                        <textarea id="chartMedicalHistory" name="chartMedicalHistory" placeholder="Enter medical history..."></textarea>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Patient ID (Auto-Generated):</label>
+                        <input type="text" class="form-input" value="AUTO-GENERATED" disabled>
                     </div>
+
+                    <div class="form-group">
+                        <label>Full Name <span class="required">*</span></label>
+                        <input type="text" id="newPatientName" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" id="newDOB" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sex</label>
+                        <input type="text" id="newSex" class="form-input" placeholder="e.g., Male, Female">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Blood Type</label>
+                        <input type="text" id="newBlood" class="form-input" placeholder="e.g., O+, A-, B+">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="tel" id="newNum" class="form-input" placeholder="+63 XXX XXX XXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="newemail" class="form-input" placeholder="email@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Company (N/A if none)</label>
+                        <input type="text" id="newComp" class="form-input" placeholder="Company name or N/A">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Emergency Contact</label>
+                        <input type="text" id="newEmergency" class="form-input" placeholder="Name and number">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Allergies</label>
+                        <textarea class="form-textarea" id="newAllergy" placeholder="List any known allergies..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Medical History</label>
+                        <textarea class="form-textarea" id="newMedHistory" placeholder="Enter medical history details..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Upload File</label>
+                        <button type="button" class="browse-btn" onclick="document.getElementById('fileInput').click()">
+                            <span>📎</span>
+                            <span>Browse</span>
+                        </button>
+                        <input type="file" id="fileInput" style="display: none;" accept=".pdf,.doc,.docx,image/*">
+                    </div>
+                </div>
+
+                <div class="form-actions">
                     <button type="submit" class="search-patient-btn">Create Chart</button>
-                </form>
+                </div>
+            </form>
             </div>
         </div>
     </div>

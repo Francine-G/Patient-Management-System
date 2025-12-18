@@ -122,14 +122,32 @@ window.handleAddPatient = async (event) => {
         }
         const newAuditId = `a_${nextAuditIdx}`;
 
-        // 3. Get Session Data (or defaults)
+        // 3. Get Session Data
         const activeUser = sessionStorage.getItem('username') || 'dr_francine'; 
         const activeRole = sessionStorage.getItem('role') || 'Doctor';
 
-        // 4. Create Patient Object
+        // --- NEW: Calculate Age Logic ---
+        const dobValue = document.getElementById('newDOB').value;
+        let calculatedAge = "N/A";
+        
+        if (dobValue) {
+            const birthDate = new Date(dobValue);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            
+            // Adjust if birth month hasn't happened yet this year
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            calculatedAge = age.toString();
+        }
+
+        // 4. Create Patient Object (Now includes 'age')
         const newPatient = {
             name: nameInput.value,
-            birthDate: document.getElementById('newDOB').value,
+            birthDate: dobValue,
+            age: calculatedAge, // Saved to database
             sex: document.getElementById('newSex').value,
             bloodType: document.getElementById('newBlood').value,
             mobileNum: document.getElementById('newNum').value,
@@ -143,7 +161,7 @@ window.handleAddPatient = async (event) => {
             lastCheck: "Initial Registration"
         };
 
-        // 5. Create Audit Object (Restored Logic)
+        // 5. Create Audit Object
         const newAudit = {
             action: "Add Patient",
             details: `Added patient: ${newPatientId} (${newPatient.name})`,
@@ -159,7 +177,7 @@ window.handleAddPatient = async (event) => {
             set(ref(database, `audits/${newAuditId}`), newAudit)
         ]);
 
-        alert(`Success! Patient ${newPatientId} added and logged.`);
+        alert(`Success! Patient ${newPatientId} added (Age: ${calculatedAge}).`);
         
         // 7. Cleanup
         const form = document.getElementById('patientForm');
@@ -176,5 +194,4 @@ window.handleAddPatient = async (event) => {
         alert('Failed to save. Open Console (F12) to see specific error.');
     }
 };
-
 loadPatients();
