@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Account Verification</title>
+        <link rel="stylesheet" type="text/css" href="assets/css/Sucess-Veri-style.css">
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+            <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+            <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+    </head> 
+
+    <body>
+        <div class="container">
+            <header>
+                <div class="logo">
+                    <img src="assets/img/Patient-Flow-Logo.png" alt="Patient Flow Logo">
+                    <h3>Patient Flow</h3>
+                    <p>A Patient Management and Queuing System</p>
+                </div>
+            </header>
+            
+            <main>
+                <div class="verification-box">
+                    <div class="heading">
+                        <h2>Account Verification</h2>
+                    </div>
+
+                    <div class="success">
+                        <i class="fi fi-rr-shield-trust"></i>
+                        <h3>Success!</h3>
+                        <p>Account has been verified successfully.</p>
+                    </div>
+
+                    <div class="redirect-msg">
+                        <p>Redirecting to dashboard...</p>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+        <script>
+            setTimeout(() => {
+                window.location.href = "Dashboard.html";
+            }, 3000);
+        </script>
+        <script type="module" src="assets/js/auth-check-verification.js"></script>
+    </body>
+</html>

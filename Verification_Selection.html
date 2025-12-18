@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Account Verification</title>
+        <link rel="stylesheet" type="text/css" href="assets/css/Ver-Select-style.css">
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+            <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+            <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+    </head> 
+
+    <body>
+        <div class="container">
+            <header>
+                <div class="logo">
+                    <img src="assets/img/Patient-Flow-Logo.png" alt="Patient Flow Logo">
+                    <h3>Patient Flow</h3>
+                    <p>A Patient Management and Queuing System</p>
+                </div>
+            </header>
+            
+            <main>
+
+                 <aside class="left">
+                    <div class="slide-container">
+                        <div class="slide active">
+                            <img src="assets/images/slideshow/slide1.png" alt="Photo 1">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/images/slideshow/slide2.png" alt="Photo 2">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/images/slideshow/slide3.png" alt="Photo 3">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/images/slideshow/slide4.png" alt="Photo 4">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/images/slideshow/slide5.png" alt="Photo 5">
+                        </div>
+
+                        <div class="dots-container">
+                            <span class="dot active" onclick="goToSlide(0)"></span>
+                            <span class="dot" onclick="goToSlide(1)"></span>
+                            <span class="dot" onclick="goToSlide(2)"></span>
+                            <span class="dot" onclick="goToSlide(3)"></span>
+                            <span class="dot" onclick="goToSlide(4)"></span>
+                            <span class="dot" onclick="goToSlide(5)"></span>
+                        </div>
+                    </div>
+                </aside>
+
+                <aside class="right">
+                    <div class="verification-box">
+                        <div class="heading">
+                            <h2>Verification</h2>
+                            <p>Choose how you'd like to verify your account</p>
+                        </div>
+                        <div class="options">
+                            <button class="option-button" data-link="Email_Verification.html">
+                                <i class="fi-rr-envelope option-icon"></i>
+                                <span class="option-text">Verify via Email</span>
+                            </button>
+                            <button class="option-button" data-link="SMS_Verification.html">
+                                <i class="fi-rr-smartphone option-icon"></i>
+                                <span class="option-text">Verify via SMS</span>
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+            </main>
+        </div>
+
+        <script>
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            let autoPlayInterval;
+
+            function showSlide(n) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                if (n >= slides.length) currentSlide = 0;
+                if (n < 0) currentSlide = slides.length - 1;
+                
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }
+
+            function changeSlide(n) {
+                currentSlide += n;
+                showSlide(currentSlide);
+                resetAutoPlay();
+            }
+
+            function goToSlide(n) {
+                currentSlide = n;
+                showSlide(currentSlide);
+                resetAutoPlay();
+            }
+
+            function autoPlay() {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+
+            function resetAutoPlay() {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = setInterval(autoPlay, 4000);
+            }
+
+            // Start autoplay
+            autoPlayInterval = setInterval(autoPlay, 4000);
+
+            // Pause on hover
+            const container = document.querySelector('.slide-container');
+            container.addEventListener('mouseenter', () => {
+                clearInterval(autoPlayInterval);
+            });
+
+            container.addEventListener('mouseleave', () => {
+                autoPlayInterval = setInterval(autoPlay, 4000);
+            });
+
+            // Handle option button clicks
+            const optionButtons = document.querySelectorAll('.option-button');
+            optionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const link = this.getAttribute('data-link');
+                    if (link) {
+                        window.location.href = link;
+                    }
+                });
+            });
+
+            // Handle direct link navigation via URL parameter
+            window.addEventListener('load', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirectLink = urlParams.get('redirect');
+                if (redirectLink) {
+                    window.location.href = redirectLink;
+                }
+            });
+        </script>
+
+        <script type="module" src="assets/js/auth-check-verification.js"></script>
+    </body>
+</html>

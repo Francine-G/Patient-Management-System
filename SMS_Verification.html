@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Account Verification</title>
+        <link rel="stylesheet" type="text/css" href="assets/css/SMS-Veri-style.css">
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+    </head> 
+
+    <body>
+        <div class="container">
+            <header>
+                <div class="logo">
+                    <img src="assets/img/Patient-Flow-Logo.png" alt="Patient Flow Logo">
+                    <h3>Patient Flow</h3>
+                    <p>A Patient Management and Queuing System</p>
+                </div>
+            </header>
+            
+            <main>
+
+                 <aside class="left">
+                    <div class="slide-container">
+                        <div class="slide active">
+                            <img src="assets/images/slideshow/slide1.png" alt="Photo 1">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/images/slideshow/slide2.png" alt="Photo 2">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/images/slideshow/slide3.png" alt="Photo 3">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/images/slideshow/slide4.png" alt="Photo 4">
+                        </div>
+                        <div class="slide">
+                            <img src="assets/images/slideshow/slide5.png" alt="Photo 5">
+                        </div>
+
+                        <div class="dots-container">
+                            <span class="dot active" onclick="goToSlide(0)"></span>
+                            <span class="dot" onclick="goToSlide(1)"></span>
+                            <span class="dot" onclick="goToSlide(2)"></span>
+                            <span class="dot" onclick="goToSlide(3)"></span>
+                            <span class="dot" onclick="goToSlide(4)"></span>
+                            <span class="dot" onclick="goToSlide(5)"></span>
+                        </div>
+                    </div>
+                </aside>
+
+                <aside class="right">
+                    <div class="verification-box">
+                        <div class="heading">
+                            <h2>OTP Verification</h2>
+                            <p>We will send you a one time pin to your mobile number</p>
+                        </div>
+                        <div class="verification-code-inputs">
+                            <form class="input-container">
+                                <div class="phone-input" role="group" aria-label="Mobile number input">
+                                    <input inputmode="numeric" pattern="[0-9]*" type="text" maxlength="10" class="phone-input" name="phone" aria-label="mobile number" placeholder="Enter mobile number">
+                                </div>
+
+                                <div class="code-actions">
+                                    <button type="submit" class="next">Next</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </aside>
+
+            </main>
+        </div>
+
+        <script>
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            let autoPlayInterval;
+
+            function showSlide(n) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                if (n >= slides.length) currentSlide = 0;
+                if (n < 0) currentSlide = slides.length - 1;
+                
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }
+
+            function changeSlide(n) {
+                currentSlide += n;
+                showSlide(currentSlide);
+                resetAutoPlay();
+            }
+
+            function goToSlide(n) {
+                currentSlide = n;
+                showSlide(currentSlide);
+                resetAutoPlay();
+            }
+
+            function autoPlay() {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+
+            function resetAutoPlay() {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = setInterval(autoPlay, 4000);
+            }
+
+            // Start autoplay
+            autoPlayInterval = setInterval(autoPlay, 4000);
+
+            // Pause on hover
+            const container = document.querySelector('.slide-container');
+            container.addEventListener('mouseenter', () => {
+                clearInterval(autoPlayInterval);
+            });
+
+            container.addEventListener('mouseleave', () => {
+                autoPlayInterval = setInterval(autoPlay, 4000);
+            });
+
+            // Handle form submission
+            const form = document.querySelector('.input-container');
+            const phoneInput = document.querySelector('.phone-input');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate phone input
+                if (phoneInput.value.trim() === '') {
+                    alert('Please enter a mobile number');
+                    return;
+                }
+                
+                if (phoneInput.value.length !== 10) {
+                    alert('Please enter a valid 10-digit mobile number');
+                    return;
+                }
+                
+                // Navigate to Verification_4.html
+                window.location.href = 'Verification_4.html';
+            });
+
+        </script>
+    </body>
+</html>

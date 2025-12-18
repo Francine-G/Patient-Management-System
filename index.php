@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient-Flow</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/landingpage-style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/LandingPage-style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="/website/css/uicons-outline-rounded.css"rel="stylesheet">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
@@ -13,7 +13,7 @@
 <body>
     <div class="page-wrap">
         <!-- Hero Overlay-->
-        <div class="hero-overlay"  style="background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 70%), url('assets/images/Landing-Page.png') no-repeat center center / cover;">
+        <div class="hero-overlay"  style="background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 70%), url('assets/images/Landing.png') no-repeat center center / cover;">
             <div class="hero-content" id="home">
                 <div class="hero-tag">Healthcare Management</div>
 
@@ -22,7 +22,8 @@
                 </div>
 
                 <p class="hero-description">
-                    Optimize patient management with our modern patient management and intelligent queuing system for efficient healthcare delivery
+                    Optimize patient management with our modern patient management and intelligent 
+                    queuing system for efficient healthcare delivery
                 </p>
 
                 <button class="hero-btn" onclick="toggleOverlay()">Learn More</button>
