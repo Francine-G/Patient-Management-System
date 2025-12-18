@@ -9,6 +9,7 @@
         <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-regular.css" rel="stylesheet">
         <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-bold.css" rel="stylesheet">
         <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-solid.css" rel="stylesheet">
+        <script type="module" src="assets/js/patient-rec.js"></script>
 
         <title>Patient</title>
         
@@ -166,26 +167,7 @@
     </div>
 
         <div class="patient-grid">
-            <div class="patient-card" onclick="openPatientModal('Rosa Garcia', 'RG-001', 'Female', '1985-03-15')">
-                    <div class="patient-avatar">R</div>
-                    <div class="patient-info">
-                        <h3>Rosa Garcia</h3>
-                        <div class="patient-detail"><strong>Patient ID:</strong> RG-001</div>
-                        <div class="patient-detail"><strong>Last Visit:</strong> August 17, 2025</div>
-                    </div>
-                    <button class="edit-btn" onclick="event.stopPropagation();">✏️</button>
-                </div>
-
-                <div class="patient-card" onclick="openPatientModal('Ryan Reynolds', 'ER-003', 'Male', '1972-11-20')">
-                    <div class="patient-avatar">E</div>
-                    <div class="patient-info">
-                        <h3>Edward Reynolds</h3>
-                        <div class="patient-detail"><strong>Patient ID:</strong> ER-003</div>
-                        <div class="patient-detail"><strong>Last Visit:</strong> June 3, 2025</div>
-                    </div>
-                    <button class="edit-btn" onclick="event.stopPropagation();">✏️</button>
-                </div>
-            </div>
+            
         </div>
 
     <!-- Patient Details Modal -->
@@ -198,28 +180,29 @@
                 
                 <div class="info-section">
                     <h3>Information</h3>
-                    <div class="info-item" id="patientName"><strong>Name:</strong> Jane Doe</div>
-                    <div class="info-item" id="patientID"><strong>Patient ID:</strong> JD-002</div>
-                    <div class="info-item" id="patientSex"><strong>Sex:</strong> Female</div>
-                    <div class="info-item" id="patientDOB"><strong>DOB:</strong> 1998-09-12</div>
+                    <div class="info-item" id="patientName"><strong>Name:</strong></div>
+                    <div class="info-item" id="patientID"><strong>Patient ID:</strong></div>
+                    <div class="info-item" id="patientSex"><strong>Sex:</strong></div>
+                    <div class="info-item" id="patientDOB"><strong>DOB:</strong></div>
+                    <div class="info-item" id="patientBlood"><strong>Blood Type:</strong></div>
                 </div>
 
                 <div class="info-section">
                     <h3>Contacts</h3>
-                    <div class="info-item">jane_doe@example.com</div>
-                    <div class="info-item">63+ 9148963354</div>
+                    <div class="info-item" id="patientEmail"></div>
+                    <div class="info-item" id="patientMobile"></div>
                 </div>
 
                 <div class="info-section">
                     <h3>Emergency Contact</h3>
-                    <div class="info-item">Mother</div>
-                    <div class="info-item">+63 673362015</div>
+                    <div class="info-item" id="emergencyPers"></div>
+                    <div class="info-item" id="emergencyCon"></div>
                 </div>
 
                 <div class="info-section">
                     <h3>Last Visit</h3>
-                    <div class="info-item">July 30, 2025</div>
-                    <div class="info-item">Regular Checkup</div>
+                    <div class="info-item" id="lastVisitDate"></div>
+                    <div class="info-item" id="lastCheckType"></div>
                 </div>
             </div>
 
