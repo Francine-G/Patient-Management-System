@@ -89,9 +89,57 @@ window.openPatientModal = function(patient) {
     document.getElementById('emergencyCon').innerText = patient.emergencyCon;
 
     // Last Visit
-    document.getElementById('lastVisitDate').innerText = patient['last visit'] || 'N/A';
+    document.getElementById('lastVisitDate').innerText = patient.lastVisit || 'N/A';
     document.getElementById('lastCheckType').innerText = patient.lastCheck || 'N/A';
 };
 
 // Initialize the loading process
 loadPatients();
+
+window.handleAddPatient = async () => {
+    const nameInput = document.getElementById('newPatientName');
+    if (!nameInput || !nameInput.value) {
+        alert("Please enter the patient's full name.");
+        return;
+    }
+
+    // Capture data using exact matches for your IDs and Firebase structure
+    const newPatient = {
+        name: nameInput.value,
+        birthDate: document.getElementById('newDOB').value,
+        sex: document.getElementById('newSex').value,
+        bloodType: document.getElementById('newBlood').value,
+        mobileNum: document.getElementById('newNum').value,
+        email: document.getElementById('newemail').value,
+        company: document.getElementById('newComp').value.trim(), // Fixed space issue
+        emergencyPers: document.getElementById('newEmgergency').value,
+        emergencyCon: "", // Placeholder to match your DB image structure
+        allergies: document.getElementById('newAllergy').value,
+        medHistory: document.getElementById('newMedHistory').value, // Matches DB Image
+        lastVisit: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), // Matches "December 24 2025"
+        lastCheck: "Initial Registration"
+    };
+
+    try {
+        const patientsRef = ref(database, 'patients');
+        const newPatientRef = push(patientsRef); 
+        
+        await set(newPatientRef, newPatient); 
+
+        alert('Patient record added successfully!');
+        
+        // Ensure form resets and modal closes
+        const form = document.getElementById('patientForm');
+        if (form) form.reset();
+
+        if (window.closeAddPatientModal) {
+            window.closeAddPatientModal();
+        }
+
+        loadPatients(); 
+        
+    } catch (error) {
+        console.error("Firebase Save Error:", error);
+        alert('Failed to save to database. Check console for details.');
+    }
+};

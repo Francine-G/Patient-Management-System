@@ -92,7 +92,7 @@
             
             <h2 class="form-title">Add New Patient Record</h2>
             
-            <form id="patientForm" onsubmit="handleAddPatient(event)">
+            <form id="patientForm">
                 <div class="form-grid">
                     <div class="form-group full-width">
                         <label>Patient ID (Auto-Generated):</label>
@@ -101,52 +101,52 @@
 
                     <div class="form-group">
                         <label>Full Name <span class="required">*</span></label>
-                        <input type="text" class="form-input" required>
+                        <input type="text" id="newPatientName" class="form-input" required>
                     </div>
 
                     <div class="form-group">
                         <label>Date of Birth</label>
-                        <input type="date" class="form-input">
+                        <input type="date" id="newDOB" class="form-input">
                     </div>
 
                     <div class="form-group">
                         <label>Sex</label>
-                        <input type="text" class="form-input" placeholder="e.g., Male, Female">
+                        <input type="text" id="newSex" class="form-input" placeholder="e.g., Male, Female">
                     </div>
 
                     <div class="form-group">
                         <label>Blood Type</label>
-                        <input type="text" class="form-input" placeholder="e.g., O+, A-, B+">
+                        <input type="text" id="newBlood" class="form-input" placeholder="e.g., O+, A-, B+">
                     </div>
 
                     <div class="form-group">
                         <label>Mobile Number</label>
-                        <input type="tel" class="form-input" placeholder="+63 XXX XXX XXXX">
+                        <input type="tel" id="newNum" class="form-input" placeholder="+63 XXX XXX XXXX">
                     </div>
 
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" class="form-input" placeholder="email@example.com">
+                        <input type="email" id="newemail" class="form-input" placeholder="email@example.com">
                     </div>
 
                     <div class="form-group">
                         <label>Company (N/A if none)</label>
-                        <input type="text" class="form-input" placeholder="Company name or N/A">
+                        <input type="text" id="newComp" class="form-input" placeholder="Company name or N/A">
                     </div>
 
                     <div class="form-group">
                         <label>Emergency Contact</label>
-                        <input type="text" class="form-input" placeholder="Name and number">
+                        <input type="text" id="newEmgergency" class="form-input" placeholder="Name and number">
                     </div>
 
                     <div class="form-group full-width">
                         <label>Allergies</label>
-                        <textarea class="form-textarea" placeholder="List any known allergies..."></textarea>
+                        <textarea class="form-textarea" id="newAllergy" placeholder="List any known allergies..."></textarea>
                     </div>
 
                     <div class="form-group full-width">
                         <label>Medical History</label>
-                        <textarea class="form-textarea" placeholder="Enter medical history details..."></textarea>
+                        <textarea class="form-textarea" id="newMedHistory" placeholder="Enter medical history details..."></textarea>
                     </div>
 
                     <div class="form-group full-width">
@@ -160,7 +160,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="add-btn">ADD</button>
+                    <button type="submit" class="add-btn" onclick="handleAddPatient()">ADD</button>
                 </div>
             </form>
         </div>

@@ -127,7 +127,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    window.closePatientModal = function () { const pm = document.getElementById('patientModal'); if (pm) pm.classList.remove('active'); };
+    window.closePatientModal = function () { 
+    const pm = document.getElementById('patientModal'); 
+    if (pm) {
+        pm.classList.remove('active'); 
+        pm.style.display = ''; // Clear the inline style so CSS can take over again
+    }
+};
     window.closeModalOnOutsideClick = function (event) { if (event.target && event.target.id === 'patientModal') window.closePatientModal(); };
 
     // Search input
@@ -150,19 +156,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (modal) modal.classList.add('active');
     };
 
-    window.closePatientModal = function () { 
-    const pm = document.getElementById('patientModal'); 
-    if (pm) {
-        pm.classList.remove('active'); 
-        pm.style.display = ''; // Clear the inline style so CSS can take over again
-    }
-};
-
-    window.handleAddPatient = function (event) {
-        event.preventDefault();
-        alert('Patient record added successfully!');
-        window.closeAddPatientModal();
+    window.closeAddPatientModal = function (event) {
+        const modal = document.getElementById('addPatientModal');
+        if (!event || (event.target && event.target.id === 'addPatientModal')) {
+            if (modal) modal.classList.remove('active');
+            const form = document.getElementById('patientForm');
+            if (form) form.reset();
+        }
     };
+
 
     // --- Notification page helpers ---
     window.markAsRead = function (btn) {
