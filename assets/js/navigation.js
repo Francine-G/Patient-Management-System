@@ -127,21 +127,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Patient record buttons (defensive) ---
-    window.openPatientModal = function (name, id, sex, dob) {
-        const pm = document.getElementById('patientModal');
-        if (!pm) return;
-        const elName = document.getElementById('patientName');
-        const elId = document.getElementById('patientID');
-        const elSex = document.getElementById('patientSex');
-        const elDob = document.getElementById('patientDOB');
-        if (elName) elName.innerHTML = `<strong>Name:</strong> ${name}`;
-        if (elId) elId.innerHTML = `<strong>Patient ID:</strong> ${id}`;
-        if (elSex) elSex.innerHTML = `<strong>Sex:</strong> ${sex}`;
-        if (elDob) elDob.innerHTML = `<strong>DOB:</strong> ${dob}`;
-        pm.classList.add('active');
-    };
-
     window.closePatientModal = function () { const pm = document.getElementById('patientModal'); if (pm) pm.classList.remove('active'); };
     window.closeModalOnOutsideClick = function (event) { if (event.target && event.target.id === 'patientModal') window.closePatientModal(); };
 
@@ -165,14 +150,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (modal) modal.classList.add('active');
     };
 
-    window.closeAddPatientModal = function (event) {
-        const modal = document.getElementById('addPatientModal');
-        if (!event || (event.target && event.target.id === 'addPatientModal')) {
-            if (modal) modal.classList.remove('active');
-            const form = document.getElementById('patientForm');
-            if (form) form.reset();
-        }
-    };
+    window.closePatientModal = function () { 
+    const pm = document.getElementById('patientModal'); 
+    if (pm) {
+        pm.classList.remove('active'); 
+        pm.style.display = ''; // Clear the inline style so CSS can take over again
+    }
+};
 
     window.handleAddPatient = function (event) {
         event.preventDefault();
