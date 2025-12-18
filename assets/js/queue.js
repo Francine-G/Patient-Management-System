@@ -19,17 +19,13 @@ const loadQueue = () => {
     const queueRef = ref(database, 'queue');
     const container = document.querySelector('.queue-cards-container');
 
-    // onValue runs once immediately, and again whenever data changes
     onValue(queueRef, (snapshot) => {
         if (!container) return;
-        
-        // Clear current static cards
-        container.innerHTML = '';
+        container.innerHTML = ''; // Clear current list
 
         if (snapshot.exists()) {
             const data = snapshot.val();
-            
-            // Sort keys to ensure order (q_1, q_2, etc.)
+            // Sort by ID (q_1, q_2...)
             const keys = Object.keys(data).sort((a, b) => {
                 const numA = parseInt(a.split('_')[1]);
                 const numB = parseInt(b.split('_')[1]);
@@ -46,23 +42,29 @@ const loadQueue = () => {
     });
 };
 
-// --- Helper to Create Card HTML ---
 const createQueueCard = (id, data, container) => {
-    // 1. Format ID: "q_1" -> "Q-001"
     const idNumber = id.split('_')[1];
     const displayId = `Q-${String(idNumber).padStart(3, '0')}`;
-
-    // 2. Determine Badge Class (appt vs walk-in)
-    // Assumes database 'type' is "appt" or "walk-in"
     const isAppt = data.type && data.type.toLowerCase().includes('appt');
     const badgeClass = isAppt ? 'appt' : 'walk-in';
     const badgeText = isAppt ? 'Appt' : 'Walk-in';
 
-    // 3. Create Element
+    // Safely get history or default to empty object
+    const hist = data.history || {};
+
     const card = document.createElement('div');
     card.className = 'queue-card';
     
-    // 4. Build HTML content
+    // 1. Store Standard Data
+    card.setAttribute('data-pid', data.patientId || '');
+    
+    // 2. *** NEW: Store History Data as Attributes ***
+    card.setAttribute('data-hist-date', hist.date || '-');
+    card.setAttribute('data-hist-weight', hist.weight || '-');
+    card.setAttribute('data-hist-diagnosis', hist.diagnosis || '-');
+    card.setAttribute('data-hist-meds', hist.medication || '-');
+    card.setAttribute('data-hist-notes', hist.notes || '-');
+    
     card.innerHTML = `
         <div class="queue-card-header">
             <span class="queue-card-number">${displayId}</span>
@@ -75,9 +77,7 @@ const createQueueCard = (id, data, container) => {
         </div>
     `;
 
-    // 5. Append to Container
     container.appendChild(card);
 };
 
-// Initialize listener when DOM is ready
 document.addEventListener('DOMContentLoaded', loadQueue);
