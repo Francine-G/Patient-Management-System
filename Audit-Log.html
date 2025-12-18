@@ -45,7 +45,7 @@
                     <br>
                     <nav class="navigation-menu">
                         <ul>
-                            <li><a href="Dashboard.html" class="nav-link active"><i class="fi fi-ss-objects-column"></i>Dashboard</a></li>
+                            <li><a href="Dashboard.html" class="nav-link"><i class="fi fi-ss-objects-column"></i>Dashboard</a></li>
                             <li><a href="Patient-Records.html" class="nav-link "><i class="fi fi-ss-document"></i>Patient Records</a></li>
                             <li><a href="Queue.html" class="nav-link "><i class="fi fi-ss-completed"></i>Queue</a></li>
                             <li><a href="Schedule.html" class="nav-link "><i class="fi fi-ss-calendar-clock"></i>Schedule</a></li>
@@ -60,12 +60,22 @@
 
             <main class="main-content">
                 <div class="audit-container">
-                    <!-- Header -->
-                    <div class="audit-header">
-                        <h1>Audit Logs</h1>
-                        <p>Track all system activities and user actions</p>
+                    <div class="header">
+                        <div class="header-left">
+                            <h1>Audit Log</h1>
+                            <p id="welcome-message">Track all system activities and user actions</p>
+                        </div>
+                        <div class="header-right">
+                            <div class="date-badge">
+                                <strong id="current-date">Loading...</strong>
+                            </div>
+                            <button class="notif-btn" aria-label="Notifications">
+                                <span class="notif-icon">🔔</span>
+                                <span class="notif-dot" aria-hidden="true"></span>
+                            </button>
+                        </div>
                     </div>
-
+        
                     <!-- Filters Card -->
                     <div class="card filters-card">
                         <div class="filters-container">

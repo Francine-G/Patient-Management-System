@@ -207,6 +207,74 @@ body {
 
 /*Main-Content Styles */
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header-left h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background:  #005A64 ;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+}
+
+.header-left p {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.date-badge {
+    background: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.date-badge strong {
+    font-size: 0.9rem;
+    color: #1e293b;
+}
+
+.notif-btn {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: white;
+    color: #005A64;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.notif-btn:hover {
+    transform: translateY(-2px);
+}
+
+.notif-btn .notif-dot {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    background: #ef4444;
+    border-radius: 50%;
+}
+
 .main-content {
     margin-left: 320px;
     padding: 40px;
