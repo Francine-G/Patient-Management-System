@@ -257,3 +257,222 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Opening file: ' + fileName);
             });
         });
+
+     function toggleFilterMenu() {
+            const filterMenu = document.getElementById('filterMenu');
+            filterMenu.classList.toggle('active');
+        }
+
+        function filterQueueList() {
+            const checkboxes = document.querySelectorAll('.filter-option input[type="checkbox"]');
+            const queueCards = document.querySelectorAll('.queue-card');
+            const selectedFilters = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            if (selectedFilters.includes('all')) {
+                queueCards.forEach(card => card.style.display = 'block');
+                return;
+            }
+
+            queueCards.forEach(card => {
+                const badge = card.querySelector('.queue-card-badge');
+                const badgeClass = badge.classList.contains('appt') ? 'appt' : 'walk-in';
+                
+                if (selectedFilters.length === 0 || selectedFilters.includes(badgeClass)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Close filter menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const filterMenu = document.getElementById('filterMenu');
+            const filterBtn = document.querySelector('.filter-btn');
+            if (!filterMenu.contains(event.target) && !filterBtn.contains(event.target)) {
+                filterMenu.classList.remove('active');
+            }
+        });
+
+       function toggleFilterMenu() {
+            const filterMenu = document.getElementById('filterMenu');
+            filterMenu.classList.toggle('active');
+        }
+
+        function filterQueueList() {
+            const checkboxes = document.querySelectorAll('.filter-option input[type="checkbox"]');
+            const queueCards = document.querySelectorAll('.queue-card');
+            const selectedFilters = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            if (selectedFilters.includes('all')) {
+                queueCards.forEach(card => card.style.display = 'block');
+                return;
+            }
+
+            queueCards.forEach(card => {
+                const badge = card.querySelector('.queue-card-badge');
+                const badgeClass = badge.classList.contains('appt') ? 'appt' : 'walk-in';
+                
+                if (selectedFilters.length === 0 || selectedFilters.includes(badgeClass)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function openHistoryModal() {
+            const historyModal = document.getElementById('historyModal');
+            historyModal.classList.add('active');
+        }
+
+        function closeHistoryModal(event) {
+            if (event && event.target.id !== 'historyModal') return;
+            const historyModal = document.getElementById('historyModal');
+            historyModal.classList.remove('active');
+        }
+
+        // Close filter menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const filterMenu = document.getElementById('filterMenu');
+            const filterBtn = document.querySelector('.filter-btn');
+            if (filterMenu && !filterMenu.contains(event.target) && !filterBtn.contains(event.target)) {
+                filterMenu.classList.remove('active');
+            }
+        });
+
+        // Close history modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeHistoryModal({ target: { id: 'historyModal' } });
+            }
+        });
+
+          // Drag & Drop: allow dragging queue cards and dropping to details panel
+        (function () {
+            function extractCardData(card) {
+                const numberEl = card.querySelector('.queue-card-number');
+                const badgeEl = card.querySelector('.queue-card-badge');
+                const infoDivs = Array.from(card.querySelectorAll('.queue-card-info div'));
+                const name = infoDivs[0] ? infoDivs[0].textContent.replace('Name:', '').trim() : '';
+                const age = infoDivs[1] ? infoDivs[1].textContent.replace('Age:', '').trim() : '';
+                const notes = infoDivs[2] ? infoDivs[2].textContent.replace('Notes:', '').trim() : '';
+                return {
+                    queueNumber: numberEl ? numberEl.textContent.trim() : '',
+                    badgeText: badgeEl ? badgeEl.textContent.trim() : '',
+                    name: name,
+                    age: age,
+                    notes: notes
+                };
+            }
+
+            const cards = document.querySelectorAll('.queue-card');
+            cards.forEach(card => {
+                card.setAttribute('draggable', 'true');
+
+                card.addEventListener('dragstart', function (e) {
+                    card.classList.add('dragging');
+                    const data = extractCardData(card);
+                    try { e.dataTransfer.setData('application/json', JSON.stringify(data)); }
+                    catch (err) { e.dataTransfer.setData('text/plain', JSON.stringify(data)); }
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                card.addEventListener('dragend', function () { card.classList.remove('dragging'); });
+            });
+
+            const details = document.querySelector('.queue-details');
+            if (details) {
+                details.addEventListener('dragover', function (e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; details.classList.add('drag-over'); });
+                details.addEventListener('dragleave', function () { details.classList.remove('drag-over'); });
+                details.addEventListener('drop', function (e) {
+                    e.preventDefault(); details.classList.remove('drag-over');
+                    let payload = null;
+                    try { payload = JSON.parse(e.dataTransfer.getData('application/json')); }
+                    catch (err) {
+                        try { payload = JSON.parse(e.dataTransfer.getData('text/plain')); } catch (e2) { payload = null; }
+                    }
+                    if (!payload) return;
+
+                    // populate left details
+                    const qNum = details.querySelector('.queue-number');
+                    const badge = details.querySelector('.status-badge');
+                    if (qNum) qNum.textContent = payload.queueNumber || '';
+                    if (badge) badge.textContent = payload.badgeText || '';
+
+                    const infoRows = details.querySelectorAll('.patient-info-row');
+                    if (infoRows && infoRows.length > 0) {
+                        const firstRowSpans = infoRows[0].querySelectorAll('span');
+                        if (firstRowSpans[0]) firstRowSpans[0].innerHTML = '<strong>Name:</strong> ' + (payload.name || '');
+                        // keep Sex and DOB unchanged if not provided
+                        if (firstRowSpans[1] && payload.age) firstRowSpans[1].innerHTML = '<strong>Age:</strong> ' + payload.age;
+                    }
+
+                    if (infoRows && infoRows.length > 1) {
+                        const notesSpan = infoRows[1].querySelector('span');
+                        if (notesSpan) notesSpan.innerHTML = '<strong>Notes:</strong> ' + (payload.notes || '');
+                    }
+
+                    // Optionally, record this view in history modal (if present)
+                    const historyModalBody = document.querySelector('.history-modal .history-modal-body');
+                    if (historyModalBody) {
+                        const now = new Date();
+                        const hh = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+                        const item = document.createElement('div');
+                        item.className = 'history-item';
+                        item.innerHTML = '<span class="history-time">' + hh + '</span>' +
+                                         '<span class="history-patient">' + (payload.name || '') + ' (' + (payload.queueNumber || '') + ')</span>' +
+                                         '<span class="history-status">Viewed - ' + (payload.badgeText || '') + '</span>';
+                        historyModalBody.insertBefore(item, historyModalBody.firstChild);
+                    }
+                });
+            }
+        })();
+
+        // History Page Header Enhancements//
+  // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Week filter function
+        function filterWeek(week) {
+            // Update active tab
+            document.querySelectorAll('.week-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            const grid = document.getElementById('visitorsGrid');
+            
+            if (week === 'current') {
+                // Show current week visitors
+                grid.innerHTML = `
+                    ${grid.innerHTML}
+                `;
+            } else {
+                // Show empty state for other weeks (can be populated with actual data)
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-state-icon">📋</div>
+                        <h3>No visits recorded</h3>
+                        <p>There are no patient visits for this week period.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Click visitor card to view details
+        document.querySelectorAll('.visitor-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const patientName = this.querySelector('h4').textContent;
+                alert('View details for ' + patientName);
+            });
+        });

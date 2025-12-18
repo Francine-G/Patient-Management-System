@@ -1,0 +1,541 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('./Dashboard-style.css');
+
+.history-page * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.history-page {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    height: 100vh;
+}
+
+.history-page .sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #4da6a6 0%, #3d8c8c 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px;
+}
+
+.history-page .logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.history-page .logo {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #4da6a6;
+}
+
+.history-page .logo-text h3 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.history-page .logo-text p {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.history-page .user-section {
+    display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4da6a6;
+            font-size: 20px;
+        }
+
+        .user-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 14px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .nav-item::before {
+            content: '📋';
+            font-size: 18px;
+        }
+
+        .nav-item:nth-child(1)::before { content: '▦'; }
+        .nav-item:nth-child(2)::before { content: '📋'; }
+        .nav-item:nth-child(3)::before { content: '📋'; }
+        .nav-item:nth-child(4)::before { content: '📋'; }
+        .nav-item:nth-child(5)::before { content: '📋'; }
+        .nav-item:nth-child(6)::before { content: '⚙️'; }
+
+        .logout-btn {
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            margin-top: auto;
+        }
+
+        .logout-btn::before {
+            content: '→';
+            font-size: 18px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: #e8e8e8;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .header-text h1 {
+            font-size: 32px;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .date-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .date-text {
+            text-align: right;
+        }
+
+        .date-text .label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .date-text .date {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .date-badge .icon {
+            font-size: 24px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-left h3 {
+            font-size: 18px;
+            color: #000;
+            margin-bottom: 8px;
+        }
+
+        .info-left p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .reset-badge {
+            background: #ffe066;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .week-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .week-tab {
+            background: white;
+            border: 2px solid #ddd;
+            color: #666;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .week-tab:hover {
+            border-color: #4da6a6;
+            color: #4da6a6;
+        }
+
+        .week-tab.active {
+            background: #4da6a6;
+            border-color: #4da6a6;
+            color: white;
+        }
+
+        .visitors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .visitor-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .visitor-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .visitor-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .visitor-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #3d8c8c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .visitor-info h4 {
+            font-size: 16px;
+            color: #000;
+            margin-bottom: 3px;
+        }
+
+        .visitor-info p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .visitor-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .visitor-detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .visitor-detail-row .label {
+            color: #666;
+        }
+
+        .visitor-detail-row .value {
+            color: #000;
+            font-weight: 600;
+        }
+
+        .visit-type-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .visit-type-badge.followup {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .visit-type-badge.emergency {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 12px;
+            padding: 60px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-box .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-box .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4da6a6;
+        }
+
+/* Sidebar collapse handling */
+.history-page.sidebar-collapsed .sidebar {
+    transform: translateX(-110%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.history-page.sidebar-collapsed .main-content {
+    margin-left: 20px;
+}
+
+/* Responsive design for different screen sizes */
+@media (max-width: 1400px) {
+    .main-content > .header,
+    .main-content > .info-card,
+    .main-content > .stats-bar,
+    .main-content > .week-tabs,
+    .main-content > .visitors-grid {
+        max-width: 90%;
+    }
+    
+    .main-content {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .history-page {
+        flex-direction: column;
+    }
+    
+    .history-page .sidebar {
+        width: 100%;
+        max-height: 60px;
+        flex-direction: row;
+        padding: 10px;
+        position: fixed;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .main-content {
+        margin-top: 60px;
+        padding: 20px;
+    }
+    
+    .main-content > .header,
+    .main-content > .info-card,
+    .main-content > .stats-bar,
+    .main-content > .week-tabs,
+    .main-content > .visitors-grid {
+        max-width: 95%;
+        width: 100%;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .header-left h1 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding: 16px;
+    }
+    
+    .main-content > .header,
+    .main-content > .info-card,
+    .main-content > .stats-bar,
+    .main-content > .week-tabs,
+    .main-content > .visitors-grid {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .visitors-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+    }
+    
+    .info-card {
+        flex-direction: column;
+    }
+    
+    .info-left,
+    .info-right {
+        width: 100%;
+    }
+    
+    .header-left h1 {
+        font-size: 20px;
+    }
+    
+    .header-left p {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 12px;
+    }
+    
+    .main-content > .header,
+    .main-content > .info-card,
+    .main-content > .stats-bar,
+    .main-content > .week-tabs,
+    .main-content > .visitors-grid {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .visitors-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .header-left h1 {
+        font-size: 18px;
+    }
+    
+    .stats-bar {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .stat-box {
+        flex: 1;
+        min-width: 120px;
+    }
+}

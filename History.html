@@ -1,0 +1,315 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="assets/css/History.css">
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-regular.css" rel="stylesheet">
+        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-bold.css" rel="stylesheet">
+        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-solid.css" rel="stylesheet">
+
+        <title>Patient History</title>
+        
+    </head>
+
+    <body>
+        
+        <div class="container">
+            <aside>
+                <div class="sidebar">
+                    <div class="system-logo">
+                        <div class="row">
+                            <img src="assets/images/logo2.png" alt="Patient Flow Logo">
+                            <div class="column">
+                                <h3>Patient-Flow</h3>  
+                                <p>A Patient Management and Queuing System</p> 
+                            </div>  
+                        </div>
+                    </div>
+                    <br>
+                    <div class="user">
+                        <div class="user-info">
+                            <div class="row">
+                                <img src="assets/images/user-profile.png" alt="User Profile">
+                            <div class="column">
+                                <h3>User Name</h3>  
+                                <p>Doctor</p> 
+                            </div>  
+                        </div>
+                        </div>
+                    </div>
+                    <br>
+                    <nav class="navigation-menu">
+                        <ul>
+                            <li><a href="Dashboard.html" class="nav-link"><i class="fi fi-ss-objects-column"></i>Dashboard</a></li>
+                            <li><a href="Patient-Records.html" class="nav-link "><i class="fi fi-ss-document"></i>Patient Records</a></li>
+                            <li><a href="Queue.html" class="nav-link "><i class="fi fi-ss-completed"></i>Queue</a></li>
+                            <li><a href="Schedule.html" class="nav-link "><i class="fi fi-ss-calendar-clock"></i>Schedule</a></li>
+                            <li><a href="Audit-Log.html" class="nav-link "><i class="fi fi-ss-audit-alt"></i>Audit Log</a></li>
+                            <li><a href="Settings.html" class="nav-link "><i class="fi fi-ss-settings-sliders"></i>Settings</a></li>
+                            <li><a href="History.html" class="nav-link active"><i class="fi fi-ss-history"></i>History</a></li>
+                            <li><a href="LogIn.html" class="nav-link "><i class="fi fi-ss-sign-out-alt"></i>Log Out</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+        </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="header-text">
+                <h1>Patient History</h1>
+                <p>Track patient visits within the current 30-day period</p>
+            </div>
+            <div class="header-right">
+                <div class="date-badge">
+                    <strong>Today's Date<br>Nov 24, 2025</strong>
+                    <span>🌙</span>
+                </div>
+                <button class="notif-btn" aria-label="Notifications">
+                    <span class="notif-icon">🔔</span>
+                    <span class="notif-dot" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="info-left">
+                <h3>Current Tracking Period</h3>
+                <p>October 25, 2025 - November 24, 2025</p>
+            </div>
+            <div class="reset-badge">Resets in 7 days</div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-box">
+                <div class="stat-label">Total Visits This Period</div>
+                <div class="stat-value">47</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">This Week</div>
+                <div class="stat-value">12</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Today</div>
+                <div class="stat-value">3</div>
+            </div>
+        </div>
+
+        <div class="week-tabs">
+            <button class="week-tab active" onclick="filterWeek('current')">This Week (Nov 18-24)</button>
+            <button class="week-tab" onclick="filterWeek('week1')">Week 1 (Nov 11-17)</button>
+            <button class="week-tab" onclick="filterWeek('week2')">Week 2 (Nov 4-10)</button>
+            <button class="week-tab" onclick="filterWeek('week3')">Week 3 (Oct 28-Nov 3)</button>
+            <button class="week-tab" onclick="filterWeek('week4')">Week 4 (Oct 25-27)</button>
+        </div>
+
+        <div class="visitors-grid" id="visitorsGrid">
+            <!-- This Week's Visitors -->
+            <div class="visitor-card">
+                <div class="visitor-header">
+                    <div class="visitor-avatar">J</div>
+                    <div class="visitor-info">
+                        <h4>Jane Doe</h4>
+                        <p>Patient ID: JD-002</p>
+                    </div>
+                </div>
+                <div class="visitor-details">
+                    <div class="visitor-detail-row">
+                        <span class="label">Visit Date:</span>
+                        <span class="value">Nov 24, 2025</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Time:</span>
+                        <span class="value">9:30 AM</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Reason:</span>
+                        <span class="value">Regular Checkup</span>
+                    </div>
+                    <span class="visit-type-badge">Scheduled</span>
+                </div>
+            </div>
+
+            <div class="visitor-card">
+                <div class="visitor-header">
+                    <div class="visitor-avatar">A</div>
+                    <div class="visitor-info">
+                        <h4>Alexander Harrison</h4>
+                        <p>Patient ID: AH-015</p>
+                    </div>
+                </div>
+                <div class="visitor-details">
+                    <div class="visitor-detail-row">
+                        <span class="label">Visit Date:</span>
+                        <span class="value">Nov 24, 2025</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Time:</span>
+                        <span class="value">11:15 AM</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Reason:</span>
+                        <span class="value">Headache, Dry Cough</span>
+                    </div>
+                    <span class="visit-type-badge">Walk-in</span>
+                </div>
+            </div>
+
+            <div class="visitor-card">
+                <div class="visitor-header">
+                    <div class="visitor-avatar">M</div>
+                    <div class="visitor-info">
+                        <h4>Max Verstappen</h4>
+                        <p>Patient ID: MV-027</p>
+                    </div>
+                </div>
+                <div class="visitor-details">
+                    <div class="visitor-detail-row">
+                        <span class="label">Visit Date:</span>
+                        <span class="value">Nov 24, 2025</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Time:</span>
+                        <span class="value">2:00 PM</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Reason:</span>
+                        <span class="value">Flu Shot</span>
+                    </div>
+                    <span class="visit-type-badge">Scheduled</span>
+                </div>
+            </div>
+
+            <div class="visitor-card">
+                <div class="visitor-header">
+                    <div class="visitor-avatar">R</div>
+                    <div class="visitor-info">
+                        <h4>Rosa Garcia</h4>
+                        <p>Patient ID: RG-001</p>
+                    </div>
+                </div>
+                <div class="visitor-details">
+                    <div class="visitor-detail-row">
+                        <span class="label">Visit Date:</span>
+                        <span class="value">Nov 22, 2025</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Time:</span>
+                        <span class="value">10:00 AM</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Reason:</span>
+                        <span class="value">Back Pain Follow-up</span>
+                    </div>
+                    <span class="visit-type-badge followup">Follow-up</span>
+                </div>
+            </div>
+
+            <div class="visitor-card">
+                <div class="visitor-header">
+                    <div class="visitor-avatar">E</div>
+                    <div class="visitor-info">
+                        <h4>Edward Reynolds</h4>
+                        <p>Patient ID: ER-003</p>
+                    </div>
+                </div>
+                <div class="visitor-details">
+                    <div class="visitor-detail-row">
+                        <span class="label">Visit Date:</span>
+                        <span class="value">Nov 21, 2025</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Time:</span>
+                        <span class="value">3:45 PM</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Reason:</span>
+                        <span class="value">Chest Pain</span>
+                    </div>
+                    <span class="visit-type-badge emergency">Emergency</span>
+                </div>
+            </div>
+
+            <div class="visitor-card">
+                <div class="visitor-header">
+                    <div class="visitor-avatar">S</div>
+                    <div class="visitor-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Patient ID: SJ-012</p>
+                    </div>
+                </div>
+                <div class="visitor-details">
+                    <div class="visitor-detail-row">
+                        <span class="label">Visit Date:</span>
+                        <span class="value">Nov 20, 2025</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Time:</span>
+                        <span class="value">1:30 PM</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Reason:</span>
+                        <span class="value">Annual Physical</span>
+                    </div>
+                    <span class="visit-type-badge">Scheduled</span>
+                </div>
+            </div>
+
+            <div class="visitor-card">
+                <div class="visitor-header">
+                    <div class="visitor-avatar">L</div>
+                    <div class="visitor-info">
+                        <h4>Lisa Martinez</h4>
+                        <p>Patient ID: LM-034</p>
+                    </div>
+                </div>
+                <div class="visitor-details">
+                    <div class="visitor-detail-row">
+                        <span class="label">Visit Date:</span>
+                        <span class="value">Nov 19, 2025</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Time:</span>
+                        <span class="value">11:00 AM</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Reason:</span>
+                        <span class="value">Allergy Testing</span>
+                    </div>
+                    <span class="visit-type-badge">Scheduled</span>
+                </div>
+            </div>
+
+            <div class="visitor-card">
+                <div class="visitor-header">
+                    <div class="visitor-avatar">D</div>
+                    <div class="visitor-info">
+                        <h4>David Chen</h4>
+                        <p>Patient ID: DC-018</p>
+                    </div>
+                </div>
+                <div class="visitor-details">
+                    <div class="visitor-detail-row">
+                        <span class="label">Visit Date:</span>
+                        <span class="value">Nov 18, 2025</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Time:</span>
+                        <span class="value">4:15 PM</span>
+                    </div>
+                    <div class="visitor-detail-row">
+                        <span class="label">Reason:</span>
+                        <span class="value">Prescription Refill</span>
+                    </div>
+                    <span class="visit-type-badge">Walk-in</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="assets/js/navigation.js"></script>
+</body>
+</html>
