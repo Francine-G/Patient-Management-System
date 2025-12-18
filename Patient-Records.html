@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="assets/css/Dashboard-style.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/Patient_Records-style.css">
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
@@ -55,7 +55,196 @@
                 </div>
             </aside>    
         </div>
+        <div class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <h1>Patient Records</h1>
+                <p>Manage and view all patient information</p>
+            </div>
+             <div class="header-right">
+                <div class="date-badge">
+                    <strong>Today's Date<br>Nov 24, 2025</strong>
+                    <span>🌙</span>
+                </div>
+                <button class="notif-btn" aria-label="Notifications">
+                    <span class="notif-icon">🔔</span>
+                    <span class="notif-dot" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search Patient Name or Patient ID...">
+            </div>
+            <button class="add-record-btn">
+                <span style="font-size: 20px;">+</span>
+                Add New Record
+            </button>
+        </div>
+
+        <!-- Add New Patient Modal -->
+    <div class="add-patient-modal" id="addPatientModal" onclick="closeAddPatientModal(event)">
+        <div class="add-patient-form" onclick="event.stopPropagation();">
+            <button class="form-close" onclick="closeAddPatientModal()">✕</button>
+            
+            <h2 class="form-title">Add New Patient Record</h2>
+            
+            <form id="patientForm" onsubmit="handleAddPatient(event)">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Patient ID (Auto-Generated):</label>
+                        <input type="text" class="form-input" value="AUTO-GENERATED" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Full Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sex</label>
+                        <input type="text" class="form-input" placeholder="e.g., Male, Female">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Blood Type</label>
+                        <input type="text" class="form-input" placeholder="e.g., O+, A-, B+">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="tel" class="form-input" placeholder="+63 XXX XXX XXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-input" placeholder="email@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Company (N/A if none)</label>
+                        <input type="text" class="form-input" placeholder="Company name or N/A">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Emergency Contact</label>
+                        <input type="text" class="form-input" placeholder="Name and number">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Allergies</label>
+                        <textarea class="form-textarea" placeholder="List any known allergies..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Medical History</label>
+                        <textarea class="form-textarea" placeholder="Enter medical history details..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Upload File</label>
+                        <button type="button" class="browse-btn" onclick="document.getElementById('fileInput').click()">
+                            <span>📎</span>
+                            <span>Browse</span>
+                        </button>
+                        <input type="file" id="fileInput" style="display: none;" accept=".pdf,.doc,.docx,image/*">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="add-btn">ADD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <div class="patient-grid">
+            <div class="patient-card" onclick="openPatientModal('Rosa Garcia', 'RG-001', 'Female', '1985-03-15')">
+                    <div class="patient-avatar">R</div>
+                    <div class="patient-info">
+                        <h3>Rosa Garcia</h3>
+                        <div class="patient-detail"><strong>Patient ID:</strong> RG-001</div>
+                        <div class="patient-detail"><strong>Last Visit:</strong> August 17, 2025</div>
+                    </div>
+                    <button class="edit-btn" onclick="event.stopPropagation();">✏️</button>
+                </div>
+
+                <div class="patient-card" onclick="openPatientModal('Ryan Reynolds', 'ER-003', 'Male', '1972-11-20')">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h3>Edward Reynolds</h3>
+                        <div class="patient-detail"><strong>Patient ID:</strong> ER-003</div>
+                        <div class="patient-detail"><strong>Last Visit:</strong> June 3, 2025</div>
+                    </div>
+                    <button class="edit-btn" onclick="event.stopPropagation();">✏️</button>
+                </div>
+            </div>
+        </div>
+
+    <!-- Patient Details Modal -->
+    <div class="modal-overlay" id="patientModal" onclick="closeModalOnOutsideClick(event)">
+        <div class="modal" onclick="event.stopPropagation();">
+            <button class="modal-close" onclick="closePatientModal()">✕</button>
+            
+            <div class="modal-left">
+                <h2 class="modal-title">Patient Details</h2>
+                
+                <div class="info-section">
+                    <h3>Information</h3>
+                    <div class="info-item" id="patientName"><strong>Name:</strong> Jane Doe</div>
+                    <div class="info-item" id="patientID"><strong>Patient ID:</strong> JD-002</div>
+                    <div class="info-item" id="patientSex"><strong>Sex:</strong> Female</div>
+                    <div class="info-item" id="patientDOB"><strong>DOB:</strong> 1998-09-12</div>
+                </div>
+
+                <div class="info-section">
+                    <h3>Contacts</h3>
+                    <div class="info-item">jane_doe@example.com</div>
+                    <div class="info-item">63+ 9148963354</div>
+                </div>
+
+                <div class="info-section">
+                    <h3>Emergency Contact</h3>
+                    <div class="info-item">Mother</div>
+                    <div class="info-item">+63 673362015</div>
+                </div>
+
+                <div class="info-section">
+                    <h3>Last Visit</h3>
+                    <div class="info-item">July 30, 2025</div>
+                    <div class="info-item">Regular Checkup</div>
+                </div>
+            </div>
+
+            <div class="modal-right">
+                <div class="file-list">
+                    <div class="file-item">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name">UniqueFileName_DateOfConsultation.pdf</span>
+                    </div>
+                    <div class="file-item">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name">UniqueFileName_DateOfConsultation.pdf</span>
+                    </div>
+                    <div class="file-item">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name">UniqueFileName_DateOfConsultation.pdf</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         
+
+    </div>
+
         <script src="assets/js/navigation.js"></script>
     </body>
 </html>

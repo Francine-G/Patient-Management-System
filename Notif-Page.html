@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="assets/css/Notif.css">
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-regular.css" rel="stylesheet">
+        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-bold.css" rel="stylesheet">
+        <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-solid.css" rel="stylesheet">
+
+        <title>Notifications</title>
+        
+    </head>
+
+    <body>
+        
+        <div class="container">
+            <aside>
+                <div class="sidebar">
+                    <div class="system-logo">
+                        <div class="row">
+                            <img src="assets/images/logo2.png" alt="Patient Flow Logo">
+                            <div class="column">
+                                <h3>Patient-Flow</h3>  
+                                <p>A Patient Management and Queuing System</p> 
+                            </div>  
+                        </div>
+                    </div>
+                    <br>
+                    <div class="user">
+                        <div class="user-info">
+                            <div class="row">
+                                <img src="assets/images/user-profile.png" alt="User Profile">
+                            <div class="column">
+                                <h3>User Name</h3>  
+                                <p>Doctor</p> 
+                            </div>  
+                        </div>
+                        </div>
+                    </div>
+                    <br>
+                    <nav class="navigation-menu">
+                        <ul>
+                            <li><a href="Dashboard.html" class="nav-link active"><i class="fi fi-ss-objects-column"></i>Dashboard</a></li>
+                            <li><a href="Patient-Records.html" class="nav-link "><i class="fi fi-ss-document"></i>Patient Records</a></li>
+                            <li><a href="Queue.html" class="nav-link "><i class="fi fi-ss-completed"></i>Queue</a></li>
+                            <li><a href="Schedule.html" class="nav-link "><i class="fi fi-ss-calendar-clock"></i>Schedule</a></li>
+                            <li><a href="Audit-Log.html" class="nav-link "><i class="fi fi-ss-audit-alt"></i>Audit Log</a></li>
+                            <li><a href="Settings.html" class="nav-link "><i class="fi fi-ss-settings-sliders"></i>Settings</a></li>
+                            <li><a href="LogIn.html" class="nav-link "><i class="fi fi-ss-sign-out-alt"></i>Log Out</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+        </div>
+
+        <div class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <h1>Notifications</h1>
+                <p>Welcome, Jane Doe!</p>
+            </div>
+            <div class="header-right">
+                <div class="date-badge">
+                    <strong>Today's Date<br>Nov 24, 2025</strong>
+                    <span>🌙</span>
+                </div>
+                <button class="notif-btn" aria-label="Notifications">
+                    <span class="notif-icon">🔔</span>
+                    <span class="notif-dot" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="notifications-list">
+            <div class="notification-card">
+                <div class="notification-icon">🔒</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-from">From: Francine Gabrielle Luces</div>
+                        <div class="notification-message">
+                            Francine Gabrielle Luces is requesting permission to edit patient records and schedule.
+                        </div>
+                    </div>
+                    <div class="notification-footer">
+                        <span class="priority-badge">normal priority</span>
+                        <span class="notification-time">Nov 22, 2025 7:43 AM</span>
+                    </div>
+                </div>
+                <div class="notification-actions">
+                    <span class="new-badge">New</span>
+                    <button class="action-btn check" onclick="markAsRead(this)">✓</button>
+                    <button class="action-btn delete" onclick="deleteNotification(this)">🗑</button>
+                </div>
+            </div>
+
+            <div class="notification-card">
+                <div class="notification-icon">🔒</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-from">From: Francine Gabrielle Luces</div>
+                        <div class="notification-message">
+                            Francine Gabrielle Luces is requesting permission to edit patient records and schedule.
+                        </div>
+                    </div>
+                    <div class="notification-footer">
+                        <span class="priority-badge">normal priority</span>
+                        <span class="notification-time">Nov 22, 2025 7:43 AM</span>
+                    </div>
+                </div>
+                <div class="notification-actions">
+                    <span class="new-badge">New</span>
+                    <button class="action-btn check" onclick="markAsRead(this)">✓</button>
+                    <button class="action-btn delete" onclick="deleteNotification(this)">🗑</button>
+                </div>
+            </div>
+
+            <div class="notification-card">
+                <div class="notification-icon">🔒</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-from">From: Francine Gabrielle Luces</div>
+                        <div class="notification-message">
+                            Francine Gabrielle Luces is requesting permission to edit patient records and schedule.
+                        </div>
+                    </div>
+                    <div class="notification-footer">
+                        <span class="priority-badge">normal priority</span>
+                        <span class="notification-time">Nov 22, 2025 7:43 AM</span>
+                    </div>
+                </div>
+                <div class="notification-actions">
+                    <span class="new-badge">New</span>
+                    <button class="action-btn check" onclick="markAsRead(this)">✓</button>
+                    <button class="action-btn delete" onclick="deleteNotification(this)">🗑</button>
+                </div>
+            </div>
+
+            <div class="notification-card">
+                <div class="notification-icon">🔒</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-from">From: Francine Gabrielle Luces</div>
+                        <div class="notification-message">
+                            Francine Gabrielle Luces is requesting permission to edit patient records and schedule.
+                        </div>
+                    </div>
+                    <div class="notification-footer">
+                        <span class="priority-badge">normal priority</span>
+                        <span class="notification-time">Nov 22, 2025 7:43 AM</span>
+                    </div>
+                </div>
+                <div class="notification-actions">
+                    <span class="new-badge">New</span>
+                    <button class="action-btn check" onclick="markAsRead(this)">✓</button>
+                    <button class="action-btn delete" onclick="deleteNotification(this)">🗑</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script src="assets/js/navigation.js"></script>

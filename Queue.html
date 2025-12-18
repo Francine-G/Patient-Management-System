@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="assets/css/Dashboard-style.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/Queue-style.css">
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
@@ -10,7 +10,7 @@
         <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-bold.css" rel="stylesheet">
         <link rel='stylesheet' href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-rounded-solid.css" rel="stylesheet">
 
-        <title>Settings</title>
+        <title>Patient</title>
         
     </head>
 
@@ -43,8 +43,8 @@
                     <br>
                     <nav class="navigation-menu">
                         <ul>
-                            <li><a href="Dashboard.html" class="nav-link "><i class="fi fi-ss-objects-column"></i>Dashboard</a></li>
-                            <li><a href="Patient-Records.html" class="nav-link "><i class="fi fi-ss-document"></i>Patient Records</a></li>
+                            <li><a href="Dashboard.html" class="nav-link"><i class="fi fi-ss-objects-column"></i>Dashboard</a></li>
+                            <li><a href="Patient-Records.html" class="nav-link"><i class="fi fi-ss-document"></i>Patient Records</a></li>
                             <li><a href="Queue.html" class="nav-link active"><i class="fi fi-ss-completed"></i>Queue</a></li>
                             <li><a href="Schedule.html" class="nav-link "><i class="fi fi-ss-calendar-clock"></i>Schedule</a></li>
                             <li><a href="Audit-Log.html" class="nav-link "><i class="fi fi-ss-audit-alt"></i>Audit Log</a></li>
@@ -53,9 +53,178 @@
                         </ul>
                     </nav>
                 </div>
-            </aside>
+            </aside>    
         </div>
-        
-        <script src="assets/js/navigation.js"></script>
+        <div class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <h1>Queue</h1>
+                <p>Monitor and manage patient queue in real-time</p>
+            </div>
+             <div class="header-right">
+                <div class="date-badge">
+                    <strong>Today's Date<br>Nov 24, 2025</strong>
+                    <span>🌙</span>
+                </div>
+                <button class="notif-btn" aria-label="Notifications">
+                    <span class="notif-icon">🔔</span>
+                    <span class="notif-dot" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="queue-container">
+            <!-- Queue Details (Left) -->
+            <div class="queue-details">
+                <div class="queue-header">
+                    <div class="queue-number">Q-001</div>
+                    <span class="status-badge">Walk-in</span>
+                </div>
+
+                <div class="patient-info-row">
+                    <span><strong>Name:</strong> Jane Doe</span>
+                    <span><strong>Sex:</strong> Female</span>
+                    <span><strong>DOB:</strong> 1998-09-12</span>
+                </div>
+
+                <div class="patient-info-row">
+                    <span><strong>Notes:</strong> Backpain, sharp stinging pain on the lower back</span>
+                </div>
+
+                <h3 class="section-title">Allergies</h3>
+                <div class="section-content">
+                    When I was a young boy
+                    My father took me into the city
+                    To see a marching band
+                    He said, "Son, when you grow up
+                    Would you be the savior of the broken
+                    The beaten and the damned?"
+                    He said, "Will you defeat them?
+                    Your demons, and all the non-believers
+                    The plans that they have made?"
+                    "Because one day, I'll leave you a phantom
+                    To lead you in the summer
+                    To join the black parade"
+                </div>
+
+                <h3 class="section-title">Medical History</h3>
+                <div class="section-content">
+                    o or die, you'll never make me
+                    Because the world will never take my heart
+                    Go and try, you'll never break me
+                    We want it all, we wanna play this part
+                    Won't explain or say I'm sorry
+                    I'm unashamed, I'm gonna show my scars
+                    Give a cheer for all the broken
+                    Listen here, because it's who we are
+                </div>
+
+                <h3 class="section-title">Files</h3>
+                <div class="files-list">
+                    <div class="file-item">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name">UniqueFileName_DateOfConsultation.pdf</span>
+                    </div>
+                    <div class="file-item">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name">UniqueFileName_DateOfConsultation.pdf</span>
+                    </div>
+                </div>
+
+                <button class="consult-btn">Consult</button>
+            </div>
+            <!-- Consultation Modal -->
+    <div class="consultation-modal" id="consultationModal" onclick="closeConsultationModal(event)">
+        <div class="consultation-form" onclick="event.stopPropagation();">
+            <h2 class="consultation-title">New Consultation</h2>
+            
+            <div class="consultation-summary">
+                <div><strong>Date:</strong> Input</div>
+                <div><strong>Weight:</strong></div>
+                <div><strong>Diagnosis:</strong></div>
+                <div><strong>Notes:</strong></div>
+                <div><strong>Medication:</strong></div>
+            </div>
+
+            <form id="consultationForm" onsubmit="handleConsultation(event)">
+                <div class="consult-form-group">
+                    <label>Date</label>
+                    <input type="date" class="consult-input" required>
+                </div>
+
+                <div class="consult-form-group">
+                    <label>Weight</label>
+                    <input type="text" class="consult-input" placeholder="Enter weight (e.g., 70 kg)">
+                </div>
+
+                <div class="consult-form-group">
+                    <label>Diagnosis</label>
+                    <textarea class="consult-textarea" placeholder="Enter diagnosis details..."></textarea>
+                </div>
+
+                <div class="consult-form-group">
+                    <label>Notes</label>
+                    <textarea class="consult-textarea" placeholder="Enter additional notes..."></textarea>
+                </div>
+
+                <div class="consult-form-group">
+                    <label>Medication</label>
+                    <textarea class="consult-textarea" placeholder="Enter prescribed medications..."></textarea>
+                </div>
+
+                <div class="consult-actions">
+                    <button type="submit" class="submit-consult-btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+            <!-- Queue List (Right) -->
+            <div class="queue-list">
+                <div class="queue-tabs">
+                    <button class="queue-tab active">Walk-in</button>
+                    <button class="queue-tab">Scheduled</button>
+                </div>
+
+                <div class="queue-card">
+                    <div class="queue-card-header">
+                        <span class="queue-card-number">Q-002</span>
+                        <span class="queue-card-badge">Walk-in</span>
+                    </div>
+                    <div class="queue-card-info">
+                        <div><strong>Name:</strong> Alexander Harrison</div>
+                        <div><strong>Age:</strong> 24</div>
+                        <div><strong>Notes:</strong> Headache, Dry Cough, Rash</div>
+                    </div>
+                </div>
+
+                <div class="queue-card">
+                    <div class="queue-card-header">
+                        <span class="queue-card-number">Q-003</span>
+                        <span class="queue-card-badge appt">Appt</span>
+                    </div>
+                    <div class="queue-card-info">
+                        <div><strong>Name:</strong> Max Verstappen</div>
+                        <div><strong>Age:</strong> 27</div>
+                        <div><strong>Notes:</strong> Flushot</div>
+                    </div>
+                </div>
+
+                <div class="queue-card">
+                    <div class="queue-card-header">
+                        <span class="queue-card-number">Q-002</span>
+                        <span class="queue-card-badge">Walk-in</span>
+                    </div>
+                    <div class="queue-card-info">
+                        <div><strong>Name:</strong> Alexander Harrison</div>
+                        <div><strong>Age:</strong> 24</div>
+                        <div><strong>Notes:</strong> Headache, Dry Cough, Rash</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/navigation.js"></script>
     </body>
 </html>
