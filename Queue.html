@@ -266,6 +266,76 @@
         </div>
     </div>
 
+    <!-- Add Queue Modal -->
+    <div class="add-queue-modal" id="addQueueModal">
+        <div class="history-modal-content">
+            <div class="history-modal-header">
+                <h2>Add to Queue</h2>
+                <button class="close-btn" onclick="closeAddQueueModal()">&times;</button>
+            </div>
+            <div class="history-modal-body">
+                <form id="addQueueForm">
+                    <div class="form-group">
+                        <label for="patientName">Patient Name</label>
+                        <input type="text" id="patientName" name="patientName" placeholder="Enter patient's name" required>
+                        <label for="patientAge">Age</label>
+                        <input type="text" id="patientAge" name="patientAge" placeholder="Enter patient's age" required>
+                        <label for="patientNotes">Notes</label>
+                        <textarea id="patientNotes" name="patientNotes" placeholder="Enter any additional notes..."></textarea>
+                    </div>
+                    <div class="chart-options">
+                        <button type="button" class="chart-btn" id="get-patient-records-btn">Get from Patient Records</button>
+                        <button type="button" class="chart-btn" id="create-chart-btn">Create New Chart</button>
+                        <button type="button" class="chart-btn clear-btn" id="clear-fields-btn">Clear</button>
+                    </div>
+                    <button type="submit" class="search-patient-btn">Add to Queue</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create New Chart Modal -->
+    <div class="add-queue-modal" id="createChartModal">
+        <div class="history-modal-content">
+            <div class="history-modal-header">
+                <h2>Create New Patient Chart</h2>
+                <button class="close-btn" onclick="closeCreateChartModal()">&times;</button>
+            </div>
+            <div class="history-modal-body">
+                <form id="createChartForm">
+                    <div class="form-group">
+                        <label for="chartPatientName">Patient Name</label>
+                        <input type="text" id="chartPatientName" name="chartPatientName" placeholder="Enter patient's name" required>
+                        <label for="chartPatientAge">Age</label>
+                        <input type="text" id="chartPatientAge" name="chartPatientAge" placeholder="Enter patient's age" required>
+                        <label for="chartPatientWeight">Weight</label>
+                        <input type="text" id="chartPatientWeight" name="chartPatientWeight" placeholder="Enter patient's weight (e.g. 50kg)">
+                        <label for="chartMedicalHistory">Medical History</label>
+                        <textarea id="chartMedicalHistory" name="chartMedicalHistory" placeholder="Enter medical history..."></textarea>
+                    </div>
+                    <button type="submit" class="search-patient-btn">Create Chart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Get Patient Records Modal -->
+    <div class="add-queue-modal" id="getPatientRecordsModal">
+        <div class="history-modal-content">
+            <div class="history-modal-header">
+                <h2>Get from Patient Records</h2>
+                <button class="close-btn" onclick="closeGetPatientRecordsModal()">&times;</button>
+            </div>
+            <div class="history-modal-body">
+                <div class="patient-records-list">
+                    <div class="patient-record-item" data-name="John Doe" data-age="30">John Doe</div>
+                    <div class="patient-record-item" data-name="Jane Smith" data-age="25">Jane Smith</div>
+                    <div class="patient-record-item" data-name="Peter Jones" data-age="45">Peter Jones</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- History Modal -->
     <div class="history-modal" id="historyModal" onclick="closeHistoryModal(event)">
         <div class="history-modal-content" onclick="event.stopPropagation();">
@@ -305,7 +375,36 @@
 
     <script src="assets/js/navigation.js"></script>
     <script>
+    function openHistoryModal() {
+        document.getElementById('historyModal').classList.add('active');
+    }
+
+    function closeHistoryModal(event) {
+        if (event && event.target !== document.getElementById('historyModal') && event.target.closest('.history-modal-content')) {
+            return;
+        }
+        document.getElementById('historyModal').classList.remove('active');
+    }
+
+    function openCreateChartModal() {
+        document.getElementById('createChartModal').classList.add('active');
+    }
+
+    function closeCreateChartModal() {
+        document.getElementById('createChartModal').classList.remove('active');
+    }
+
+    function openGetPatientRecordsModal() {
+        document.getElementById('getPatientRecordsModal').classList.add('active');
+    }
+
+    function closeGetPatientRecordsModal() {
+        document.getElementById('getPatientRecordsModal').classList.remove('active');
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+        let currentlyEditingCard = null;
+
         // Extract card data helper
         function extractCardData(card) {
             if (!card) return null;
@@ -368,16 +467,24 @@
             if (filesList) filesList.innerHTML = '';
         }
 
-        // Make existing queue cards draggable (no click-to-populate)
+        // Make existing queue cards draggable and clickable
         function bindQueueCards() {
             const container = document.querySelector('.queue-cards-container');
             if (!container) return;
             const cards = container.querySelectorAll('.queue-card');
             cards.forEach(card => {
                 card.setAttribute('draggable', 'true');
+
+                // Click to open edit modal
+                card.addEventListener('click', function() {
+                    openAddQueueModal(card);
+                });
+
                 // avoid duplicate handlers
                 card.removeEventListener('dragstart', card._dragstartHandler);
                 const dragstartHandler = function (e) {
+                    // Prevent drag from firing when clicking
+                    e.stopPropagation();
                     card.classList.add('dragging');
                     const data = extractCardData(card) || {};
                     try { e.dataTransfer.setData('application/json', JSON.stringify(data)); }
@@ -392,6 +499,31 @@
                 card.addEventListener('dragend', dragendHandler);
                 card._dragendHandler = dragendHandler;
             });
+        }
+        
+        window.openAddQueueModal = function(card = null) {
+            const modal = document.getElementById('addQueueModal');
+            const form = document.getElementById('addQueueForm');
+            const modalTitle = modal.querySelector('.history-modal-header h2');
+
+            if (card) {
+                currentlyEditingCard = card;
+                const data = extractCardData(card);
+                document.getElementById('patientName').value = data.name;
+                document.getElementById('patientAge').value = data.age;
+                document.getElementById('patientNotes').value = data.notes;
+                modalTitle.textContent = 'Edit Queue Entry';
+            } else {
+                currentlyEditingCard = null;
+                form.reset();
+                modalTitle.textContent = 'Add to Queue';
+            }
+            modal.classList.add('active');
+        }
+
+        window.closeAddQueueModal = function() {
+            currentlyEditingCard = null;
+            document.getElementById('addQueueModal').classList.remove('active');
         }
 
         bindQueueCards();
@@ -456,6 +588,57 @@
                 clearExtraSections();
             });
         }
+        
+        // Add Queue Button
+        document.getElementById('add-queue-btn').addEventListener('click', () => openAddQueueModal());
+
+        document.getElementById('addQueueForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const patientName = document.getElementById('patientName').value.trim();
+            const patientAge = document.getElementById('patientAge').value.trim();
+            const patientNotes = document.getElementById('patientNotes').value.trim();
+
+            if (patientName) {
+                if (currentlyEditingCard) {
+                    // Update existing card
+                    const nameDiv = currentlyEditingCard.querySelector('.queue-card-info div:first-child');
+                    const ageDiv = currentlyEditingCard.querySelector('.queue-card-info div:nth-child(2)');
+                    const notesDiv = currentlyEditingCard.querySelector('.queue-card-info div:nth-child(3)');
+
+                    if (nameDiv) nameDiv.innerHTML = `<strong>Name:</strong> ${patientName}`;
+                    if (ageDiv) ageDiv.innerHTML = `<strong>Age:</strong> ${patientAge}`;
+                    if (notesDiv) notesDiv.innerHTML = `<strong>Notes:</strong> ${patientNotes}`;
+
+                } else {
+                    // Create a new card
+                    const queueContainer = document.querySelector('.queue-cards-container');
+                    const existingNumbers = Array.from(queueContainer.querySelectorAll('.queue-card-number'))
+                        .map(el => parseInt(el.textContent.replace('Q-', ''), 10))
+                        .filter(num => !isNaN(num));
+                    const newNumber = existingNumbers.length > 0 ? Math.max(...existingNumbers) + 1 : 1;
+                    const newQueueNumber = `Q-${String(newNumber).padStart(3, '0')}`;
+
+                    const newCard = document.createElement('div');
+                    newCard.className = 'queue-card';
+                    newCard.innerHTML = `
+                        <div class="queue-card-header">
+                            <span class="queue-card-number">${newQueueNumber}</span>
+                            <span class="queue-card-badge">Walk-in</span>
+                        </div>
+                        <div class="queue-card-info">
+                            <div><strong>Name:</strong> ${patientName}</div>
+                            <div><strong>Age:</strong> ${patientAge}</div>
+                            <div><strong>Notes:</strong> ${patientNotes}</div>
+                        </div>
+                    `;
+                    
+                    queueContainer.appendChild(newCard);
+                }
+
+                // Close the modal and reset the form
+                closeAddQueueModal();
+            }
+        });
 
         // Rebind when cards change
         const container = document.querySelector('.queue-cards-container');
@@ -463,6 +646,48 @@
             const mo = new MutationObserver(function () { bindQueueCards(); });
             mo.observe(container, { childList: true, subtree: false });
         }
+        
+        document.getElementById('clear-fields-btn').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('patientName').value = '';
+            document.getElementById('patientAge').value = '';
+            document.getElementById('patientNotes').value = '';
+        });
+
+        document.getElementById('create-chart-btn').addEventListener('click', function() {
+            openCreateChartModal();
+        });
+
+        document.getElementById('createChartForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Get data from create chart form
+            const chartPatientName = document.getElementById('chartPatientName').value.trim();
+            const chartPatientAge = document.getElementById('chartPatientAge').value.trim();
+
+            // Populate the add queue form
+            document.getElementById('patientName').value = chartPatientName;
+            document.getElementById('patientAge').value = chartPatientAge;
+
+            // Close the create chart modal
+            closeCreateChartModal();
+        });
+
+        document.getElementById('get-patient-records-btn').addEventListener('click', function() {
+            openGetPatientRecordsModal();
+        });
+
+        document.querySelectorAll('.patient-record-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const patientName = this.getAttribute('data-name');
+                const patientAge = this.getAttribute('data-age');
+
+                document.getElementById('patientName').value = patientName;
+                document.getElementById('patientAge').value = patientAge;
+
+                closeGetPatientRecordsModal();
+            });
+        });
     });
     </script>
     </body>

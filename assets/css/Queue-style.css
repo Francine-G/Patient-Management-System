@@ -520,6 +520,122 @@ body {
             background: #3d8c8c;
         }
 
+
+/* Add Queue Modal */
+.add-queue-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+.add-queue-modal.active {
+    display: flex;
+}
+
+.add-queue-modal-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    overflow-y: auto;
+    margin: 20px;
+}
+
+.add-queue-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    background: #f9f9f9;
+}
+
+.add-queue-modal-header h2 {
+    font-size: 18px;
+    color: #333;
+    margin: 0;
+}
+
+.add-queue-modal-body {
+    padding: 20px;
+}
+
+#addQueueForm .form-group {
+    margin-bottom: 20px;
+}
+
+#addQueueForm label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+#addQueueForm input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.add-queue-modal-body #addQueueForm input,
+.add-queue-modal-body #addQueueForm textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 10px; /* Add margin to separate fields */
+}
+
+.chart-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.chart-btn {
+    flex: 1;
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.chart-btn:hover {
+    background: #e0e0e0;
+}
+
+.search-patient-btn {
+    width: 100%;
+    background: #4da6a6;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-patient-btn:hover {
+    background: #3d8c8c;
+}
+
 .action-buttons {
     display: flex;
     gap: 10px;
