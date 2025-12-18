@@ -49,6 +49,7 @@
                             <li><a href="Schedule.html" class="nav-link "><i class="fi fi-ss-calendar-clock"></i>Schedule</a></li>
                             <li><a href="Audit-Log.html" class="nav-link "><i class="fi fi-ss-audit-alt"></i>Audit Log</a></li>
                             <li><a href="Settings.html" class="nav-link "><i class="fi fi-ss-settings-sliders"></i>Settings</a></li>
+                            <li><a href="History.html" class="nav-link "><i class="fi fi-ss-history"></i>History</a></li>
                             <li><a href="LogIn.html" class="nav-link "><i class="fi fi-ss-sign-out-alt"></i>Log Out</a></li>
                         </ul>
                     </nav>
@@ -77,18 +78,18 @@
             <!-- Queue Details (Left) -->
             <div class="queue-details">
                 <div class="queue-header">
-                    <div class="queue-number">Q-001</div>
-                    <span class="status-badge">Walk-in</span>
+                    <div class="queue-number"></div>
+                    <span class="status-badge"></span>
                 </div>
 
                 <div class="patient-info-row">
-                    <span><strong>Name:</strong> Jane Doe</span>
-                    <span><strong>Sex:</strong> Female</span>
-                    <span><strong>DOB:</strong> 1998-09-12</span>
+                    <span><strong>Name:</strong> </span>
+                    <span><strong>Sex:</strong> </span>
+                    <span><strong>DOB:</strong> </span>
                 </div>
 
                 <div class="patient-info-row">
-                    <span><strong>Notes:</strong> Backpain, sharp stinging pain on the lower back</span>
+                    <span><strong>Notes:</strong> </span>
                 </div>
 
                 <h3 class="section-title">Allergies</h3>
@@ -131,7 +132,10 @@
                     </div>
                 </div>
 
-                <button class="consult-btn">Consult</button>
+                <div class="button-group">
+                    <button class="consult-btn">Consult</button>
+                    <button class="done-btn">Done</button>
+                </div>
             </div>
             <!-- Consultation Modal -->
     <div class="consultation-modal" id="consultationModal" onclick="closeConsultationModal(event)">
@@ -180,12 +184,26 @@
     </div>
 
             <!-- Queue List (Right) -->
+             
             <div class="queue-list">
+                 <div class="queue-filter">
+                    <button class="filter-btn" onclick="toggleFilterMenu()">
+                        <i class="fi fi-ss-settings"></i> Filter
+                    </button>
+                    <div class="filter-menu" id="filterMenu">
+                        <label class="filter-option">
+                            <input type="checkbox" value="walk-in" onchange="filterQueueList()"> Walk-in
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox" value="appt" onchange="filterQueueList()"> Appointment
+                        </label>
+                    </div>
                 <div class="queue-tabs">
-                    <button class="queue-tab active">Walk-in</button>
-                    <button class="queue-tab">Scheduled</button>
+                    <button class="queue-tab active">Queue</button>
+                </div>
                 </div>
 
+                <div class="queue-cards-container">
                 <div class="queue-card">
                     <div class="queue-card-header">
                         <span class="queue-card-number">Q-002</span>
@@ -194,7 +212,7 @@
                     <div class="queue-card-info">
                         <div><strong>Name:</strong> Alexander Harrison</div>
                         <div><strong>Age:</strong> 24</div>
-                        <div><strong>Notes:</strong> Headache, Dry Cough, Rash</div>
+                        <div><strong>Notes:</strong> follow up</div>
                     </div>
                 </div>
 
@@ -218,13 +236,234 @@
                     <div class="queue-card-info">
                         <div><strong>Name:</strong> Alexander Harrison</div>
                         <div><strong>Age:</strong> 24</div>
-                        <div><strong>Notes:</strong> Headache, Dry Cough, Rash</div>
+                        <div><strong>Notes:</strong> Flu Vaccine </div>
                     </div>
+                </div>
+
+                <div class="queue-card">
+                    <div class="queue-card-header">
+                        <span class="queue-card-number">Q-002</span>
+                        <span class="queue-card-badge">Walk-in</span>
+                    </div>
+                    <div class="queue-card-info">
+                        <div><strong>Name:</strong> Alexander Harrison</div>
+                        <div><strong>Age:</strong> 24</div>
+                        <div><strong>Notes:</strong> Check up</div>
+                    </div>
+                </div>
+
+                </div>
+                <div class="action-buttons">
+                    <button class="history-btn" id="add-queue-btn">
+                        <i class="fi fi-ss-add"></i> Add Queue
+                    </button>
+                    <button class="history-btn" onclick="openHistoryModal()">
+                        <i class="fi fi-ss-history"></i> History
+                    </button>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="history-modal" id="historyModal" onclick="closeHistoryModal(event)">
+        <div class="history-modal-content" onclick="event.stopPropagation();">
+            <div class="history-modal-header">
+                <h2>Patient View History - Today</h2>
+                <button class="close-btn" onclick="closeHistoryModal()">&times;</button>
+            </div>
+            <div class="history-modal-body">
+                <div class="history-item">
+                    <span class="history-time">09:30 AM</span>
+                    <span class="history-patient">Jane Doe (Q-001)</span>
+                    <span class="history-status">Viewed - Walk-in</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-time">10:15 AM</span>
+                    <span class="history-patient">Alexander Harrison (Q-002)</span>
+                    <span class="history-status">Consulted - Walk-in</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-time">10:45 AM</span>
+                    <span class="history-patient">Max Verstappen (Q-003)</span>
+                    <span class="history-status">Viewed - Appointment</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-time">11:20 AM</span>
+                    <span class="history-patient">Jane Doe (Q-001)</span>
+                    <span class="history-status">Consulted - Walk-in</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-time">12:00 PM</span>
+                    <span class="history-patient">Sarah Johnson (Q-004)</span>
+                    <span class="history-status">Viewed - Appointment</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="assets/js/navigation.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Extract card data helper
+        function extractCardData(card) {
+            if (!card) return null;
+            const numberEl = card.querySelector('.queue-card-number');
+            const badgeEl = card.querySelector('.queue-card-badge');
+            const infoDivs = Array.from(card.querySelectorAll('.queue-card-info div'));
+            const name = infoDivs[0] ? infoDivs[0].textContent.replace('Name:', '').trim() : '';
+            const age = infoDivs[1] ? infoDivs[1].textContent.replace('Age:', '').trim() : '';
+            const notes = infoDivs[2] ? infoDivs[2].textContent.replace('Notes:', '').trim() : '';
+            return {
+                queueNumber: numberEl ? numberEl.textContent.trim() : '',
+                badgeText: badgeEl ? badgeEl.textContent.trim() : '',
+                name: name,
+                age: age,
+                notes: notes
+            };
+        }
+
+        // Populate details panel (used on drop only)
+        function populateDetails(payload) {
+            const details = document.querySelector('.queue-details');
+            if (!details || !payload) return;
+            const qNum = details.querySelector('.queue-number');
+            const badge = details.querySelector('.status-badge');
+            if (qNum) qNum.textContent = payload.queueNumber || '';
+            if (badge) badge.textContent = payload.badgeText || '';
+
+            const infoRows = details.querySelectorAll('.patient-info-row');
+            if (infoRows && infoRows.length > 0) {
+                const spans = infoRows[0].querySelectorAll('span');
+                if (spans[0]) spans[0].innerHTML = '<strong>Name:</strong> ' + (payload.name || '');
+                if (spans[1]) spans[1].innerHTML = '<strong>Sex:</strong> ' + (payload.age || '');
+            }
+            if (infoRows && infoRows.length > 1) {
+                const notesSpan = infoRows[1].querySelector('span');
+                if (notesSpan) notesSpan.innerHTML = '<strong>Notes:</strong> ' + (payload.notes || '');
+            }
+        }
+
+        function addHistoryEntry(name, qnum, status) {
+            const historyModalBody = document.querySelector('.history-modal .history-modal-body');
+            if (!historyModalBody) return;
+            const now = new Date();
+            const hh = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.innerHTML = '<span class="history-time">' + hh + '</span>' +
+                             '<span class="history-patient">' + (name || '') + ' (' + (qnum || '') + ')</span>' +
+                             '<span class="history-status">' + (status || 'Viewed') + '</span>';
+            historyModalBody.insertBefore(item, historyModalBody.firstChild);
+        }
+
+        // Clear allergies, medical history, and files inside the details panel
+        function clearExtraSections() {
+            const detailsPanel = document.querySelector('.queue-details');
+            if (!detailsPanel) return;
+            const sectionContents = detailsPanel.querySelectorAll('.section-content');
+            sectionContents.forEach(el => { el.textContent = ''; });
+            const filesList = detailsPanel.querySelector('.files-list');
+            if (filesList) filesList.innerHTML = '';
+        }
+
+        // Make existing queue cards draggable (no click-to-populate)
+        function bindQueueCards() {
+            const container = document.querySelector('.queue-cards-container');
+            if (!container) return;
+            const cards = container.querySelectorAll('.queue-card');
+            cards.forEach(card => {
+                card.setAttribute('draggable', 'true');
+                // avoid duplicate handlers
+                card.removeEventListener('dragstart', card._dragstartHandler);
+                const dragstartHandler = function (e) {
+                    card.classList.add('dragging');
+                    const data = extractCardData(card) || {};
+                    try { e.dataTransfer.setData('application/json', JSON.stringify(data)); }
+                    catch (err) { e.dataTransfer.setData('text/plain', JSON.stringify(data)); }
+                    e.dataTransfer.effectAllowed = 'move';
+                };
+                card.addEventListener('dragstart', dragstartHandler);
+                card._dragstartHandler = dragstartHandler;
+
+                card.removeEventListener('dragend', card._dragendHandler);
+                const dragendHandler = function () { card.classList.remove('dragging'); };
+                card.addEventListener('dragend', dragendHandler);
+                card._dragendHandler = dragendHandler;
+            });
+        }
+
+        bindQueueCards();
+        // Ensure details start blank (all fields, including allergies/history/files)
+        clearExtraSections();
+
+        // Drop handlers for details panel
+        const details = document.querySelector('.queue-details');
+        if (details) {
+            details.addEventListener('dragover', function (e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; details.classList.add('drag-over'); });
+            details.addEventListener('dragleave', function () { details.classList.remove('drag-over'); });
+            details.addEventListener('drop', function (e) {
+                e.preventDefault(); details.classList.remove('drag-over');
+                let payload = null;
+                try { payload = JSON.parse(e.dataTransfer.getData('application/json')); }
+                catch (err) {
+                    try { payload = JSON.parse(e.dataTransfer.getData('text/plain')); } catch (e2) { payload = null; }
+                }
+                if (!payload) return;
+                populateDetails(payload);
+                addHistoryEntry(payload.name, payload.queueNumber, 'Viewed');
+            });
+        }
+
+        // Done button: remove the matching card and clear details
+        const doneBtn = document.querySelector('.done-btn');
+        if (doneBtn) {
+            doneBtn.addEventListener('click', function () {
+                const detailsPanel = document.querySelector('.queue-details');
+                if (!detailsPanel) return;
+                const qNumEl = detailsPanel.querySelector('.queue-number');
+                const qnum = qNumEl ? qNumEl.textContent.trim() : '';
+                if (!qnum) return; // nothing selected
+
+                const container = document.querySelector('.queue-cards-container');
+                if (container) {
+                    const cards = Array.from(container.querySelectorAll('.queue-card'));
+                    const target = cards.find(c => {
+                        const numEl = c.querySelector('.queue-card-number');
+                        return numEl && numEl.textContent.trim() === qnum;
+                    });
+                    if (target) {
+                        const data = extractCardData(target) || {};
+                        addHistoryEntry(data.name || '', data.queueNumber || qnum, 'Done');
+                        target.remove();
+                    }
+                }
+
+                // Clear details panel content
+                if (qNumEl) qNumEl.textContent = '';
+                const badge = detailsPanel.querySelector('.status-badge'); if (badge) badge.textContent = '';
+                const infoRows = detailsPanel.querySelectorAll('.patient-info-row');
+                if (infoRows && infoRows.length > 0) {
+                    const spans = infoRows[0].querySelectorAll('span'); if (spans[0]) spans[0].innerHTML = '<strong>Name:</strong> ';
+                    if (spans[1]) spans[1].innerHTML = '<strong>Sex:</strong> ';
+                    if (spans[2]) spans[2].innerHTML = '<strong>DOB:</strong> ';
+                }
+                if (infoRows && infoRows.length > 1) {
+                    const notesSpan = infoRows[1].querySelector('span'); if (notesSpan) notesSpan.innerHTML = '<strong>Notes:</strong> ';
+                }
+                // Clear allergies, medical history, files
+                clearExtraSections();
+            });
+        }
+
+        // Rebind when cards change
+        const container = document.querySelector('.queue-cards-container');
+        if (container && window.MutationObserver) {
+            const mo = new MutationObserver(function () { bindQueueCards(); });
+            mo.observe(container, { childList: true, subtree: false });
+        }
+    });
+    </script>
     </body>
 </html>
