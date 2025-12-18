@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, get, set, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -16,13 +16,42 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// Global state
-let allLogs = [];
-let filteredLogs = [];
-let currentPage = 1;
-const itemsPerPage = 20;
+// --- HELPER: Create Audit Log ---
+async function createAuditLog(action, details, entityId) {
+    try {
+        const auditsRef = ref(database, 'audits');
+        const snapshot = await get(auditsRef);
+        let nextIndex = 1;
 
-// Patient Details Modal
+        if (snapshot.exists()) {
+            const keys = Object.keys(snapshot.val());
+            const indices = keys
+                .filter(key => key.startsWith('a_'))
+                .map(key => parseInt(key.split('_')[1]))
+                .filter(num => !isNaN(num));
+
+            if (indices.length > 0) nextIndex = Math.max(...indices) + 1;
+        }
+
+        const auditId = `a_${nextIndex}`;
+        const user = sessionStorage.getItem('username') || 'dr_francine';
+        const role = sessionStorage.getItem('role') || 'Doctor';
+
+        await set(ref(database, `audits/${auditId}`), {
+            action: action,
+            details: details,
+            entity: entityId,
+            role: role,
+            timestamp: new Date().toLocaleString(),
+            user: user
+        });
+    } catch (error) {
+        console.error("Audit Log Error:", error);
+    }
+}
+
+// --- 1. GLOBAL MODAL FUNCTIONS (Window Scope) ---
+
 window.closePatientModal = function (event) { 
     const pm = document.getElementById('patientModal'); 
     if (pm) {
@@ -33,7 +62,6 @@ window.closePatientModal = function (event) {
     }
 };
 
-// Add Patient Modal
 window.openAddPatientModal = function () {
     const modal = document.getElementById('addPatientModal');
     if (modal) modal.classList.add('active');
@@ -51,7 +79,6 @@ window.closeAddPatientModal = function (event) {
     }
 };
 
-// Queue & Consultation Modals
 window.openConsultationModal = function () {
     const modal = document.getElementById('consultationModal');
     if (modal) modal.classList.add('active');
@@ -67,6 +94,14 @@ window.closeConsultationModal = function (event) {
     }
 };
 
+window.handleConsultation = async function (event) {
+    event.preventDefault();
+    // Optional: Add audit log for consultation here if needed
+    // await createAuditLog("Consultation", "Performed consultation", "N/A");
+    alert('Consultation details saved successfully!');
+    window.closeConsultationModal();
+};
+
 window.openHistoryModal = function () {
     const modal = document.getElementById('historyModal');
     if (modal) modal.classList.add('active');
@@ -75,7 +110,6 @@ window.openHistoryModal = function () {
 window.closeHistoryModal = function (event) {
     const modal = document.getElementById('historyModal');
     if (!modal) return;
-    // Close if clicked outside the content box or on the close button
     if (!event || (event.target.id === 'historyModal' || event.target.closest('.close-btn'))) {
         modal.classList.remove('active');
     }
@@ -86,19 +120,11 @@ window.openAddQueueModal = function(card = null) {
     const form = document.getElementById('addQueueForm');
     const modalTitle = modal.querySelector('.history-modal-header h2');
 
-    // If card provided, we are editing; otherwise adding new
     if (card) {
-        // Store reference to card being edited on the form element itself
         form.dataset.editingId = card.querySelector('.queue-card-number').textContent;
-        
-        // Extract data
-        const nameDiv = card.querySelector('.queue-card-info div:nth-child(1)');
-        const ageDiv = card.querySelector('.queue-card-info div:nth-child(2)');
-        const notesDiv = card.querySelector('.queue-card-info div:nth-child(3)');
-
-        const name = nameDiv ? nameDiv.textContent.replace('Name:', '').trim() : '';
-        const age = ageDiv ? ageDiv.textContent.replace('Age:', '').trim() : '';
-        const notes = notesDiv ? notesDiv.textContent.replace('Notes:', '').trim() : '';
+        const name = card.querySelector('.queue-card-info div:nth-child(1)').textContent.replace('Name:', '').trim();
+        const age = card.querySelector('.queue-card-info div:nth-child(2)').textContent.replace('Age:', '').trim();
+        const notes = card.querySelector('.queue-card-info div:nth-child(3)').textContent.replace('Notes:', '').trim();
 
         document.getElementById('patientName').value = name;
         document.getElementById('patientAge').value = age;
@@ -117,7 +143,6 @@ window.closeAddQueueModal = function() {
     if (modal) modal.classList.remove('active');
 };
 
-// Global Click Outside Handler
 window.closeModalOnOutsideClick = function (event) { 
     if (event.target.id === 'patientModal') window.closePatientModal(event);
     if (event.target.id === 'addPatientModal') window.closeAddPatientModal(event);
@@ -129,7 +154,6 @@ window.closeModalOnOutsideClick = function (event) {
 document.addEventListener('DOMContentLoaded', function () {
     const currentPage = window.location.pathname.split('/').pop();
 
-    // A. Navigation Highlight
     const navLinks = Array.from(document.querySelectorAll('.navigation-menu .nav-link'));
     navLinks.forEach(l => {
         l.classList.remove('active');
@@ -139,128 +163,140 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // B. Queue Specific Logic (Only runs if Queue elements exist)
     const queueContainer = document.querySelector('.queue-cards-container');
     if (queueContainer) {
         initializeQueueLogic();
     }
 
-    // C. Add Record Button (Patient Records Page)
     const addRecordBtn = document.querySelector('.add-record-btn');
     if (addRecordBtn) {
         addRecordBtn.addEventListener('click', () => window.openAddPatientModal());
     }
 
-    // D. Sidebar Toggle
     initSidebar();
 });
 
 // --- 3. QUEUE LOGIC HELPER ---
 function initializeQueueLogic() {
-    // Bind Drag & Drop for existing cards
     bindQueueCards();
 
-    // MutationObserver to bind new cards automatically
     const container = document.querySelector('.queue-cards-container');
     if (container && window.MutationObserver) {
         const mo = new MutationObserver(() => bindQueueCards());
         mo.observe(container, { childList: true, subtree: false });
     }
 
-    // Add Queue Button
     const addQueueBtn = document.getElementById('add-queue-btn');
     if (addQueueBtn) {
         addQueueBtn.addEventListener('click', () => window.openAddQueueModal());
     }
 
-    // Add Queue Form Submit
+    const consultBtn = document.querySelector('.consult-btn');
+    if (consultBtn) {
+        consultBtn.addEventListener('click', () => window.openConsultationModal());
+    }
+
+    // --- ADD QUEUE FORM SUBMIT (with Audit) ---
     const addQueueForm = document.getElementById('addQueueForm');
     if (addQueueForm) {
-        addQueueForm.addEventListener('submit', function(event) {
+        addQueueForm.addEventListener('submit', async function(event) {
             event.preventDefault();
+            
             const pName = document.getElementById('patientName').value.trim();
             const pAge = document.getElementById('patientAge').value.trim();
             const pNotes = document.getElementById('patientNotes').value.trim();
 
             if (!pName) return;
 
-            const editingId = this.dataset.editingId; // Check if we are editing
+            try {
+                const queueRef = ref(database, 'queue');
+                const snapshot = await get(queueRef);
+                let nextIndex = 1;
 
-            if (editingId) {
-                // Find existing card
-                const cards = Array.from(document.querySelectorAll('.queue-card'));
-                const card = cards.find(c => c.querySelector('.queue-card-number').textContent === editingId);
-                
-                if (card) {
-                    const infoDivs = card.querySelectorAll('.queue-card-info div');
-                    if (infoDivs[0]) infoDivs[0].innerHTML = `<strong>Name:</strong> ${pName}`;
-                    if (infoDivs[1]) infoDivs[1].innerHTML = `<strong>Age:</strong> ${pAge}`;
-                    if (infoDivs[2]) infoDivs[2].innerHTML = `<strong>Notes:</strong> ${pNotes}`;
+                if (snapshot.exists()) {
+                    const keys = Object.keys(snapshot.val());
+                    const indices = keys
+                        .filter(key => key.startsWith('q_'))
+                        .map(key => parseInt(key.split('_')[1]))
+                        .filter(num => !isNaN(num));
+
+                    if (indices.length > 0) nextIndex = Math.max(...indices) + 1;
                 }
-            } else {
-                // Create New Card
-                const numbers = Array.from(document.querySelectorAll('.queue-card-number'))
-                    .map(el => parseInt(el.textContent.replace('Q-', ''), 10))
-                    .filter(n => !isNaN(n));
-                const nextNum = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
-                const qId = `Q-${String(nextNum).padStart(3, '0')}`;
 
-                const newCard = document.createElement('div');
-                newCard.className = 'queue-card';
-                newCard.innerHTML = `
-                    <div class="queue-card-header">
-                        <span class="queue-card-number">${qId}</span>
-                        <span class="queue-card-badge">Walk-in</span>
-                    </div>
-                    <div class="queue-card-info">
-                        <div><strong>Name:</strong> ${pName}</div>
-                        <div><strong>Age:</strong> ${pAge}</div>
-                        <div><strong>Notes:</strong> ${pNotes}</div>
-                    </div>
-                `;
-                document.querySelector('.queue-cards-container').appendChild(newCard);
+                const newId = `q_${nextIndex}`;
+                const newQueueItem = {
+                    name: pName,
+                    age: pAge,
+                    note: pNotes,
+                    type: "walk-in",
+                    timestamp: new Date().toISOString()
+                };
+
+                // 1. Save to Queue
+                await set(ref(database, `queue/${newId}`), newQueueItem);
+
+                // 2. Create Audit Log
+                await createAuditLog(
+                    "Add to Queue", 
+                    `Added ${pName} to the queue.`, 
+                    newId
+                );
+
+                alert(`Successfully added ${pName} to the queue!`);
+                window.closeAddQueueModal();
+
+            } catch (error) {
+                console.error("Queue Add Error:", error);
+                alert("Failed to add to queue.");
             }
-            window.closeAddQueueModal();
         });
     }
 
-    // Done Button Logic
+    // --- DONE BUTTON LOGIC (with Audit) ---
     const doneBtn = document.querySelector('.done-btn');
     if (doneBtn) {
-        doneBtn.addEventListener('click', function() {
+        doneBtn.addEventListener('click', async function() {
             const detailsPanel = document.querySelector('.queue-details');
             const qNumEl = detailsPanel.querySelector('.queue-number');
-            const qnum = qNumEl ? qNumEl.textContent.trim() : '';
+            const qDisplayId = qNumEl ? qNumEl.textContent.trim() : '';
             
-            if (!qnum) return;
-
-            // Remove card from list
-            const cards = Array.from(document.querySelectorAll('.queue-card'));
-            const target = cards.find(c => c.querySelector('.queue-card-number').textContent.trim() === qnum);
-            if (target) target.remove();
-
-            // Clear Details Panel
-            qNumEl.textContent = '';
-            detailsPanel.querySelector('.status-badge').textContent = '';
-            const spans = detailsPanel.querySelectorAll('.patient-info-row span');
-            if(spans[0]) spans[0].innerHTML = '<strong>Name:</strong> ';
-            if(spans[1]) spans[1].innerHTML = '<strong>Sex:</strong> ';
-            if(spans[2]) spans[2].innerHTML = '<strong>DOB:</strong> ';
+            // Capture name for Audit log BEFORE clearing UI
+            const nameEl = detailsPanel.querySelector('.patient-info-row span:first-child');
+            const patientName = nameEl ? nameEl.textContent.replace('Name:', '').trim() : 'Unknown';
             
-            // Clear extra sections
-            detailsPanel.querySelectorAll('.section-content').forEach(el => el.textContent = '');
-            const files = detailsPanel.querySelector('.files-list');
-            if(files) files.innerHTML = '';
-        });
-    }
+            if (!qDisplayId) return;
 
-    // Consultation Form
-    const consultForm = document.getElementById('consultationForm');
-    if (consultForm) {
-        consultForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Consultation saved successfully!');
-            window.closeConsultationModal();
+            const idNumber = parseInt(qDisplayId.replace('Q-', ''), 10);
+            const dbId = `q_${idNumber}`;
+
+            if (confirm(`Mark ${patientName} (${qDisplayId}) as done?`)) {
+                try {
+                    // 1. Remove from Queue
+                    await set(ref(database, `queue/${dbId}`), null);
+                    
+                    // 2. Create Audit Log
+                    await createAuditLog(
+                        "Queue Done", 
+                        `Marked ${patientName} (${qDisplayId}) as completed.`, 
+                        dbId
+                    );
+                    
+                    // 3. Clear UI
+                    qNumEl.textContent = '';
+                    detailsPanel.querySelector('.status-badge').textContent = '';
+                    const spans = detailsPanel.querySelectorAll('.patient-info-row span');
+                    if(spans[0]) spans[0].innerHTML = '<strong>Name:</strong> ';
+                    if(spans[1]) spans[1].innerHTML = '<strong>Sex:</strong> ';
+                    
+                    detailsPanel.querySelectorAll('.section-content').forEach(el => el.textContent = '');
+                    const files = detailsPanel.querySelector('.files-list');
+                    if(files) files.innerHTML = '';
+
+                } catch (error) {
+                    console.error("Queue Remove Error:", error);
+                    alert("Failed to update queue.");
+                }
+            }
         });
     }
 }
@@ -271,18 +307,12 @@ function bindQueueCards() {
     cards.forEach(card => {
         card.setAttribute('draggable', 'true');
         
-        // Click to Edit
         card.onclick = (e) => {
-            // Only open if not dragging
             if (!card.classList.contains('dragging')) window.openAddQueueModal(card);
         };
 
-        // Drag Start
         card.ondragstart = (e) => {
-            // e.stopPropagation(); // Optional depending on CSS
             card.classList.add('dragging');
-            
-            // Extract Data
             const qNum = card.querySelector('.queue-card-number').textContent;
             const badge = card.querySelector('.queue-card-badge').textContent;
             const infoDivs = card.querySelectorAll('.queue-card-info div');
@@ -294,11 +324,9 @@ function bindQueueCards() {
             e.dataTransfer.setData('application/json', JSON.stringify(data));
         };
 
-        // Drag End
         card.ondragend = () => card.classList.remove('dragging');
     });
 
-    // Drop Zone (Details Panel)
     const details = document.querySelector('.queue-details');
     if (details) {
         details.ondragover = (e) => { e.preventDefault(); details.classList.add('drag-over'); };
@@ -323,7 +351,7 @@ function populateDetails(payload) {
     if (rows[0]) {
         const spans = rows[0].querySelectorAll('span');
         if (spans[0]) spans[0].innerHTML = `<strong>Name:</strong> ${payload.name}`;
-        if (spans[1]) spans[1].innerHTML = `<strong>Sex:</strong> ${payload.age}`; // Mapping Age to Sex slot based on your HTML structure
+        if (spans[1]) spans[1].innerHTML = `<strong>Age:</strong> ${payload.age}`;
     }
     if (rows[1]) {
         rows[1].innerHTML = `<span><strong>Notes:</strong> ${payload.notes}</span>`;
