@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     initializeDashboardStats(); 
 });
 
-// --- NEW FUNCTION: Real-time Dashboard Stats ---
 function initializeDashboardStats() {
     // 1. Listen for Patient Count
     const patientsRef = ref(database, 'patients');
@@ -46,7 +45,6 @@ function initializeDashboardStats() {
         const countEl = document.getElementById('total-patients-count');
         if (countEl) {
             if (snapshot.exists()) {
-                // Count the number of keys (e.g., p_4, p_5, p_6...)
                 const count = Object.keys(snapshot.val()).length;
                 countEl.textContent = count;
             } else {
@@ -55,17 +53,59 @@ function initializeDashboardStats() {
         }
     });
 
-    // 2. Listen for Queue Count
+    // 2. Listen for Queue Count AND Render List
     const queueRef = ref(database, 'queue');
     onValue(queueRef, (snapshot) => {
         const countEl = document.getElementById('current-queue-count');
-        if (countEl) {
-            if (snapshot.exists()) {
-                // Count the active queue items
-                const count = Object.keys(snapshot.val()).length;
-                countEl.textContent = count;
-            } else {
-                countEl.textContent = "0";
+        const queueListContainer = document.querySelector('.queue-list');
+
+        if (snapshot.exists()) {
+            const queueData = snapshot.val();
+            const queueKeys = Object.keys(queueData);
+            
+            if (countEl) countEl.textContent = queueKeys.length;
+
+            if (queueListContainer) {
+                queueListContainer.innerHTML = ''; 
+
+                snapshot.forEach((childSnapshot) => {
+                    const key = childSnapshot.key; 
+                    const patient = childSnapshot.val();
+                    
+                    // *** FIX STARTS HERE ***
+                    const numberPart = key.split('_')[1]; 
+                    const queueId = `Q-${numberPart.padStart(3, '0')}`;
+                    // *** FIX ENDS HERE ***
+
+                    let dateDisplay = "N/A";
+                    if (patient.timestamp) {
+                        const dateObj = new Date(patient.timestamp);
+                        dateDisplay = dateObj.toLocaleDateString('en-US', {
+                            month: 'short', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'queue-item';
+                    itemDiv.innerHTML = `
+                        <div class="queue-info">
+                            <h4>${patient.name || 'Unknown'}</h4>
+                            <p class="date">📅 ${dateDisplay}</p>
+                            <p>${patient.type || 'General'}</p>
+                        </div>
+                        <div class="queue-badge">${queueId}</div>
+                    `;
+                    
+                    queueListContainer.appendChild(itemDiv);
+                });
+            }
+        } else {
+            if (countEl) countEl.textContent = "0";
+            if (queueListContainer) {
+                queueListContainer.innerHTML = '<p style="padding:15px; text-align:center; color:#666;">No patients in queue.</p>';
             }
         }
     });

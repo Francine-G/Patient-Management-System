@@ -391,9 +391,18 @@ window.handleAddPatient = async (event) => {
                 month: 'long', 
                 day: 'numeric' 
             }),
+
+            conDate: "--",
+            conDiag: "--",
+            conMed: "--",
+            conNotes: "--",
+            conWeight: "--",
+
             lastCheck: "Initial Registration",
             createdAt: new Date().toISOString(),
             createdBy: currentUserData ? currentUserData.username : 'system'
+
+
         };
 
         // Save to Firebase
