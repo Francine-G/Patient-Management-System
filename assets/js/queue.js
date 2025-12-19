@@ -406,6 +406,7 @@ const handleAddQueueSubmit = async (e) => {
         }
         
         const newQueueId = `q_${nextIndex}`;
+        const displayQueueId = `Q-${String(nextIndex).padStart(3, '0')}`;
         
         const queueData = {
             name: name,
@@ -420,9 +421,9 @@ const handleAddQueueSubmit = async (e) => {
         
         // Create audit log
         await createAuditLog(
-            'Added to Queue',
-            'Queue',
-            `Added ${name} to queue as Q-${String(nextIndex).padStart(3, '0')}`
+            'Add Queue',
+            displayQueueId,
+            `Added ${name} to queue as ${displayQueueId}`
         );
         
         alert('Patient added to queue successfully!');
@@ -509,8 +510,8 @@ const handleConsultationSubmit = async (e) => {
         
         // Create audit log
         await createAuditLog(
-            'Completed Consultation',
-            'Queue',
+            'Consultation',
+            selectedQueueItem.displayId,
             `Completed consultation for ${selectedQueueItem.displayId} - ${selectedQueueItem.data.name}`
         );
         
@@ -743,8 +744,8 @@ const handleDone = async () => {
         
         // Create audit log
         await createAuditLog(
-            'Completed Queue Entry',
-            'Queue',
+            'Mark as Done',
+            selectedQueueItem.displayId,
             `Completed consultation for ${selectedQueueItem.displayId} - ${selectedQueueItem.data.name}`
         );
         
@@ -798,22 +799,28 @@ async function createAuditLog(action, entityType, details) {
     if (!currentUserData) return;
     
     try {
-        const logId = `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const auditsRef = ref(database, 'audits');
+        const snapshot = await get(auditsRef);
+        
+        let nextIndex = 1;
+        if (snapshot.exists()) {
+            const keys = Object.keys(snapshot.val());
+            const indices = keys.filter(k => k.startsWith('a_')).map(k => parseInt(k.split('_')[1]));
+            nextIndex = indices.length > 0 ? Math.max(...indices) + 1 : keys.length + 1;
+        }
+        
+        const newAuditId = `a_${nextIndex}`;
         
         const auditLog = {
-            timestamp: new Date().toISOString(),
-            user_name: `${currentUserData.firstName} ${currentUserData.lastName}`.trim(),
-            username: currentUserData.username,
-            user_role: currentUserData.role || 'user',
+            timestamp: new Date().toLocaleString(),
+            user: currentUserData.username,
+            role: currentUserData.role || 'User',
             action: action,
-            entity_type: entityType,
-            entity_id: currentUserData.username,
-            details: details,
-            ip_address: 'N/A',
-            user_agent: navigator.userAgent || 'Unknown'
+            entity: entityType,
+            details: details
         };
 
-        await set(ref(database, `audit_logs/${logId}`), auditLog);
+        await set(ref(database, `audits/${newAuditId}`), auditLog);
         console.log('✅ Audit log created:', auditLog);
     } catch (error) {
         console.error('❌ Error creating audit log:', error);
