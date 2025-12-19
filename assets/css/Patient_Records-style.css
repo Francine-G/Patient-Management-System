@@ -218,7 +218,7 @@ body {
 .header-left h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    background:  #005A64 ;
+    background: linear-gradient(135deg, #005A64 0%, #38DCAC 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -692,6 +692,17 @@ body {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
+/* Edit Modal - Full Width */
+.modal.edit-modal {
+    grid-template-columns: 1fr;
+    max-width: 900px;
+}
+
+.modal-full {
+    padding: 40px;
+    width: 100%;
+}
+
 .modal-close {
     position: absolute;
     top: 20px;
@@ -828,6 +839,10 @@ body {
 
     .modal {
         grid-template-columns: 1fr;
+        max-width: 95%;
+    }
+    
+    .modal.edit-modal {
         max-width: 95%;
     }
 

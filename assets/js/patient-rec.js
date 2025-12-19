@@ -391,18 +391,9 @@ window.handleAddPatient = async (event) => {
                 month: 'long', 
                 day: 'numeric' 
             }),
-
-            conDate: "--",
-            conDiag: "--",
-            conMed: "--",
-            conNotes: "--",
-            conWeight: "--",
-
             lastCheck: "Initial Registration",
             createdAt: new Date().toISOString(),
             createdBy: currentUserData ? currentUserData.username : 'system'
-
-
         };
 
         // Save to Firebase
@@ -434,8 +425,188 @@ window.handleAddPatient = async (event) => {
 
 // Edit patient (placeholder)
 window.editPatient = function(patientId) {
-    alert(`Edit functionality for patient ${patientId} coming soon!`);
-    // TODO: Implement edit functionality
+    // Find patient data
+    const patient = allPatients.find(p => p.id === patientId);
+    if (!patient) {
+        alert('Patient not found');
+        return;
+    }
+    
+    // Open edit modal and populate with patient data
+    const editModal = document.getElementById('editPatientModal');
+    if (!editModal) return;
+    
+    // Set patient ID
+    document.getElementById('editPatientId').value = patient.id;
+    document.getElementById('editPatientIdDisplay').value = patient.id;
+    
+    // Populate form fields
+    document.getElementById('editPatientName').value = patient.name || '';
+    document.getElementById('editDOB').value = patient.birthDate || '';
+    document.getElementById('editSex').value = patient.sex || '';
+    document.getElementById('editBlood').value = patient.bloodType || '';
+    document.getElementById('editNum').value = patient.mobileNum || '';
+    document.getElementById('editEmail').value = patient.email || '';
+    document.getElementById('editComp').value = patient.company || '';
+    document.getElementById('editEmergency').value = patient.emergencyPers || '';
+    document.getElementById('editAllergy').value = patient.allergies || '';
+    document.getElementById('editMedHistory').value = patient.medHistory || '';
+    
+    // Show modal
+    editModal.style.display = 'flex';
+    editModal.classList.add('active');
+};
+
+// Close edit patient modal
+window.closeEditPatientModal = function(event) {
+    const modal = document.getElementById('editPatientModal');
+    if (!modal) return;
+    
+    if (event && (event.target === modal || event.target.closest('.modal-close') || event.target.closest('.cancel-btn'))) {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+        
+        const form = document.getElementById('editPatientForm');
+        if (form) form.reset();
+    } else if (!event) {
+        // Called without event (programmatic close)
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+        
+        const form = document.getElementById('editPatientForm');
+        if (form) form.reset();
+    }
+};
+
+// Handle edit patient form submission
+window.handleEditPatient = async (event) => {
+    if (event) event.preventDefault();
+    
+    const patientId = document.getElementById('editPatientId').value;
+    if (!patientId) {
+        alert('Patient ID not found');
+        return;
+    }
+    
+    try {
+        // Get form values
+        const nameInput = document.getElementById('editPatientName');
+        if (!nameInput || !nameInput.value.trim()) {
+            alert("Please enter the patient's full name.");
+            return;
+        }
+        
+        // Calculate Age
+        const dobValue = document.getElementById('editDOB').value;
+        let calculatedAge = "N/A";
+        if (dobValue) {
+            const birthDate = new Date(dobValue);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+            calculatedAge = age.toString();
+        }
+        
+        // Get original patient data to compare changes
+        const patientRef = ref(database, `patients/${patientId}`);
+        const snapshot = await get(patientRef);
+        
+        if (!snapshot.exists()) {
+            alert('Patient record not found');
+            return;
+        }
+        
+        const originalData = snapshot.val();
+        
+        // New values from form
+        const newValues = {
+            name: nameInput.value.trim(),
+            birthDate: dobValue,
+            age: calculatedAge,
+            sex: document.getElementById('editSex').value,
+            bloodType: document.getElementById('editBlood').value,
+            mobileNum: document.getElementById('editNum').value,
+            email: document.getElementById('editEmail').value,
+            company: document.getElementById('editComp').value,
+            emergencyPers: document.getElementById('editEmergency').value,
+            allergies: document.getElementById('editAllergy').value,
+            medHistory: document.getElementById('editMedHistory').value
+        };
+        
+        // Track what changed
+        const changes = [];
+        const fieldLabels = {
+            name: 'Name',
+            birthDate: 'Date of Birth',
+            age: 'Age',
+            sex: 'Sex',
+            bloodType: 'Blood Type',
+            mobileNum: 'Mobile Number',
+            email: 'Email',
+            company: 'Company',
+            emergencyPers: 'Emergency Contact',
+            allergies: 'Allergies',
+            medHistory: 'Medical History'
+        };
+        
+        // Compare each field
+        Object.keys(newValues).forEach(key => {
+            const oldValue = originalData[key] || '';
+            const newValue = newValues[key] || '';
+            
+            if (oldValue !== newValue) {
+                const label = fieldLabels[key] || key;
+                if (oldValue && newValue) {
+                    // Both have values - show change
+                    changes.push(`${label}: "${oldValue}" → "${newValue}"`);
+                } else if (newValue && !oldValue) {
+                    // New value added
+                    changes.push(`${label}: Added "${newValue}"`);
+                } else if (oldValue && !newValue) {
+                    // Value removed
+                    changes.push(`${label}: Removed "${oldValue}"`);
+                }
+            }
+        });
+        
+        // If no changes detected
+        if (changes.length === 0) {
+            alert('No changes detected.');
+            return;
+        }
+        
+        // Update patient object
+        const updatedPatient = {
+            ...originalData, // Preserve original data
+            ...newValues, // Apply new values
+            updatedAt: new Date().toISOString(),
+            updatedBy: currentUserData ? currentUserData.username : 'system'
+        };
+        
+        // Save to Firebase
+        await set(ref(database, `patients/${patientId}`), updatedPatient);
+        
+        // Create detailed audit log with changes
+        const changeDetails = changes.join(', ');
+        await createAuditLog(
+            'Edit Patient',
+            patientId,
+            `Updated ${patientId} (${updatedPatient.name}): ${changeDetails}`
+        );
+        
+        alert(`Patient ${patientId} updated successfully!\n\nChanges made:\n${changes.join('\n')}`);
+        
+        // Close modal
+        window.closeEditPatientModal();
+        
+        // Reload patients
+        await loadPatients();
+        
+    } catch (error) {
+        console.error("Error updating patient:", error);
+        alert('Failed to update patient record. Please try again.');
+    }
 };
 
 // Initialize
