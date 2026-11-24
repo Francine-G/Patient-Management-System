@@ -32,29 +32,74 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-document.querySelector('form').addEventListener('submit', (event) => {
+document.querySelector('form').addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value;
-  const submitButton = event.target.querySelector('button[type="submit"]');
+  const submitButton = event.currentTarget.querySelector('button[type="submit"]');
 
   if (!username || !password) {
     alert('Please enter your username and password');
     return;
   }
 
-  const userData = getUsers()[username];
+  let users;
+  try {
+    users = getUsers();
+  } catch (error) {
+    console.error('Could not read locally stored accounts:', error);
+    alert('Unable to read saved accounts in this browser. Please clear the site data and sign up again.');
+    return;
+  }
+
+  let matchedUsername = Object.keys(users).find((key) => key.toLowerCase() === username.toLowerCase());
+  let userData = matchedUsername ? users[matchedUsername] : null;
+
+  // Older verified accounts were stored in Firebase. Keep those accounts
+  // usable while new signups use the browser store shared with this login page.
+  if (!userData) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Checking account...';
+    try {
+      const [{ initializeApp }, { getDatabase, ref, get }] = await Promise.all([
+        import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js'),
+        import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js')
+      ]);
+      const app = initializeApp({
+        apiKey: 'AIzaSyCxok6-e-GB8fdmSD8_Wpa-0_jYwK77eHk',
+        authDomain: 'patientflow-26dc1.firebaseapp.com',
+        databaseURL: 'https://patientflow-26dc1-default-rtdb.firebaseio.com',
+        projectId: 'patientflow-26dc1',
+        storageBucket: 'patientflow-26dc1.firebasestorage.app',
+        messagingSenderId: '124429931982',
+        appId: '1:124429931982:web:ef44ca54332b9fcca5079f'
+      }, 'login');
+      const snapshot = await Promise.race([
+        get(ref(getDatabase(app), `users/${username}`)),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Account lookup timed out')), 8000))
+      ]);
+      if (snapshot.exists()) {
+        userData = snapshot.val();
+        matchedUsername = userData.username || username;
+      }
+    } catch (error) {
+      console.error('Could not check the legacy account store:', error);
+    }
+  }
+
   if (!userData || userData.password !== password) {
+    submitButton.disabled = false;
+    submitButton.textContent = 'Log In';
     alert('Invalid username or password');
     return;
   }
 
   submitButton.disabled = true;
-  submitButton.textContent = 'Success! Redirecting...';
-  sessionStorage.setItem('currentUser', username);
+  submitButton.textContent = 'Opening dashboard...';
+  sessionStorage.setItem('currentUser', matchedUsername || username);
   sessionStorage.setItem('userData', JSON.stringify({
-    username,
+    username: matchedUsername || username,
     firstName: userData.firstName,
     lastName: userData.lastName,
     email: userData.email,
@@ -62,9 +107,7 @@ document.querySelector('form').addEventListener('submit', (event) => {
   }));
   localStorage.setItem('rememberedUser', username);
 
-  setTimeout(() => {
-    window.location.href = 'Dashboard.html';
-  }, 300);
+  window.location.assign('Dashboard.html');
 });
 
 const forgotPasswordLink = document.querySelector('.forgot a');

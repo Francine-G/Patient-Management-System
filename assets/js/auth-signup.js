@@ -19,7 +19,7 @@ document.querySelector('form').addEventListener('submit', (event) => {
   const username = document.getElementById('username').value.trim();
   const firstName = document.getElementById('firstName').value.trim();
   const lastName = document.getElementById('lastName').value.trim();
-  const email = document.getElementById('email').value.trim();
+  const email = document.getElementById('email').value.trim().toLowerCase();
   const password = document.getElementById('password').value;
   const confirmPassword = document.getElementById('confirmPassword').value;
 
@@ -48,137 +48,39 @@ document.querySelector('form').addEventListener('submit', (event) => {
     return;
   }
 
-<<<<<<< Updated upstream
+  const submitButton = event.currentTarget.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = 'Creating Account...';
+
   try {
-    // Show loading state
-    const submitButton = e.target.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton.textContent;
-    submitButton.disabled = true;
-    submitButton.textContent = 'Creating Account...';
+    const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+    const normalizedUsername = username.toLowerCase();
 
-    console.log('Starting signup process for:', username);
-
-    // Check if username already exists in pending_users
-    const usernameRef = ref(database, `pending_users/${username}`);
-    const usernameSnapshot = await get(usernameRef);
-    
-    if (usernameSnapshot.exists()) {
+    if (Object.keys(users).some((key) => key.toLowerCase() === normalizedUsername)) {
       showMessage('Username already exists. Please choose a different username.', 'error');
       submitButton.disabled = false;
       submitButton.textContent = originalButtonText;
       return;
     }
 
-    // Check in verified users as well
-    const verifiedUserRef = ref(database, `users/${username}`);
-    const verifiedSnapshot = await get(verifiedUserRef);
-    
-    if (verifiedSnapshot.exists()) {
-      showMessage('Username already exists. Please choose a different username.', 'error');
+    if (Object.values(users).some((user) => user.email?.toLowerCase() === email)) {
+      showMessage('Email already registered. Please use a different email or login.', 'error');
       submitButton.disabled = false;
       submitButton.textContent = originalButtonText;
       return;
     }
 
-    // Check if email already exists
-    const allUsersRef = ref(database, 'users');
-    const allUsersSnapshot = await get(allUsersRef);
-    
-    if (allUsersSnapshot.exists()) {
-      const users = allUsersSnapshot.val();
-      for (const [key, userData] of Object.entries(users)) {
-        if (userData.email === email) {
-          showMessage('Email already registered. Please use a different email or login.', 'error');
-          submitButton.disabled = false;
-          submitButton.textContent = originalButtonText;
-          return;
-        }
-      }
-    }
-
-    console.log('Username and email available');
-
-    // Generate verification code
-    const verificationCode = generateVerificationCode();
-    console.log('Generated verification code:', verificationCode);
-    
-    // Store user data temporarily with verification code
-    const pendingUserData = {
-      username: username,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password, // In production, hash this password!
-      verificationCode: verificationCode,
-      createdAt: new Date().toISOString(),
-      verified: false
-    };
-
-    console.log('Saving to Firebase...');
-    await set(ref(database, `pending_users/${username}`), pendingUserData);
-    console.log('Saved to Firebase successfully');
-
-    // Update button text
-    submitButton.textContent = 'Sending Verification Code...';
-    showMessage('Account created! Sending verification code...', 'info');
-
-    // Send verification email
-    console.log('Attempting to send email...');
-    const emailSent = await sendVerificationEmail(email, verificationCode, firstName);
-
-    if (emailSent) {
-      console.log('Email sent successfully!');
-      showMessage('Verification code sent! Redirecting...', 'success');
-      
-      // Store username and email in sessionStorage for the verification page
-      sessionStorage.setItem('pendingUsername', username);
-      sessionStorage.setItem('pendingEmail', email);
-      
-      // Redirect to email verification page
-      setTimeout(() => {
-        window.location.href = 'Email_Verification.html';
-      }, 1500);
-    } else {
-      console.error('Email sending failed');
-      showMessage('Failed to send verification email. Please try again or contact support.', 'error');
-      
-      // Don't clean up pending user data - they can try to resend from verification page
-      // Just redirect them to verification page anyway
-      showMessage('You can try resending the code from the verification page...', 'info');
-      
-      sessionStorage.setItem('pendingUsername', username);
-      sessionStorage.setItem('pendingEmail', email);
-      
-      setTimeout(() => {
-        window.location.href = 'Email_Verification.html';
-      }, 2000);
-    }
-
+    users[username] = { username, firstName, lastName, email, password, role: 'user' };
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    showMessage('Account created! Redirecting to login...');
+    setTimeout(() => {
+      window.location.href = 'LogIn.html';
+    }, 700);
   } catch (error) {
     console.error('Signup error:', error);
-    showMessage('An error occurred during signup. Please try again.', 'error');
-    
-    // Reset button
-    const submitButton = e.target.querySelector('button[type="submit"]');
+    showMessage('Unable to create the account in this browser. Please try again.', 'error');
     submitButton.disabled = false;
-    submitButton.textContent = 'Sign Up';
-=======
-  const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
-  if (users[username]) {
-    showMessage('Username already exists. Please choose a different username.', 'error');
-    return;
->>>>>>> Stashed changes
+    submitButton.textContent = originalButtonText;
   }
-
-  if (Object.values(users).some((user) => user.email === email)) {
-    showMessage('Email already registered. Please use a different email or login.', 'error');
-    return;
-  }
-
-  users[username] = { username, firstName, lastName, email, password, role: 'user' };
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-  showMessage('Account created! Redirecting to login...');
-  setTimeout(() => {
-    window.location.href = 'LogIn.html';
-  }, 700);
 });
